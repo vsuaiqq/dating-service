@@ -13,6 +13,7 @@ from keyboards.media_finish import get_media_finish_keyboard
 from states.profile import ProfileStates
 from aiogram.types import ContentType, InputMediaPhoto, InputMediaVideo
 from utils.ProfileValidator import ProfileValidator
+from utils.I18nTextFilter import I18nTextFilter
 
 router = Router()
 
@@ -26,7 +27,7 @@ async def cmd_start(message: types.Message, _: Callable):
     else:
         await message.answer(_("greeting_start"), reply_markup=get_start_keyboard(_))
 
-@router.message(F.text == "🚀 Start" or F.text == "🚀 Начать")
+@router.message(I18nTextFilter("start_button"))
 async def text_start(message: types.Message, state: FSMContext, _: Callable):
     await message.answer(_("ask_age"), reply_markup=get_back_keyboard(_))
     await state.set_state(ProfileStates.age)
@@ -37,7 +38,7 @@ async def get_age(message: types.Message, state: FSMContext, _: Callable):
         await message.answer(_("greeting_start"), reply_markup=get_start_keyboard(_))
         await state.clear()
         return
-        
+
     age, error = ProfileValidator.validate_age(message.text, _)
     if error:
         await message.answer(error, reply_markup=get_back_keyboard(_))
@@ -273,7 +274,7 @@ async def handle_media_group(message: types.Message, state: FSMContext, _: Calla
 async def handle_single_media(message: types.Message, state: FSMContext, _: Callable):
     await handle_media_group(message, state, _)
 
-@router.message(ProfileStates.media, F.text == "That`s all, save photo" or F.text == "Это все, сохранить photo")
+@router.message(ProfileStates.media, I18nTextFilter("finish_media_button"))
 async def finish_media_upload(message: types.Message, state: FSMContext, _: Callable):
     data = await state.get_data()
     
@@ -286,8 +287,8 @@ async def finish_media_upload(message: types.Message, state: FSMContext, _: Call
     if preview_success:
         await message.answer(_("confirm_profile"), reply_markup=get_profile_creation_confirm_keyboard(_))
 
-@router.message(ProfileStates.media, F.text == "Yes")
-async def confirm_profile(message: types.Message, state: FSMContext, _: Callable):
+@router.message(ProfileStates.media, I18nTextFilter("save_profile_button"))
+async def confirm_profile(message: types.Message, state: FSMContext, _: Callable):    
     saved_successfully = await save_profile(message, state, _)
     
     if saved_successfully:

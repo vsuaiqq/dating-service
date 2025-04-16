@@ -3,12 +3,13 @@ from typing import Callable
 from keyboards.start import get_start_keyboard
 from keyboards.main import get_main_keyboard
 from keyboards.confirm_disable import get_confirm_disable_keyboard
-from aiogram.types import InputMediaPhoto, InputMediaVideo, ReplyKeyboardMarkup, KeyboardButton
+from aiogram.types import InputMediaPhoto, InputMediaVideo
+from utils.I18nTextFilter import I18nTextFilter
 
 router = Router()
 
-@router.message(F.text == "my_profile_button")
-async def show_my_profile(message: types.Message, _: Callable):
+@router.message(I18nTextFilter("my_profile_button"))
+async def show_my_profile(message: types.Message, _: Callable):    
     profile = await router.profile_repo.get_profile_by_user_id(message.from_user.id)
     if not profile:
         await message.answer(_("no_profile_error"), reply_markup=get_start_keyboard(_))
@@ -35,17 +36,15 @@ async def show_my_profile(message: types.Message, _: Callable):
         await message.answer(_("preview_error") + f": {str(e)}", reply_markup=get_main_keyboard(_))
         return False
 
-@router.message(F.text == "Отключить анкету")
+@router.message(I18nTextFilter("disable_profile_button"))
 async def disable_profile_start(message: types.Message, _: Callable):
-    """Запрос подтверждения на отключение анкеты"""
     await message.answer(
         _("confirm_disable_profile"),
         reply_markup=get_confirm_disable_keyboard(_)
     )
 
-@router.message(F.text == "Да, отключить")
+@router.message(I18nTextFilter("confirm_disable_profile_button"))
 async def confirm_disable_profile(message: types.Message, _: Callable):
-    """Подтверждение отключения анкеты"""
     success = await router.profile_repo.toggle_profile_active(message.from_user.id, False)
     if success:
         await message.answer(
@@ -55,9 +54,8 @@ async def confirm_disable_profile(message: types.Message, _: Callable):
     else:
         await message.answer(_("profile_disable_error"))
 
-@router.message(F.text == "Нет, оставить")
+@router.message(I18nTextFilter("cancel_disable_profile_button"))
 async def cancel_disable_profile(message: types.Message, _: Callable):
-    """Отмена отключения анкеты"""
     await message.answer(
         _("profile_disable_canceled"),
         reply_markup=get_main_keyboard(_)
