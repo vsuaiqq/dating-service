@@ -1,0 +1,96 @@
+msgid "greeting_start"
+msgstr "Hi! I'm a dating bot. Ready to begin?"
+
+msgid "ask_age"
+msgstr "How old are you?"
+
+msgid "ask_gender"
+msgstr "Now let's define your gender"
+
+msgid "ask_interesting_gender"
+msgstr "Who are you interested in?"
+
+msgid "ask_city"
+msgstr "Which city are you from?"
+
+msgid "ask_name"
+msgstr "What should I call you?"
+
+msgid "ask_about"
+msgstr ""
+"Tell us about yourself and who you’re looking for, what you’d like to do together. "
+"This will help us match you better."
+
+msgid "ask_media"
+msgstr ""
+"Now send a photo or record a video 👍 (up to 15 sec), "
+"other users will see it."
+
+msgid "start_button"
+msgstr "🚀 Start"
+
+msgid "save_profile_button"
+msgstr "Yes"
+
+msgid "gender_male_button"
+msgstr "Male"
+
+msgid "gender_female_button"
+msgstr "Female"
+
+msgid "gender_any_button"
+msgstr "Any"
+
+msgid "skip_button"
+msgstr "Skip"
+
+msgid "back_button"
+msgstr "Back"
+
+msgid "finish_media_button"
+msgstr "That`s all, save photo"
+
+msgid "edit_profile_button"
+msgstr "Change profile"
+
+msgid "my_profile_button"
+msgstr "My profile"
+
+msgid "disable_profile_button"
+msgstr "Disable profile"
+
+msgid "confirm_disable_profile_button"
+msgstr "Yes, turn off"
+
+msgid "cancel_disable_profile_button"
+msgstr "No, leave it"
+
+msgid "age_range_error"
+msgstr "Age must be between {min} and {max} years"
+
+msgid "age_numeric_error"
+msgstr "Please enter age as a number"
+
+msgid "name_min_error"
+msgstr "Name must be at least {min} characters long"
+
+msgid "name_max_error"
+msgstr "Name must be no longer than {max} characters"
+
+msgid "city_min_error"
+msgstr "City name must be at least {min} characters long"
+
+msgid "city_max_error"
+msgstr "City name must be no longer than {max} characters"
+
+msgid "about_max_error"
+msgstr "Description must be no longer than {max} characters"
+
+msgid "video_duration_error"
+msgstr "Video must be shorter than {max} seconds"
+
+msgid "media_type_error"
+msgstr "Please send a photo or video"
+
+msgid "file_size_error"
+msgstr "File must be smaller than {max}MB"

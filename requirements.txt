@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+sqlalchemy
+asyncpg
+alembic
+aiogram>=3.0.0
+pydantic
+python-dotenv
+redis
+boto3
+Babel

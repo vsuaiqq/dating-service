@@ -1,0 +1,96 @@
+msgid "greeting_start"
+msgstr "Привет! Я бот знакомств. Готов начать?"
+
+msgid "ask_age"
+msgstr "Сколько тебе лет?"
+
+msgid "ask_gender"
+msgstr "Теперь определимся с полом"
+
+msgid "ask_interesting_gender"
+msgstr "Кто тебе интересен?"
+
+msgid "ask_city"
+msgstr "Из какого ты города?"
+
+msgid "ask_name"
+msgstr "Как мне тебя называть?"
+
+msgid "ask_about"
+msgstr ""
+"Расскажи о себе и кого хочешь найти, чем предлагаешь заняться. "
+"Это поможет лучше подобрать тебе компанию."
+
+msgid "ask_media"
+msgstr ""
+"Теперь пришли фото или запиши видео 👍 (до 15 сек), "
+"его будут видеть другие пользователи."
+
+msgid "start_button"
+msgstr "🚀 Начать"
+
+msgid "save_profile_button"
+msgstr "Да"
+
+msgid "gender_male_button"
+msgstr "Мужчина"
+
+msgid "gender_female_button"
+msgstr "Женщина"
+
+msgid "gender_any_button"
+msgstr "Неважно"
+
+msgid "skip_button"
+msgstr "Пропустить"
+
+msgid "back_button"
+msgstr "Назад"
+
+msgid "finish_media_button"
+msgstr "Это все, сохранить photo"
+
+msgid "edit_profile_button"
+msgstr "Изменить анкету"
+
+msgid "my_profile_button"
+msgstr "Моя анкета"
+
+msgid "disable_profile_button"
+msgstr "Отключить анкету"
+
+msgid "confirm_disable_profile_button"
+msgstr "Да, отключить"
+
+msgid "cancel_disable_profile_button"
+msgstr "Нет, оставить"
+
+msgid "age_range_error"
+msgstr "Возраст должен быть от {min} до {max} лет"
+
+msgid "age_numeric_error"
+msgstr "Пожалуйста, введите возраст цифрами"
+
+msgid "name_min_error"
+msgstr "Имя должно быть не короче {min} символов"
+
+msgid "name_max_error"
+msgstr "Имя должно быть не длиннее {max} символов"
+
+msgid "city_min_error"
+msgstr "Название города должно быть не короче {min} символов"
+
+msgid "city_max_error"
+msgstr "Название города должно быть не длиннее {max} символов"
+
+msgid "about_max_error"
+msgstr "Описание должно быть не длиннее {max} символов"
+
+msgid "video_duration_error"
+msgstr "Видео должно быть короче {max} секунд"
+
+msgid "media_type_error"
+msgstr "Пожалуйста, отправьте фото или видео"
+
+msgid "file_size_error"
+msgstr "Файл должен быть меньше {max}MB"
