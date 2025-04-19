@@ -14,23 +14,26 @@ from states.profile import ProfileStates
 from aiogram.types import ContentType, InputMediaPhoto, InputMediaVideo
 from utils.ProfileValidator import ProfileValidator
 from utils.I18nTextFilter import I18nTextFilter
+from utils.media import MAX_MEDIA_FILES, process_media_file
 
 router = Router()
 
-MAX_MEDIA_FILES = 3
-
 @router.message(F.text == "/start")
 async def cmd_start(message: types.Message, _: Callable):
-    profile = await router.profile_repo.get_profile_by_user_id(message.from_user.id)
+    profile = await router.profile_client.get_profile_by_user_id(message.from_user.id)
     if profile:
-        await message.answer(_("greeting_start"), reply_markup=get_main_keyboard(_))
+        await message.answer(_("greeting_start"), reply_markup=get_main_keyboard(profile['is_active'], _))
     else:
         await message.answer(_("greeting_start"), reply_markup=get_start_keyboard(_))
 
 @router.message(I18nTextFilter("start_button"))
 async def text_start(message: types.Message, state: FSMContext, _: Callable):
-    await message.answer(_("ask_age"), reply_markup=get_back_keyboard(_))
-    await state.set_state(ProfileStates.age)
+    profile = await router.profile_client.get_profile_by_user_id(message.from_user.id)
+    if profile:
+        await message.answer(_("profile_already_exists"), reply_markup=get_main_keyboard(profile['is_active'], _))
+    else:
+        await message.answer(_("ask_age"), reply_markup=get_back_keyboard(_))
+        await state.set_state(ProfileStates.age)
 
 @router.message(ProfileStates.age)
 async def get_age(message: types.Message, state: FSMContext, _: Callable):
@@ -146,37 +149,20 @@ async def get_about(message: types.Message, state: FSMContext, _: Callable):
     await message.answer(_("ask_media"), reply_markup=get_back_keyboard(_))
     await state.set_state(ProfileStates.media)
 
-async def process_media_file(message: types.Message, file: Union[types.PhotoSize, types.Video], file_type: Literal["photo", "video"], state: FSMContext) -> bool:
-    data = await state.get_data()
-    media_list = data.get("media", [])
-    
-    if len(media_list) >= MAX_MEDIA_FILES:
-        return False
-
-    media_list.append({
-        'file_id': file.file_id,
-        'type': file_type,
-        'file_size': file.file_size,
-        'duration': getattr(file, 'duration', None)
-    })
-    
-    await state.update_data(media=media_list)
-    return True
-
 async def save_profile(message: types.Message, state: FSMContext, _: Callable):
     data = await state.get_data()
     media_list = data.get("media", [])
     
     try:
-        profile_id = await router.profile_repo.save_profile(
-            user_id=message.from_user.id,
-            name=data["name"],
-            gender=data["gender"],
-            city=data["city"],
-            age=int(data["age"]),
-            interesting_gender=data["interesting_gender"],
-            about=data["about"]
-        )
+        profile_id = await router.profile_client.save_profile({
+            'user_id': message.from_user.id,
+            'name': data["name"],
+            'gender': data["gender"],
+            'city': data["city"],
+            'age': int(data["age"]),
+            'interesting_gender': data["interesting_gender"],
+            'about': data["about"]
+        })
         
         if media_list:
             saved_media = []
@@ -184,14 +170,16 @@ async def save_profile(message: types.Message, state: FSMContext, _: Callable):
                 file = await message.bot.get_file(media['file_id'])
                 file_bytes = await message.bot.download_file(file.file_path)
                 byte_data = BytesIO(file_bytes.read())
-                
                 extension = ".jpg" if media['type'] == "photo" else ".mp4"
                 filename = f"{message.from_user.id}_{file.file_id}{extension}"
-                s3_key = await router.s3_uploader.upload_file(byte_data, filename)
+                s3_key = await router.s3_client.upload_file(byte_data, filename)
                 
-                saved_media.append((media['type'], s3_key))
+                saved_media.append({
+                    'type': media['type'],
+                    's3_key': s3_key['key']
+                })
             
-            await router.profile_repo.save_media(profile_id, saved_media)
+            await router.profile_client.save_media(profile_id['profile_id'], saved_media)
         
         return True
     except Exception as e:
@@ -206,7 +194,7 @@ async def show_profile(message: types.Message, state: FSMContext, _: Callable):
         await message.answer(_("no_media_error"), reply_markup=get_back_keyboard(_))
         return False
 
-    profile_text = f"{data['name']}, {data['age']}, {data['city']} - {data['about']}"
+    profile_text = f"{data['name']}, {data['age']}, {data['city']} - {data['about']} {_('active_status')}"
     media_objects = []
     
     for i, media in enumerate(media_list):
@@ -266,7 +254,7 @@ async def handle_media_group(message: types.Message, state: FSMContext, _: Calla
         await show_profile(message, state, _)
     else:
         await message.answer(
-            _("media_added").format(added=added_count, total=new_count, max=MAX_MEDIA_FILES),
+            _("media_added").format(now=new_count, total=MAX_MEDIA_FILES, remainder=MAX_MEDIA_FILES-new_count),
             reply_markup=get_media_finish_keyboard(_)
         )
 
@@ -292,7 +280,7 @@ async def confirm_profile(message: types.Message, state: FSMContext, _: Callable
     saved_successfully = await save_profile(message, state, _)
     
     if saved_successfully:
-        await message.answer(_("profile_saved"), reply_markup=get_main_keyboard(_))
+        await message.answer(_("profile_saved"), reply_markup=get_main_keyboard(True, _))
         await state.clear()
     else:
         await message.answer(_("save_error"), reply_markup=get_back_keyboard(_))

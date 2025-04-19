@@ -59,6 +59,9 @@ msgstr "Моя анкета"
 msgid "disable_profile_button"
 msgstr "Отключить анкету"
 
+msgid "enable_profile_button"
+msgstr "Включить анкету"
+
 msgid "confirm_disable_profile_button"
 msgstr "Да, отключить"
 
@@ -94,3 +97,87 @@ msgstr "Пожалуйста, отправьте фото или видео"
 
 msgid "file_size_error"
 msgstr "Файл должен быть меньше {max}MB"
+
+msgid "invalid_gender_error"
+msgstr "Некорректное значение пола"
+
+msgid "profile_preview"
+msgstr "Так выглядит твоя анкета"
+
+msgid "profile_saved"
+msgstr "Анкета сохранена"
+
+msgid "confirm_profile"
+msgstr "Все верно?"
+
+msgid "media_added"
+msgstr "Файл {now}/{total} сохранен. Вы можете добавить еще {remainder} файлов"
+
+msgid "confirm_disable_profile"
+msgstr "Вы уверены, что хотите отключить анкету?"
+
+msgid "profile_disable_canceled"
+msgstr "Отключение профиля отменено"
+
+msgid "active_status"
+msgstr "[Активно ✅]"
+
+msgid "inactive_status"
+msgstr "[Неактивно ❌]"
+
+msgid "profile_disabled_success"
+msgstr "Анкета отключена"
+
+msgid "profile_enabled_success"
+msgstr "Анкета включена"
+
+msgid "choose_field_to_edit"
+msgstr "Выберите поле для изменения"
+
+msgid "enter_new_name"
+msgstr "Введите новое имя"
+
+msgid "enter_new_age"
+msgstr "Введите новый возраст"
+
+msgid "choose_new_gender"
+msgstr "Выберите свой пол"
+
+msgid "choose_new_interesting_gender"
+msgstr "Выберите интересующий вас пол"
+
+msgid "enter_new_city"
+msgstr "Из какого вы города?"
+
+msgid "enter_new_about"
+msgstr "Введите новый текст для вашей анкеты"
+
+msgid "send_new_media"
+msgstr "Отправьте новые медиа для вашей анкеты" 
+
+msgid "name_updated"
+msgstr "Имя обновлено"
+
+msgid "age_updated"
+msgstr "Возраст обновлен"
+
+msgid "gender_updated"
+msgstr "Пол обновлен"
+
+msgid "interesting_gender_updated"
+msgstr "Интересующий пол обновлен"
+
+msgid "city_updated"
+msgstr "Город обновлен"
+
+msgid "about_updated"
+msgstr "Текст анкеты обновлен"
+
+msgid "media_updated"
+msgstr "Медиа обновлены"
+
+msgid "max_media_reached"
+msgstr "Достигнуто максимальное число медиа"
+
+msgid "profile_already_exists"
+msgstr "Анкета уже существует"

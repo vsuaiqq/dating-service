@@ -1,4 +1,4 @@
-fastapi
+fastapi>=0.111.0
 uvicorn
 sqlalchemy
 asyncpg
@@ -9,3 +9,5 @@ python-dotenv
 redis
 boto3
 Babel
+uvicorn
+httpx

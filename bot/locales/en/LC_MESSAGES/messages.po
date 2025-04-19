@@ -59,6 +59,9 @@ msgstr "My profile"
 msgid "disable_profile_button"
 msgstr "Disable profile"
 
+msgid "enable_profile_button"
+msgstr "Enable profile"
+
 msgid "confirm_disable_profile_button"
 msgstr "Yes, turn off"
 
@@ -94,3 +97,87 @@ msgstr "Please send a photo or video"
 
 msgid "file_size_error"
 msgstr "File must be smaller than {max}MB"
+
+msgid "invalid_gender_error"
+msgstr "Incorrect gender value"
+
+msgid "profile_preview"
+msgstr "This is what your profile looks like"
+
+msgid "profile_saved"
+msgstr "The profile has been saved"
+
+msgid "confirm_profile"
+msgstr "Is everything correct?"
+
+msgid "media_added"
+msgstr "File {now}/{total} saved. You can add {remainder} more files"
+
+msgid "confirm_disable_profile"
+msgstr "Are you sure you want to disable the profile?"
+
+msgid "profile_disable_canceled"
+msgstr "Profile disable cancelled"
+
+msgid "active_status"
+msgstr "[Active ✅]"
+
+msgid "inactive_status"
+msgstr "[Inactive ❌]"
+
+msgid "profile_disabled_success"
+msgstr "Profile has been disabled"
+
+msgid "profile_enabled_success"
+msgstr "Profile has been enabled"
+
+msgid "choose_field_to_edit"
+msgstr "Choose a field to edit"
+
+msgid "enter_new_name"
+msgstr "Enter your new name"
+
+msgid "enter_new_age"
+msgstr "Enter your new age"
+
+msgid "choose_new_gender"
+msgstr "Choose your gender"
+
+msgid "choose_new_interesting_gender"
+msgstr "Choose the gender you are interested in"
+
+msgid "enter_new_city"
+msgstr "Which city are you from?"
+
+msgid "enter_new_about"
+msgstr "Enter new text for your profile"
+
+msgid "send_new_media"
+msgstr "Send new media for your profile"
+
+msgid "name_updated"
+msgstr "Name has been updated"
+
+msgid "age_updated"
+msgstr "Age has been updated"
+
+msgid "gender_updated"
+msgstr "Gender has been updated"
+
+msgid "interesting_gender_updated"
+msgstr "Interested gender has been updated"
+
+msgid "city_updated"
+msgstr "City has been updated"
+
+msgid "about_updated"
+msgstr "Profile text has been updated"
+
+msgid "media_updated"
+msgstr "Media has been updated"
+
+msgid "max_media_reached"
+msgstr "Maximum number of media reached"
+
+msgid "profile_already_exists"
+msgstr "Profile already exists"

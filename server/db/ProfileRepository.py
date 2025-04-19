@@ -51,10 +51,25 @@ class ProfileRepository:
             """, profile_id)
             return rows
     
-    async def toggle_profile_active(self, user_id: int, is_active: bool) -> bool:
+    async def toggle_profile_active(self, user_id: int, is_active: bool):
         async with self.pool.acquire() as conn:
             await conn.execute("""
                 UPDATE profiles 
                 SET is_active = $1
                 WHERE user_id = $2
             """, is_active, user_id)
+    
+    async def update_profile_field(self, user_id: int, field_name: str, value):
+        async with self.pool.acquire() as conn:
+            query = f"""
+                UPDATE profiles
+                SET {field_name} = $1
+                WHERE user_id = $2
+            """
+            await conn.execute(query, value, user_id)
+    
+    async def delete_media_by_profile_id(self, profile_id: int):
+        async with self.pool.acquire() as conn:
+            await conn.execute("""
+                DELETE FROM media WHERE profile_id = $1
+            """, profile_id)
