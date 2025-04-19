@@ -4,7 +4,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
-from config import BOT_TOKEN, REDIS_HOST, REDIS_PORT, REDIS_FSM, API_URL
+from config import BOT_TOKEN, REDIS_HOST, REDIS_PORT, REDIS_FSM, API_URL, DATABASE_URL
 from utils.logger import setup_logger
 from handlers import all_handlers
 from middlewares.i18n import I18nMiddleware

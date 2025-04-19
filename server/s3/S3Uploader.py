@@ -76,3 +76,74 @@ class S3Uploader:
             self.s3.delete_object(Bucket=self.bucket_name, Key=key)
         except (BotoCoreError, ClientError) as e:
             raise RuntimeError(f"Ошибка удаления файла с ключом {key} из S3: {e}")
+
+    async def delete_files(self, keys: List[str]) -> None:
+        try:
+            objects = [{'Key': key} for key in keys]
+            self.s3.delete_objects(
+                Bucket=self.bucket_name,
+                Delete={'Objects': objects}
+            )
+        except (BotoCoreError, ClientError) as e:
+            raise RuntimeError(f"Ошибка массового удаления файлов из S3: {e}")
+        
+    async def delete_user_data(self, user_id: int):
+        photos = await self.get_user_photos(user_id)
+        photo_keys = [p['file_id'] for p in photos]
+        
+        if photo_keys:
+            await self.s3_uploader.delete_files(photo_keys)
+        
+        async with self.pool.acquire() as conn:
+            await conn.execute("DELETE FROM user_photos WHERE user_id = $1", user_id)
+            await conn.execute("DELETE FROM users WHERE telegram_id = $1", user_id)
+            
+    async def update_user_photo(self, user_id: int, new_photo: UploadFile):
+        file_bytes = await new_photo.read()
+        file_io = io.BytesIO(file_bytes)
+        
+        try:
+            key = await self.s3_uploader.upload_file(file_io, new_photo.filename)
+            
+            async with self.pool.acquire() as conn:
+                await conn.execute("""
+                    INSERT INTO user_photos (user_id, file_id, is_main)
+                    VALUES ($1, $2, TRUE)
+                    ON CONFLICT (user_id) DO UPDATE
+                    SET file_id = EXCLUDED.file_id
+                """, user_id, key)
+                
+            return key
+        finally:
+            file_io.close()
+    async def check_file_exists(self, key: str) -> bool:
+        try:
+            self.s3.head_object(Bucket=self.bucket_name, Key=key)
+            return True
+        except ClientError as e:
+            if e.response['Error']['Code'] == '404':
+                return False
+            raise
+
+    async def get_file_metadata(self, key: str) -> dict:
+        try:
+            response = self.s3.head_object(Bucket=self.bucket_name, Key=key)
+            return {
+                'content_type': response['ContentType'],
+                'size': response['ContentLength'],
+                'last_modified': response['LastModified'],
+                'metadata': response.get('Metadata', {})
+            }
+        except ClientError as e:
+            raise RuntimeError(f"Error getting file metadata: {e}")
+
+    async def copy_file(self, source_key: str, dest_key: str) -> str:
+        try:
+            self.s3.copy_object(
+                Bucket=self.bucket_name,
+                CopySource={'Bucket': self.bucket_name, 'Key': source_key},
+                Key=dest_key
+            )
+            return dest_key
+        except ClientError as e:
+            raise RuntimeError(f"Error copying file: {e}")
