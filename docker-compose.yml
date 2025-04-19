@@ -1,8 +1,6 @@
-version: "3.9"
-
 services:
   postgres:
-    image: postgres:15
+    image: postgres:latest
     restart: always
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
@@ -12,13 +10,20 @@ services:
       - "${DB_PORT}:${DB_PORT}"
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./db:/docker-entrypoint-initdb.d
+      - ./db/postgres:/docker-entrypoint-initdb.d
 
   redis:
     image: redis:7
     restart: always
     ports:
       - "${REDIS_PORT}:${REDIS_PORT}"
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    volumes:
+      - ./db/clickhouse/init.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
   pgdata:
