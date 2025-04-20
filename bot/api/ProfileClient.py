@@ -1,6 +1,6 @@
 import httpx
 import json
-from typing import List, Optional
+from typing import List
 
 class ProfileClient:
     def __init__(self, base_url: str):
@@ -43,7 +43,6 @@ class ProfileClient:
     async def delete_media(self, profile_id: int):
         headers = httpx.Headers({"Content-Type": "application/json"})
         payload = json.dumps({"profile_id": profile_id})
-
         resp = await self.client.request(
             method="DELETE",
             url="/profile/media/delete",

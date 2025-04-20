@@ -11,3 +11,5 @@ boto3
 Babel
 uvicorn
 httpx
+sentence_transformers
+sklearn

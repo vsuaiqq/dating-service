@@ -10,12 +10,14 @@ from handlers import all_handlers
 from middlewares.i18n import I18nMiddleware
 from api.ProfileClient import ProfileClient
 from api.S3Client import S3Client
+from api.RecSysClient import RecSysClient
 
 async def main():
     setup_logger()
 
     profile_client = ProfileClient(API_URL)
     s3_client = S3Client(API_URL)
+    recsys_client = RecSysClient(API_URL)
 
     bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     redis_client = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_FSM)
@@ -28,6 +30,7 @@ async def main():
     for router in all_handlers:
         router.profile_client = profile_client
         router.s3_client = s3_client
+        router.recsys_client = recsys_client
         dp.include_router(router)
     
     await dp.start_polling(bot)
