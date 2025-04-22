@@ -12,6 +12,6 @@ Babel
 uvicorn
 httpx
 sentence_transformers
-sklearn
+scikit-learn
 aiokafka
 clickhouse_driver

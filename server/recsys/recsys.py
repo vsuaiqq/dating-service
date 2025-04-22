@@ -3,20 +3,49 @@ from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from typing import List
 import random
-
+import re
+import nltk
+from nltk.stem import WordNetLemmatizer
+import pymorphy2
+from langdetect import detect
 from postgres.ProfileRepository import ProfileRepository
 
 class EmbeddingRecommender:
-    def __init__(self, profile_repo: ProfileRepository, embedding_size = 384, recsys_coeff = 0.6, model = None):
+    def __init__(self, profile_repo: ProfileRepository, embedding_size = 384, recsys_coeff = 0.7, stop_words = [], model = None):
         self.model = model
         self.profile_repo = profile_repo
         self.embedding_size = embedding_size
         self.recsys_coeff = recsys_coeff
+        self.stop_words = stop_words
+        self.lemmatizer = WordNetLemmatizer()
+        self.morph = pymorphy2.MorphAnalyzer()
 
     async def _load_model(self):
         if self.model is None:
             self.model = SentenceTransformer('all-MiniLM-L6-v2')
         return self.model
+
+    async def _preprocess_text(self, text: str) -> str:
+        text = text.lower()
+        text = re.sub(r'<[^>]+>', '', text)
+        text = re.sub(r'[^a-zа-яё0-9\s]', ' ', text)
+        text = re.sub(r'\s+', ' ', text).strip()
+
+        lang = detect(text)
+
+        words = text.split()
+
+        lemmas = []
+        for word in words:
+            if word not in self.stop_words and len(word) > 2:
+                if lang == 'ru':
+                    lemmas.append(self.morph.parse(word)[0].normal_form)
+                elif lang == 'en':
+                    lemmas.append(self.lemmatizer.lemmatize(word))
+                else:
+                    lemmas.append(word)
+
+        return ' '.join(lemmas)
 
     async def _get_similar_profiles_by_embedding(
         self, user_id: int, count: int = 5
@@ -61,7 +90,8 @@ class EmbeddingRecommender:
             return
 
         model = await self._load_model()
-        embedding = model.encode(user['about'], convert_to_tensor=False)
+        preprocessed_about = await self._preprocess_text(user['about'])
+        embedding = model.encode(preprocessed_about, convert_to_tensor=False)
         await self.profile_repo.update_embedding(user_id, embedding)
 
     async def get_hybrid_recommendations(
