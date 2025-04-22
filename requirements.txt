@@ -15,3 +15,6 @@ sentence_transformers
 scikit-learn
 aiokafka
 clickhouse_driver
+pymorphy2 
+nltk
+langdetect
