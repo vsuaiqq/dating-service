@@ -9,3 +9,5 @@ venv
 .idea
 
 *.cpython
+
+__pycache__/
