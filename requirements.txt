@@ -14,4 +14,4 @@ httpx
 sentence_transformers
 sklearn
 aiokafka
-clickhouse-connect
+clickhouse_driver

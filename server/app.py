@@ -10,10 +10,13 @@ from postgres.ProfileRepository import ProfileRepository
 from s3.S3Uploader import S3Uploader
 from recsys.recsys import EmbeddingRecommender
 from kafka_events.producer import KafkaEventProducer
+from clickhouse.ClickHouseLogger import ClickHouseLogger
 
 from config import (
     S3_BUCKET_NAME, S3_REGION_NAME, S3_ACCESS_KEY_ID,
-    S3_SECRET_ACCESS_KEY, S3_ENDPOINT_URL
+    S3_SECRET_ACCESS_KEY, S3_ENDPOINT_URL, 
+    CLICKHOUSE_DB, CLICKHOUSE_USER, CLICKHOUSE_PASSWORD,
+    CLICKHOUSE_HOST, CLICKHOUSE_PORT
 )
 
 app = FastAPI()
@@ -49,6 +52,13 @@ async def startup_event():
         profile_repo=profile_repo
     )
     app.state.kafka_producer = KafkaEventProducer("localhost:9092", "swipes")
+    app.state.clickhouse_logger = ClickHouseLogger(
+        host=CLICKHOUSE_HOST,
+        port=CLICKHOUSE_PORT,
+        user=CLICKHOUSE_USER,
+        password=CLICKHOUSE_PASSWORD,
+        database=CLICKHOUSE_DB
+    )
 
     await app.state.kafka_producer.start()
 
@@ -67,6 +77,9 @@ def get_recommender() -> EmbeddingRecommender:
 
 def get_kafka_producer() -> KafkaEventProducer:
     return app.state.kafka_producer
+
+def get_clickhouse_logger() -> ClickHouseLogger:
+    return app.state.clickhouse_logger
 
 class ProfileBase(BaseModel):
     user_id: int
@@ -195,7 +208,8 @@ async def get_recommendations(user_id: int, count: int = 10, recommender: Embedd
 async def add_swipe(
     swipe: SwipeInput,
     repo: ProfileRepository = Depends(get_profile_repo),
-    kafka: KafkaEventProducer = Depends(get_kafka_producer)
+    producer: KafkaEventProducer = Depends(get_kafka_producer),
+    logger: ClickHouseLogger = Depends(get_clickhouse_logger)
 ):
     if swipe.action not in {"like", "dislike", "question"}:
         raise HTTPException(status_code=400, detail="Invalid swipe action")
@@ -208,8 +222,24 @@ async def add_swipe(
             message=swipe.message
         )
 
+        from_profile = await repo.get_profile_by_user_id(swipe.from_user_id)
+        to_profile = await repo.get_profile_by_user_id(swipe.to_user_id)
+
+        logger.insert_swipe(
+            from_user_id=swipe.from_user_id,
+            to_user_id=swipe.to_user_id,
+            action=swipe.action,
+            from_city=from_profile['city'],
+            to_city=to_profile['city'],
+            from_gender=from_profile['gender'],
+            to_gender=to_profile['gender'],
+            from_age=from_profile['age'],
+            to_age=to_profile['age'],
+            message=swipe.message
+        )
+
         if swipe.action in {"like", "question"}:
-            await kafka.send_event({
+            await producer.send_event({
                 'from_user_id': swipe.from_user_id,
                 'to_user_id': swipe.to_user_id,
                 'action': swipe.action,

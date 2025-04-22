@@ -20,21 +20,28 @@ services:
     restart: always
     ports:
       - "${REDIS_PORT}:${REDIS_PORT}"
-  
+
   clickhouse:
     image: clickhouse/clickhouse-server:latest
+    restart: always
     ports:
       - "8123:8123"
-      - "9000:9000"
+      - "${CLICKHOUSE_PORT}:${CLICKHOUSE_PORT}"
     volumes:
       - ./clickhouse/init.sql:/docker-entrypoint-initdb.d/init.sql
-  
+    environment:
+      CLICKHOUSE_DB: ${CLICKHOUSE_DB}
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
     restart: unless-stopped
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
 
   kafka:
     image: confluentinc/cp-kafka:7.5.0
