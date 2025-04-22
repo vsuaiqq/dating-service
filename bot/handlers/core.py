@@ -1,4 +1,4 @@
-from aiogram import Router, types, F
+from aiogram import types, F
 from aiogram.fsm.context import FSMContext
 from typing import Callable, Optional
 from io import BytesIO
@@ -9,22 +9,21 @@ from keyboards.edit_profile import get_edit_profile_keyboard
 from keyboards.back import get_back_keyboard
 from keyboards.gender import get_gender_keyboard, get_interesting_gender_keyboard
 from keyboards.media_finish import get_media_finish_keyboard
-from aiogram.types import InputMediaPhoto, InputMediaVideo, ReplyKeyboardRemove
+from aiogram.types import InputMediaPhoto, InputMediaVideo
 from utils.I18nTextFilter import I18nTextFilter
 from utils.ProfileValidator import ProfileValidator
 from utils.media import MAX_MEDIA_FILES, process_media_file
+from utils.CustomRouter import CustomRouter
+from utils.profile import is_profile_active, is_profile_exists
 from states.edit_profile import EditProfileStates
 from aiogram.types import ContentType
 
-router = Router()
-
-async def check_is_profile_exists(user_id: int):
-    return (await router.profile_client.get_profile_by_user_id(user_id)) is not None
+router = CustomRouter()
     
 @router.message(I18nTextFilter("my_profile_button"))
 async def show_my_profile(message: types.Message, _: Callable):    
     profile = await router.profile_client.get_profile_by_user_id(message.from_user.id)
-    if not await check_is_profile_exists(message.from_user.id):
+    if not await is_profile_exists(router.profile_client, message.from_user.id):
         await message.answer(_("no_profile_error"), reply_markup=get_start_keyboard(_))
         return
     
@@ -51,7 +50,7 @@ async def show_my_profile(message: types.Message, _: Callable):
 
 @router.message(I18nTextFilter("disable_profile_button"))
 async def disable_profile_start(message: types.Message, _: Callable):
-    if not await check_is_profile_exists(message.from_user.id):
+    if not await is_profile_exists(router.profile_client, message.from_user.id):
         await message.answer(_("no_profile_error"), reply_markup=get_start_keyboard(_))
         return
     await message.answer(
@@ -61,7 +60,7 @@ async def disable_profile_start(message: types.Message, _: Callable):
 
 @router.message(I18nTextFilter("confirm_disable_profile_button"))
 async def confirm_disable_profile(message: types.Message, _: Callable):
-    if not await check_is_profile_exists(message.from_user.id):
+    if not await is_profile_exists(router.profile_client, message.from_user.id):
         await message.answer(_("no_profile_error"), reply_markup=get_start_keyboard(_))
         return
     try:
@@ -75,7 +74,7 @@ async def confirm_disable_profile(message: types.Message, _: Callable):
 
 @router.message(I18nTextFilter("cancel_disable_profile_button"))
 async def cancel_disable_profile(message: types.Message, _: Callable):
-    if not await check_is_profile_exists(message.from_user.id):
+    if not await is_profile_exists(router.profile_client, message.from_user.id):
         await message.answer(_("no_profile_error"), reply_markup=get_start_keyboard(_))
         return
     await message.answer(
@@ -85,7 +84,7 @@ async def cancel_disable_profile(message: types.Message, _: Callable):
 
 @router.message(I18nTextFilter("enable_profile_button"))
 async def enable_profile(message: types.Message, _: Callable):
-    if not await check_is_profile_exists(message.from_user.id):
+    if not await is_profile_exists(router.profile_client, message.from_user.id):
         await message.answer(_("no_profile_error"), reply_markup=get_start_keyboard(_))
         return
     try:
@@ -99,7 +98,7 @@ async def enable_profile(message: types.Message, _: Callable):
 
 @router.message(I18nTextFilter("edit_profile_button"))
 async def start_edit_profile(message: types.Message, state: FSMContext, _: Callable):
-    if not await check_is_profile_exists(message.from_user.id):
+    if not await is_profile_exists(router.profile_client, message.from_user.id):
         await message.answer(_("no_profile_error"), reply_markup=get_start_keyboard(_))
         return
     await message.answer(_("choose_field_to_edit"), reply_markup=get_edit_profile_keyboard(_))
@@ -109,7 +108,7 @@ async def start_edit_profile(message: types.Message, state: FSMContext, _: Calla
 async def choose_field_to_edit(message: types.Message, state: FSMContext, _: Callable):
     text = message.text
     if text == _("back_button"):
-        is_active = (await router.profile_client.get_profile_by_user_id(message.from_user.id))['is_active']
+        is_active = await is_profile_active(router.profile_client, message.from_user.id)
         await message.answer(_("back_to_main_menu"), reply_markup=get_main_keyboard(is_active, _))
         await state.clear()
         return
@@ -149,7 +148,7 @@ async def update_name(message: types.Message, state: FSMContext, _: Callable):
         await message.answer(error)
         return
     
-    is_active = (await router.profile_client.get_profile_by_user_id(message.from_user.id))['is_active']
+    is_active = await is_profile_active(router.profile_client, message.from_user.id)
     
     await router.profile_client.update_field(message.from_user.id, "name", name)
     await message.answer(_("name_updated"), reply_markup=get_main_keyboard(is_active, _))
@@ -167,7 +166,7 @@ async def update_age(message: types.Message, state: FSMContext, _: Callable):
         await message.answer(error, reply_markup=get_back_keyboard(_))
         return
     
-    is_active = (await router.profile_client.get_profile_by_user_id(message.from_user.id))['is_active']
+    is_active = await is_profile_active(router.profile_client, message.from_user.id)
     
     await router.profile_client.update_field(message.from_user.id, "age", age)
     await message.answer(_("age_updated"), reply_markup=get_main_keyboard(is_active, _))
@@ -185,7 +184,7 @@ async def update_city(message: types.Message, state: FSMContext, _: Callable):
         await message.answer(error)
         return
     
-    is_active = (await router.profile_client.get_profile_by_user_id(message.from_user.id))['is_active']
+    is_active = await is_profile_active(router.profile_client, message.from_user.id)
     
     await router.profile_client.update_field(message.from_user.id, "city", city)
     await message.answer(_("city_updated"), reply_markup=get_main_keyboard(is_active, _))
@@ -203,7 +202,7 @@ async def update_about(message: types.Message, state: FSMContext, _: Callable):
         await message.answer(error)
         return
     
-    is_active = (await router.profile_client.get_profile_by_user_id(message.from_user.id))['is_active']
+    is_active = await is_profile_active(router.profile_client, message.from_user.id)
     
     await router.profile_client.update_field(message.from_user.id, "about", about)
     await message.answer(_("about_updated"), reply_markup=get_main_keyboard(is_active, _))
@@ -225,7 +224,7 @@ async def update_city(message: types.Message, state: FSMContext, _: Callable):
         await message.answer(_("invalid_gender_error"), reply_markup=get_gender_keyboard(_))
         return
     
-    is_active = (await router.profile_client.get_profile_by_user_id(message.from_user.id))['is_active']
+    is_active = await is_profile_active(router.profile_client, message.from_user.id)
     
     await router.profile_client.update_field(message.from_user.id, "gender", gender_map[message.text])
     await message.answer(_("gender_updated"), reply_markup=get_main_keyboard(is_active, _))
@@ -248,7 +247,7 @@ async def update_city(message: types.Message, state: FSMContext, _: Callable):
         await message.answer(_("invalid_gender_error"), reply_markup=get_interesting_gender_keyboard(_))
         return
     
-    is_active = (await router.profile_client.get_profile_by_user_id(message.from_user.id))['is_active']
+    is_active = await is_profile_active(router.profile_client, message.from_user.id)
     
     await router.profile_client.update_field(message.from_user.id, "gender", gender_map[message.text])
     await message.answer(_("gender_updated"), reply_markup=get_main_keyboard(is_active, _))
@@ -309,7 +308,7 @@ async def handle_single_media(message: types.Message, state: FSMContext, _: Call
 @router.message(EditProfileStates.media, I18nTextFilter("finish_media_button"))
 async def finish_media_upload(message: types.Message, state: FSMContext, _: Callable):
     profile = await router.profile_client.get_profile_by_user_id(message.from_user.id)
-    if not await check_is_profile_exists(message.from_user.id):
+    if not await is_profile_exists(router.profile_client, message.from_user.id):
         await message.answer(_("no_profile_error"), reply_markup=get_start_keyboard(_))
         return
     
@@ -346,7 +345,7 @@ async def finish_media_upload(message: types.Message, state: FSMContext, _: Call
 
 @router.message(EditProfileStates.media, I18nTextFilter("back_button"))
 async def media_back_button_handler(message: types.Message, state: FSMContext, _: Callable):
-    if not await check_is_profile_exists(message.from_user.id):
+    if not await is_profile_exists(router.profile_client, message.from_user.id):
         await message.answer(_("no_profile_error"), reply_markup=get_start_keyboard(_))
         return
     await message.answer(_("choose_field_to_edit"), reply_markup=get_edit_profile_keyboard(_))

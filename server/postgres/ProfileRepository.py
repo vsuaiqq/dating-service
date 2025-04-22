@@ -87,7 +87,7 @@ class ProfileRepository:
         async with self.pool.acquire() as conn:
             candidates = await conn.fetch(
                 """
-                SELECT *, about_embedding 
+                SELECT user_id, about_embedding
                 FROM profiles 
                 WHERE user_id != $1
                 AND is_active = TRUE
@@ -110,11 +110,11 @@ class ProfileRepository:
             )
             return candidates
 
-    async def get_candidates_by_criteria(self, user_id: int, user: dict, rec_list: List[int]) -> List[asyncpg.Record]:
+    async def get_candidates_by_criteria(self, user_id: int, user: dict, rec_list: List[int]) -> List[int]:
         async with self.pool.acquire() as conn:
             records = await conn.fetch(
                 """
-                SELECT * FROM profiles 
+                SELECT user_id FROM profiles 
                 WHERE user_id != $1
                 AND user_id != ANY($5::int[])
                 AND is_active = TRUE
@@ -136,4 +136,20 @@ class ProfileRepository:
                 user['age'],
                 rec_list
             )
-            return records
+            return [record['user_id'] for record in records]
+
+    async def save_swipe(
+        self,
+        from_user_id: int,
+        to_user_id: int,
+        action: str,
+        message: Optional[str] = None
+    ):
+        async with self.pool.acquire() as conn:
+            await conn.execute("""
+                INSERT INTO swipes (from_user_id, to_user_id, action, message)
+                VALUES ($1, $2, $3, $4)
+                ON CONFLICT (from_user_id, to_user_id) DO UPDATE
+                SET action = EXCLUDED.action,
+                    message = EXCLUDED.message
+            """, from_user_id, to_user_id, action, message)

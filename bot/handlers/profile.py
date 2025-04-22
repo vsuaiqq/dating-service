@@ -1,8 +1,9 @@
-from aiogram import Router, types, F
+from aiogram import types, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from io import BytesIO
-from typing import Optional, Literal, Union, Callable
+from typing import Optional, Callable
+
 from keyboards.start import get_start_keyboard
 from keyboards.main import get_main_keyboard
 from keyboards.back import get_back_keyboard
@@ -15,8 +16,9 @@ from aiogram.types import ContentType, InputMediaPhoto, InputMediaVideo
 from utils.ProfileValidator import ProfileValidator
 from utils.I18nTextFilter import I18nTextFilter
 from utils.media import MAX_MEDIA_FILES, process_media_file
+from utils.CustomRouter import CustomRouter
 
-router = Router()
+router = CustomRouter()
 
 @router.message(F.text == "/start")
 async def cmd_start(message: types.Message, _: Callable):

@@ -1,6 +1,6 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
-def get_edit_profile_keyboard(_) -> ReplyKeyboardMarkup:
+def get_edit_profile_keyboard(_):
     return ReplyKeyboardMarkup(
         keyboard=[
             [KeyboardButton(text=_("edit_name_button"))],

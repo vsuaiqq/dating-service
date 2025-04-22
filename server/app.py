@@ -9,6 +9,7 @@ from postgres.connection import create_db_pool
 from postgres.ProfileRepository import ProfileRepository
 from s3.S3Uploader import S3Uploader
 from recsys.recsys import EmbeddingRecommender
+from kafka_events.producer import KafkaEventProducer
 
 from config import (
     S3_BUCKET_NAME, S3_REGION_NAME, S3_ACCESS_KEY_ID,
@@ -47,6 +48,13 @@ async def startup_event():
     app.state.recsys = EmbeddingRecommender(
         profile_repo=profile_repo
     )
+    app.state.kafka_producer = KafkaEventProducer("localhost:9092", "swipes")
+
+    await app.state.kafka_producer.start()
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    await app.state.kafka_producer.stop()
 
 def get_profile_repo() -> ProfileRepository:
     return app.state.profile_repo
@@ -56,6 +64,9 @@ def get_s3_uploader() -> S3Uploader:
 
 def get_recommender() -> EmbeddingRecommender:
     return app.state.recsys
+
+def get_kafka_producer() -> KafkaEventProducer:
+    return app.state.kafka_producer
 
 class ProfileBase(BaseModel):
     user_id: int
@@ -85,6 +96,12 @@ class UpdateField(BaseModel):
 
 class ProfileId(BaseModel):
     profile_id: int
+
+class SwipeInput(BaseModel):
+    from_user_id: int
+    to_user_id: int
+    action: str
+    message: Optional[str] = None
 
 @app.post("/profile/save")
 async def save_profile(profile: ProfileBase, repo: ProfileRepository = Depends(get_profile_repo), recommender: EmbeddingRecommender = Depends(get_recommender)):
@@ -171,5 +188,34 @@ async def get_recommendations(user_id: int, count: int = 10, recommender: Embedd
     try:
         recommendations = await recommender.get_hybrid_recommendations(user_id=user_id, count=count)
         return {"recommendations": recommendations}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/swipe/add")
+async def add_swipe(
+    swipe: SwipeInput,
+    repo: ProfileRepository = Depends(get_profile_repo),
+    kafka: KafkaEventProducer = Depends(get_kafka_producer)
+):
+    if swipe.action not in {"like", "dislike", "question"}:
+        raise HTTPException(status_code=400, detail="Invalid swipe action")
+
+    try:
+        await repo.save_swipe(
+            from_user_id=swipe.from_user_id,
+            to_user_id=swipe.to_user_id,
+            action=swipe.action,
+            message=swipe.message
+        )
+
+        if swipe.action in {"like", "question"}:
+            await kafka.send_event({
+                'from_user_id': swipe.from_user_id,
+                'to_user_id': swipe.to_user_id,
+                'action': swipe.action,
+                'message': swipe.message
+            })
+
+        return {"status": "ok"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

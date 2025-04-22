@@ -13,3 +13,5 @@ uvicorn
 httpx
 sentence_transformers
 sklearn
+aiokafka
+clickhouse-connect
