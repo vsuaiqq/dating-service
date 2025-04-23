@@ -5,7 +5,7 @@ from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
 
-from config import BOT_TOKEN, REDIS_HOST, REDIS_PORT, REDIS_FSM, REDIS_RECS, API_URL
+from config import BOT_TOKEN, REDIS_HOST, REDIS_PORT, REDIS_FSM, REDIS_RECS, API_URL, NUM_OF_RECS
 from utils.logger import setup_logger
 from handlers import all_handlers
 from middlewares.i18n import I18nMiddleware
@@ -13,7 +13,6 @@ from api.ProfileClient import ProfileClient
 from api.S3Client import S3Client
 from api.RecSysClient import RecSysClient
 from api.SwipeClient import SwipeClient
-from services.RecommendationCache import RecommendationCache
 
 from kafka_events.consumer import KafkaEventConsumer
 
@@ -22,9 +21,8 @@ async def main():
 
     profile_client = ProfileClient(API_URL)
     s3_client = S3Client(API_URL)
-    recsys_client = RecSysClient(API_URL)
+    recsys_client = RecSysClient(API_URL, NUM_OF_RECS)
     swipe_client = SwipeClient(API_URL)
-    recommendation_cache = RecommendationCache(redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_RECS, decode_responses=True))
 
     bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     dp = Dispatcher(storage=RedisStorage(redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_FSM)))
@@ -49,7 +47,6 @@ async def main():
         router.s3_client = s3_client
         router.recsys_client = recsys_client
         router.swipe_client = swipe_client
-        router.recommendation_cache = recommendation_cache
         dp.include_router(router)
     
     await dp.start_polling(bot)

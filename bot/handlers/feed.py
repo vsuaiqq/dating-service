@@ -13,30 +13,23 @@ from states.message import Message
 router = CustomRouter()
 
 async def send_next_recommendation(user_id: int, message: types.Message, state: FSMContext, _: Callable):
-    recommendation_cache = router.recommendation_cache
     recsys_client = router.recsys_client
     profile_client = router.profile_client
 
     is_active = await is_profile_active(router.profile_client, message.from_user.id)
     
-    recs = await recommendation_cache.get(user_id)
+    response = await recsys_client.get_recommendations(user_id)
+    recs = response.get("recommendations", [])
+    
     if not recs:
-        response = await recsys_client.get_recommendations(user_id, count=10)
-        recs = response.get("recommendations", [])
-        if not recs:
-            await message.answer(_("no_more_recommendations"), reply_markup=get_main_keyboard(is_active, _))
-            return
-        await recommendation_cache.set(user_id, recs)
+        await message.answer(_("no_more_recommendations"), reply_markup=get_main_keyboard(is_active, _))
+        return
 
-    while True:
-        next_user_id = await recommendation_cache.pop_next(user_id)
-        if not next_user_id:
-            await message.answer(_("no_more_recommendations"), reply_markup=get_main_keyboard(is_active, _))
-            return
-
-        profile = await profile_client.get_profile_by_user_id(next_user_id)
-        if profile and profile.get("is_active"):
-            break
+    profile = next((p for p in recs if p.get("is_active", True)), None)
+    
+    if not profile:
+        await message.answer(_("no_more_recommendations"), reply_markup=get_main_keyboard(is_active, _))
+        return
 
     text = f"{profile['name']}, {profile['age']}\n{profile.get('about', '')}"
 

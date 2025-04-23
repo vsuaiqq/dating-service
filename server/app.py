@@ -23,7 +23,7 @@ from config import (
     CLICKHOUSE_DB, CLICKHOUSE_USER, CLICKHOUSE_PASSWORD,
     CLICKHOUSE_HOST, CLICKHOUSE_PORT,
     REDIS_HOST, REDIS_PORT, REDIS_COORDS,
-    KAFKA_HOST, KAFKA_PORT, KAFKA_TOPIC
+    KAFKA_HOST, KAFKA_PORT, KAFKA_TOPIC, REDIS_RECS
 )
 
 ORIGINS = [
@@ -42,7 +42,8 @@ async def lifespan(app: FastAPI):
         endpoint_url=S3_ENDPOINT_URL
     )
     app.state.recsys = EmbeddingRecommender(
-        profile_repo=app.state.profile_repo
+        profile_repo=app.state.profile_repo,
+        redis = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_RECS, decode_responses=True)
     )
     app.state.kafka_producer = KafkaEventProducer(f"{KAFKA_HOST}:{KAFKA_PORT}", KAFKA_TOPIC)
     app.state.clickhouse_logger = ClickHouseLogger(

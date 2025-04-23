@@ -11,3 +11,5 @@ REDIS_FSM = os.getenv("REDIS_FSM")
 REDIS_RECS = os.getenv("REDIS_RECS")
 
 API_URL = os.getenv("API_URL")
+
+NUM_OF_RECS = os.getenv("NUM_OF_RECS")
