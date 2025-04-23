@@ -1,0 +1,12 @@
+services:
+
+  fastapi:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.prod
+    container_name: fastapi-prod
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "${FASTAPI_PORT}:${FASTAPI_PORT}"

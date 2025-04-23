@@ -28,6 +28,8 @@ CREATE TABLE IF NOT EXISTS profiles (
     name VARCHAR(255) NOT NULL,
     gender GENDER,
     city VARCHAR(255),
+    latitude DOUBLE PRECISION NOT NULL,
+    longitude DOUBLE PRECISION NOT NULL,
     age INT,
     interesting_gender INTERESTING_GENDER,
     about TEXT,

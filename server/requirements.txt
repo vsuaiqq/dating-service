@@ -1,0 +1,17 @@
+fastapi>=0.111.0
+uvicorn
+asyncpg
+clickhouse_driver
+sentence_transformers
+scikit-learn
+pymorphy2 
+nltk
+langdetect
+uvicorn
+boto3
+pydantic
+aiokafka
+python-dotenv
+python-multipart
+geopy
+redis

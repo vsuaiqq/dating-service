@@ -1,8 +1,10 @@
+import redis.asyncio as redis
 from fastapi import FastAPI, Depends, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator
 from typing import List, Optional
 from fastapi import UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 from io import BytesIO
 
 from postgres.connection import create_db_pool
@@ -11,36 +13,26 @@ from s3.S3Uploader import S3Uploader
 from recsys.recsys import EmbeddingRecommender
 from kafka_events.producer import KafkaEventProducer
 from clickhouse.ClickHouseLogger import ClickHouseLogger
+from geo.CachedLocationResolver import CachedLocationResolver
+from geo.CityCoordinatesCache import CityCoordinatesCache
+from geo.LocationResolver import LocationResolver
 
 from config import (
     S3_BUCKET_NAME, S3_REGION_NAME, S3_ACCESS_KEY_ID,
     S3_SECRET_ACCESS_KEY, S3_ENDPOINT_URL, 
     CLICKHOUSE_DB, CLICKHOUSE_USER, CLICKHOUSE_PASSWORD,
-    CLICKHOUSE_HOST, CLICKHOUSE_PORT
+    CLICKHOUSE_HOST, CLICKHOUSE_PORT,
+    REDIS_HOST, REDIS_PORT, REDIS_COORDS
 )
-
-app = FastAPI()
 
 ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
 ]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=ORIGINS,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-@app.on_event("startup")
-async def startup_event():
-    pool = await create_db_pool()
-    profile_repo = ProfileRepository(pool)
-
-    app.state.pool = pool
-    app.state.profile_repo = profile_repo
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    app.state.profile_repo = ProfileRepository(await create_db_pool())
     app.state.s3_uploader = S3Uploader(
         bucket_name=S3_BUCKET_NAME,
         region=S3_REGION_NAME,
@@ -49,9 +41,9 @@ async def startup_event():
         endpoint_url=S3_ENDPOINT_URL
     )
     app.state.recsys = EmbeddingRecommender(
-        profile_repo=profile_repo
+        profile_repo=app.state.profile_repo
     )
-    app.state.kafka_producer = KafkaEventProducer("localhost:9092", "swipes")
+    app.state.kafka_producer = KafkaEventProducer("kafka:9092", "swipes")
     app.state.clickhouse_logger = ClickHouseLogger(
         host=CLICKHOUSE_HOST,
         port=CLICKHOUSE_PORT,
@@ -59,12 +51,26 @@ async def startup_event():
         password=CLICKHOUSE_PASSWORD,
         database=CLICKHOUSE_DB
     )
+    app.state.cached_location_resolver = CachedLocationResolver(
+        resolver=LocationResolver(),
+        cache=CityCoordinatesCache(redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_COORDS, decode_responses=True))
+    )
 
     await app.state.kafka_producer.start()
 
-@app.on_event("shutdown")
-async def shutdown_event():
+    yield
+
     await app.state.kafka_producer.stop()
+
+app = FastAPI(lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def get_profile_repo() -> ProfileRepository:
     return app.state.profile_repo
@@ -81,14 +87,25 @@ def get_kafka_producer() -> KafkaEventProducer:
 def get_clickhouse_logger() -> ClickHouseLogger:
     return app.state.clickhouse_logger
 
+def get_cached_location_resolver() -> CachedLocationResolver:
+    return app.state.cached_location_resolver
+
 class ProfileBase(BaseModel):
     user_id: int
     name: str
     gender: str
-    city: str
+    city: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
     age: int
     interesting_gender: str
     about: str
+
+    @model_validator(mode="after")
+    def check_location(self) -> 'ProfileBase':
+        if not self.city and (self.latitude is None or self.longitude is None):
+            raise ValueError("Укажите либо город, либо координаты (широту и долготу).")
+        return self
 
 class MediaItem(BaseModel):
     type: str
@@ -117,7 +134,15 @@ class SwipeInput(BaseModel):
     message: Optional[str] = None
 
 @app.post("/profile/save")
-async def save_profile(profile: ProfileBase, repo: ProfileRepository = Depends(get_profile_repo), recommender: EmbeddingRecommender = Depends(get_recommender)):
+async def save_profile(
+    profile: ProfileBase, 
+    repo: ProfileRepository = Depends(get_profile_repo), 
+    recommender: EmbeddingRecommender = Depends(get_recommender),
+    location_resolver: CachedLocationResolver = Depends(get_cached_location_resolver)
+):
+    if profile.latitude is None or profile.longitude is None:
+        latitude, longitude = await location_resolver.resolve(profile.city)
+
     profile_id = await repo.save_profile(
         profile.user_id,
         profile.name,
@@ -125,11 +150,13 @@ async def save_profile(profile: ProfileBase, repo: ProfileRepository = Depends(g
         profile.city,
         profile.age,
         profile.interesting_gender,
-        profile.about
+        profile.about,
+        profile.latitude or latitude,
+        profile.longitude or longitude
     )
 
     await recommender.update_user_embedding(profile.user_id)
-
+    
     return {"profile_id": profile_id}
 
 @app.post("/profile/media/save")

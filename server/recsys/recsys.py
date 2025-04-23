@@ -4,7 +4,6 @@ from sklearn.metrics.pairwise import cosine_similarity
 from typing import List
 import random
 import re
-import nltk
 from nltk.stem import WordNetLemmatizer
 import pymorphy2
 from langdetect import detect

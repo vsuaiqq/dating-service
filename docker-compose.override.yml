@@ -1,0 +1,13 @@
+services:
+
+  fastapi:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: fastapi-dev
+    env_file:
+      - .env
+    ports:
+      - "${FASTAPI_PORT}:${FASTAPI_PORT}"
+    volumes:
+      - ./server:/app

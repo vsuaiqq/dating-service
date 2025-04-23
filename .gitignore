@@ -1,13 +1,13 @@
 .DS_Store
 
-.env
-
-*.mo
+.idea
 
 venv
 
-.idea
-
-*.cpython
+.env
 
 __pycache__/
+*.cpython
+*.py[cod]
+
+*.mo

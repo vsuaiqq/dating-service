@@ -11,24 +11,30 @@ class ProfileRepository:
         user_id: int,
         name: str,
         gender: str,
-        city: str,
+        city: Optional[str],
         age: int,
         interesting_gender: str,
-        about: str
+        about: str,
+        latitude: float,
+        longitude: float
     ) -> int:
         async with self.pool.acquire() as conn:
             row = await conn.fetchrow("""
-                INSERT INTO profiles (user_id, name, gender, city, age, interesting_gender, about)
-                VALUES ($1, $2, $3, $4, $5, $6, $7)
+                INSERT INTO profiles (
+                    user_id, name, gender, city, age, interesting_gender, about, latitude, longitude
+                )
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
                 ON CONFLICT (user_id) DO UPDATE 
                 SET name = EXCLUDED.name,
                     gender = EXCLUDED.gender,
                     city = EXCLUDED.city,
                     age = EXCLUDED.age,
                     interesting_gender = EXCLUDED.interesting_gender,
-                    about = EXCLUDED.about
+                    about = EXCLUDED.about,
+                    latitude = EXCLUDED.latitude,
+                    longitude = EXCLUDED.longitude
                 RETURNING id
-            """, user_id, name, gender, city, age, interesting_gender, about)
+            """, user_id, name, gender, city, age, interesting_gender, about, latitude, longitude)
             return row["id"]
 
     async def save_media(self, profile_id: int, media: List[Tuple[str, str]]):
