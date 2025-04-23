@@ -10,12 +10,13 @@ from langdetect import detect
 from postgres.ProfileRepository import ProfileRepository
 
 class EmbeddingRecommender:
-    def __init__(self, profile_repo: ProfileRepository, embedding_size = 384, recsys_coeff = 0.7, stop_words = [], model = None):
+    def __init__(self, profile_repo: ProfileRepository, embedding_size = 384, recsys_coeff = 0.7, stop_words = [], max_distance_search = 20, model = None,):
         self.model = model
         self.profile_repo = profile_repo
         self.embedding_size = embedding_size
         self.recsys_coeff = recsys_coeff
         self.stop_words = stop_words
+        self.max_distance_search = max_distance_search
         self.lemmatizer = WordNetLemmatizer()
         self.morph = pymorphy2.MorphAnalyzer()
 
@@ -54,7 +55,7 @@ class EmbeddingRecommender:
             return []
 
         user_embedding = np.array(user['about_embedding']).reshape(1, -1)
-        users = await self.profile_repo.get_candidates_with_embeddings(user_id, user)
+        users = await self.profile_repo.get_candidates_with_embeddings(user_id, user, self.max_distance_search)
 
         if not users:
             return []
@@ -94,7 +95,7 @@ class EmbeddingRecommender:
         await self.profile_repo.update_embedding(user_id, embedding)
 
     async def get_hybrid_recommendations(
-            self, user_id: int, count: int = 10
+            self, user_id: int, count: int = 30
     ) -> List[int]:
         content_count = int(count * self.recsys_coeff)  
         random_count = count - content_count  

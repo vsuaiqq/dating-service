@@ -1,4 +1,5 @@
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+CREATE EXTENSION IF NOT EXISTS postgis;
 
 CREATE TYPE GENDER AS ENUM (
     'male', 
@@ -36,6 +37,7 @@ CREATE TABLE IF NOT EXISTS profiles (
     is_active BOOLEAN DEFAULT TRUE,
     about_embedding DOUBLE PRECISION[],
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    location geography(Point, 4326)
 );
 
 CREATE TABLE IF NOT EXISTS media (
@@ -56,6 +58,7 @@ CREATE TABLE IF NOT EXISTS swipes (
 );
 
 CREATE INDEX idx_user_id ON profiles(user_id);
+CREATE INDEX idx_profiles_location ON profiles USING GIST(location);
 CREATE INDEX idx_profile_media ON media(profile_id);
 CREATE INDEX idx_swipes_from_user ON swipes(from_user_id);
 CREATE INDEX idx_swipes_to_user ON swipes(to_user_id);

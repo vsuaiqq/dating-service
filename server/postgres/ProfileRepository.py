@@ -21,9 +21,12 @@ class ProfileRepository:
         async with self.pool.acquire() as conn:
             row = await conn.fetchrow("""
                 INSERT INTO profiles (
-                    user_id, name, gender, city, age, interesting_gender, about, latitude, longitude
+                    user_id, name, gender, city, age, 
+                    interesting_gender, about, latitude, longitude,
+                    location
                 )
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,
+                    ST_SetSRID(ST_MakePoint($9, $8), 4326)::geography)
                 ON CONFLICT (user_id) DO UPDATE 
                 SET name = EXCLUDED.name,
                     gender = EXCLUDED.gender,
@@ -32,7 +35,8 @@ class ProfileRepository:
                     interesting_gender = EXCLUDED.interesting_gender,
                     about = EXCLUDED.about,
                     latitude = EXCLUDED.latitude,
-                    longitude = EXCLUDED.longitude
+                    longitude = EXCLUDED.longitude,
+                    location = ST_SetSRID(ST_MakePoint(EXCLUDED.longitude, EXCLUDED.latitude), 4326)::geography
                 RETURNING id
             """, user_id, name, gender, city, age, interesting_gender, about, latitude, longitude)
             return row["id"]
@@ -89,30 +93,31 @@ class ProfileRepository:
                 WHERE user_id = $2
             """, embedding.tolist(), user_id)
     
-    async def get_candidates_with_embeddings(self, user_id: int, user: dict) -> List[asyncpg.Record]:
+    async def get_candidates_with_embeddings(self, user_id: int, user: dict, max_distance: int) -> List[asyncpg.Record]:
         async with self.pool.acquire() as conn:
             candidates = await conn.fetch(
-                """
-                SELECT user_id, about_embedding
-                FROM profiles 
-                WHERE user_id != $1
-                AND is_active = TRUE
-                AND about_embedding IS NOT NULL
-                AND gender = ANY(
-                    CASE 
-                        WHEN $2 = 'any' THEN ARRAY['male'::GENDER, 'female'::GENDER]
-                        ELSE ARRAY[$2::GENDER]
-                    END
-                )
-                AND age BETWEEN ($3::int - 15) AND ($3::int + 15)
-                AND user_id NOT IN (
-                    SELECT to_user_id FROM swipes WHERE from_user_id = $1
-                )
-                LIMIT 100
-                """,
-                user_id,
-                user['interesting_gender'],
-                user['age'],
+            """
+            SELECT *, ST_Distance(location, ST_MakePoint($2, $1)::geography) AS dist
+            FROM profiles 
+            WHERE user_id != $3
+            AND is_active = TRUE
+            AND location IS NOT NULL
+            AND ST_DWithin(location, ST_MakePoint($2, $1)::geography, $4)
+            AND about_embedding IS NOT NULL
+            AND gender = ANY(
+                CASE 
+                    WHEN $5 = 'any' THEN ARRAY['male'::gender, 'female'::gender]
+                    ELSE ARRAY[$5::gender]
+                END
+            )
+            AND age BETWEEN ($6::int - 15) AND ($6::int + 15)
+            AND user_id NOT IN (
+                SELECT to_user_id FROM swipes WHERE from_user_id = $3
+            )
+            LIMIT 100
+            """,
+            user['latitude'], user['longitude'], user_id, max_distance * 1000,
+            user['interesting_gender'], user['age']
             )
             return candidates
 
@@ -120,26 +125,27 @@ class ProfileRepository:
         async with self.pool.acquire() as conn:
             records = await conn.fetch(
                 """
-                SELECT user_id FROM profiles 
+                SELECT * FROM profiles 
                 WHERE user_id != $1
                 AND user_id != ANY($5::int[])
                 AND is_active = TRUE
                 AND city = $2
                 AND gender = ANY(
                     CASE 
-                        WHEN $3 = 'any' THEN ARRAY['male'::GENDER, 'female'::GENDER]
-                        ELSE ARRAY[$3::GENDER]
+                        WHEN $3 = 'any' THEN ARRAY['male'::gender, 'female'::gender]
+                        ELSE ARRAY[$3::gender]
                     END
                 )
                 AND age BETWEEN ($4::int - 3) AND ($4::int + 3)
                 AND user_id NOT IN (
                     SELECT to_user_id FROM swipes WHERE from_user_id = $1
                 )
+
                 """,
                 user_id,
-                user['city'],
-                user['interesting_gender'],
-                user['age'],
+                user["city"],
+                user["interesting_gender"],
+                user["age"],
                 rec_list
             )
             return [record['user_id'] for record in records]
