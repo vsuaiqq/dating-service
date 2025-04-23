@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
 
   postgres:
@@ -53,7 +51,7 @@ services:
     depends_on:
       - zookeeper
     ports:
-      - "9092:9092"
+      - "${KAFKA_PORT}:${KAFKA_PORT}"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -62,6 +60,28 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+    healthcheck:
+      test: ["CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+  
+  fastapi:
+    build:
+      context: ./server
+    depends_on:
+      postgres:
+        condition: service_started
+      redis:
+        condition: service_started
+      clickhouse:
+        condition: service_started
+      kafka:
+        condition: service_healthy
+    env_file:
+      - .env
+    ports:
+      - "${FASTAPI_PORT}:${FASTAPI_PORT}"
 
 volumes:
   pgdata:

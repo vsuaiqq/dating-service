@@ -1,13 +1,17 @@
 services:
 
+  kafka:
+    ports:
+      - "${KAFKA_EXTERNAL_PORT}:${KAFKA_EXTERNAL_PORT}"
+      - "${KAFKA_PORT}:${KAFKA_PORT}"
+    environment:
+      KAFKA_LISTENERS: PLAINTEXT_INTERNAL://0.0.0.0:9092,PLAINTEXT://0.0.0.0:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT_INTERNAL://kafka:9092,PLAINTEXT://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+
   fastapi:
     build:
-      context: ./server
       dockerfile: Dockerfile
     container_name: fastapi-dev
-    env_file:
-      - .env
-    ports:
-      - "${FASTAPI_PORT}:${FASTAPI_PORT}"
     volumes:
       - ./server:/app
