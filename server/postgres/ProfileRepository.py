@@ -93,35 +93,50 @@ class ProfileRepository:
                 WHERE user_id = $2
             """, embedding.tolist(), user_id)
     
-    async def get_candidates_with_embeddings(self, user_id: int, user: dict, max_distance: int) -> List[asyncpg.Record]:
+    async def get_candidates_with_embeddings(
+        self,
+        user_id: int,
+        user: dict,
+        max_distance: int,
+        min_age: int,
+        max_age: int
+    ) -> List[asyncpg.Record]:
         async with self.pool.acquire() as conn:
             candidates = await conn.fetch(
-            """
-            SELECT *, ST_Distance(location, ST_MakePoint($2, $1)::geography) AS dist
-            FROM profiles 
-            WHERE user_id != $3
-            AND is_active = TRUE
-            AND location IS NOT NULL
-            AND ST_DWithin(location, ST_MakePoint($2, $1)::geography, $4)
-            AND about_embedding IS NOT NULL
-            AND gender = ANY(
-                CASE 
-                    WHEN $5 = 'any' THEN ARRAY['male'::gender, 'female'::gender]
-                    ELSE ARRAY[$5::gender]
-                END
-            )
-            AND age BETWEEN ($6::int - 15) AND ($6::int + 15)
-            AND user_id NOT IN (
-                SELECT to_user_id FROM swipes WHERE from_user_id = $3
-            )
-            LIMIT 100
-            """,
-            user['latitude'], user['longitude'], user_id, max_distance * 1000,
-            user['interesting_gender'], user['age']
+                """
+                SELECT *, ST_Distance(location, ST_MakePoint($2, $1)::geography) AS dist
+                FROM profiles 
+                WHERE user_id != $3
+                AND is_active = TRUE
+                AND location IS NOT NULL
+                AND ST_DWithin(location, ST_MakePoint($2, $1)::geography, $4)
+                AND about_embedding IS NOT NULL
+                AND gender = ANY(
+                    CASE 
+                        WHEN $5 = 'any' THEN ARRAY['male'::gender, 'female'::gender]
+                        ELSE ARRAY[$5::gender]
+                    END
+                )
+                AND age BETWEEN $6 AND $7
+                AND user_id NOT IN (
+                    SELECT to_user_id FROM swipes WHERE from_user_id = $3
+                )
+                LIMIT 100
+                """,
+                user['latitude'], user['longitude'], user_id, max_distance * 1000,
+                user['interesting_gender'], min_age, max_age
             )
             return candidates
 
-    async def get_candidates_by_criteria(self, user_id: int, user: dict, rec_list: List[int]) -> List[int]:
+
+    async def get_candidates_by_criteria(
+        self,
+        user_id: int,
+        user: dict,
+        rec_list: List[int],
+        min_age: int,
+        max_age: int
+    ) -> List[int]:
         async with self.pool.acquire() as conn:
             records = await conn.fetch(
                 """
@@ -136,19 +151,20 @@ class ProfileRepository:
                         ELSE ARRAY[$3::gender]
                     END
                 )
-                AND age BETWEEN ($4::int - 3) AND ($4::int + 3)
+                AND age BETWEEN $6 AND $7
                 AND user_id NOT IN (
                     SELECT to_user_id FROM swipes WHERE from_user_id = $1
                 )
-
                 """,
                 user_id,
                 user["city"],
                 user["interesting_gender"],
-                user["age"],
-                rec_list
+                rec_list,
+                min_age,
+                max_age
             )
             return [record['user_id'] for record in records]
+
 
     async def save_swipe(
         self,

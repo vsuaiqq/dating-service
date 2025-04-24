@@ -11,6 +11,8 @@ from postgres.ProfileRepository import ProfileRepository
 from redis.asyncio import Redis
 from typing import Optional, Dict
 
+from utils.age import get_match_age_range
+
 class EmbeddingRecommender:
     def __init__(
             self, 
@@ -102,7 +104,10 @@ class EmbeddingRecommender:
             return []
 
         user_embedding = np.array(user['about_embedding']).reshape(1, -1)
-        users = await self.profile_repo.get_candidates_with_embeddings(user_id, user, self.max_distance_search)
+        min_age, max_age = get_match_age_range(user['age'])
+        users = await self.profile_repo.get_candidates_with_embeddings(
+            user_id, user, self.max_distance_search, min_age, max_age
+        )
 
         if not users:
             return []
@@ -124,7 +129,8 @@ class EmbeddingRecommender:
         if not user:
             return []
 
-        users = await self.profile_repo.get_candidates_by_criteria(user_id, user, rec_list)
+        min_age, max_age = get_match_age_range(user['age'])
+        users = await self.profile_repo.get_candidates_by_criteria(user_id, user, rec_list, min_age, max_age)
         if not users:
             return []
 
