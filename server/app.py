@@ -25,7 +25,7 @@ from config import (
     CLICKHOUSE_DB, CLICKHOUSE_USER, CLICKHOUSE_PASSWORD,
     CLICKHOUSE_HOST, CLICKHOUSE_PORT,
     REDIS_HOST, REDIS_PORT, REDIS_FASTAPI_CACHE,
-    KAFKA_HOST, KAFKA_PORT, KAFKA_TOPIC, NUMBER_OF_RECS
+    KAFKA_HOST, KAFKA_PORT, KAFKA_TOPIC
 )
 
 ORIGINS = [
@@ -49,8 +49,7 @@ async def lifespan(app: FastAPI):
     app.state.recsys = EmbeddingRecommender(
         profile_repo=app.state.profile_repo,
         recommendation_cache=RecommendationCache(redis_client),
-        swipe_cache=app.state.swipe_cache,
-        number_recs=NUMBER_OF_RECS
+        swipe_cache=app.state.swipe_cache
     )
     app.state.kafka_producer = KafkaEventProducer(f"{KAFKA_HOST}:{KAFKA_PORT}", KAFKA_TOPIC)
     app.state.clickhouse_logger = ClickHouseLogger(
@@ -236,9 +235,9 @@ async def delete_file_from_s3(key: str = Form(...), uploader: S3Uploader = Depen
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/recsys/recommendations/{user_id}")
-async def get_recommendations(user_id: int, recommender: EmbeddingRecommender = Depends(get_recommender)):
+async def get_recommendations(user_id: int, count: int = 10, recommender: EmbeddingRecommender = Depends(get_recommender)):
     try:
-        recommendations = await recommender.get_hybrid_recommendations(user_id=user_id)
+        recommendations = await recommender.get_hybrid_recommendations(user_id=user_id, count=count)
         return {"recommendations": recommendations}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
