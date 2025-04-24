@@ -25,7 +25,7 @@ async def main():
     swipe_client = SwipeClient(API_URL)
 
     bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
-    dp = Dispatcher(storage=RedisStorage(redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_FSM)))
+    dp = Dispatcher(storage=RedisStorage(redis.Redis(host='localhost', port=REDIS_PORT, db=REDIS_FSM)))
 
     dp.message.middleware(I18nMiddleware())
     dp.callback_query.middleware(I18nMiddleware())
@@ -38,7 +38,7 @@ async def main():
             text = f"❓ Вам задали вопрос: {event['message'] or 'Без текста'}"
         await bot.send_message(event['to_user_id'], text, parse_mode=ParseMode.HTML)
     
-    kafka = KafkaEventConsumer("localhost:9092", "swipes", callback=handle_swipe_event)
+    kafka = KafkaEventConsumer("localhost:29092", "swipes", callback=handle_swipe_event)
 
     await kafka.start()
 

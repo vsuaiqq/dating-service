@@ -1,6 +1,6 @@
 from typing import Optional, Tuple
 
-from geo.CityCoordinatesCache import CityCoordinatesCache
+from cache.CityCoordinatesCache import CityCoordinatesCache
 from geo.LocationResolver import LocationResolver
 
 class CachedLocationResolver:

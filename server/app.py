@@ -7,23 +7,25 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from io import BytesIO
 
-from postgres.connection import create_db_pool
-from postgres.ProfileRepository import ProfileRepository
-from s3.S3Uploader import S3Uploader
+from database.connection import create_db_pool
+from database.ProfileRepository import ProfileRepository
+from cloud_storage.S3Uploader import S3Uploader
 from recsys.recsys import EmbeddingRecommender
 from kafka_events.producer import KafkaEventProducer
 from clickhouse.ClickHouseLogger import ClickHouseLogger
 from geo.CachedLocationResolver import CachedLocationResolver
-from geo.CityCoordinatesCache import CityCoordinatesCache
 from geo.LocationResolver import LocationResolver
+from cache.CityCoordinatesCache import CityCoordinatesCache
+from cache.SwipeCache import SwipeCache
+from cache.RecommendationCache import RecommendationCache
 
 from config import (
     S3_BUCKET_NAME, S3_REGION_NAME, S3_ACCESS_KEY_ID,
     S3_SECRET_ACCESS_KEY, S3_ENDPOINT_URL, 
     CLICKHOUSE_DB, CLICKHOUSE_USER, CLICKHOUSE_PASSWORD,
     CLICKHOUSE_HOST, CLICKHOUSE_PORT,
-    REDIS_HOST, REDIS_PORT, REDIS_COORDS,
-    KAFKA_HOST, KAFKA_PORT, KAFKA_TOPIC, REDIS_RECS
+    REDIS_HOST, REDIS_PORT, REDIS_FASTAPI_CACHE,
+    KAFKA_HOST, KAFKA_PORT, KAFKA_TOPIC
 )
 
 ORIGINS = [
@@ -33,6 +35,8 @@ ORIGINS = [
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    redis_client = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_FASTAPI_CACHE, decode_responses=True)
+
     app.state.profile_repo = ProfileRepository(await create_db_pool())
     app.state.s3_uploader = S3Uploader(
         bucket_name=S3_BUCKET_NAME,
@@ -41,9 +45,11 @@ async def lifespan(app: FastAPI):
         secret_key=S3_SECRET_ACCESS_KEY,
         endpoint_url=S3_ENDPOINT_URL
     )
+    app.state.swipe_cache = SwipeCache(redis_client)
     app.state.recsys = EmbeddingRecommender(
         profile_repo=app.state.profile_repo,
-        redis = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_RECS, decode_responses=True)
+        recommendation_cache=RecommendationCache(redis_client),
+        swipe_cache=app.state.swipe_cache
     )
     app.state.kafka_producer = KafkaEventProducer(f"{KAFKA_HOST}:{KAFKA_PORT}", KAFKA_TOPIC)
     app.state.clickhouse_logger = ClickHouseLogger(
@@ -55,7 +61,7 @@ async def lifespan(app: FastAPI):
     )
     app.state.cached_location_resolver = CachedLocationResolver(
         resolver=LocationResolver(),
-        cache=CityCoordinatesCache(redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_COORDS, decode_responses=True))
+        cache=CityCoordinatesCache(redis_client)
     )
 
     await app.state.kafka_producer.start()
@@ -91,6 +97,9 @@ def get_clickhouse_logger() -> ClickHouseLogger:
 
 def get_cached_location_resolver() -> CachedLocationResolver:
     return app.state.cached_location_resolver
+
+def get_swipe_cache() -> SwipeCache:
+    return app.state.swipe_cache
 
 class ProfileBase(BaseModel):
     user_id: int
@@ -238,7 +247,8 @@ async def add_swipe(
     swipe: SwipeInput,
     repo: ProfileRepository = Depends(get_profile_repo),
     producer: KafkaEventProducer = Depends(get_kafka_producer),
-    logger: ClickHouseLogger = Depends(get_clickhouse_logger)
+    logger: ClickHouseLogger = Depends(get_clickhouse_logger),
+    swipe_cache: SwipeCache = Depends(get_swipe_cache)
 ):
     if swipe.action not in {"like", "dislike", "question"}:
         raise HTTPException(status_code=400, detail="Invalid swipe action")
@@ -249,6 +259,11 @@ async def add_swipe(
             to_user_id=swipe.to_user_id,
             action=swipe.action,
             message=swipe.message
+        )
+
+        await swipe_cache.add_swipe(
+            swipe.from_user_id, 
+            swipe.to_user_id
         )
 
         from_profile = await repo.get_profile_by_user_id(swipe.from_user_id)

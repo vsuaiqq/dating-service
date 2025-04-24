@@ -3,7 +3,7 @@ import asyncio
 import aiohttp
 
 API_URL = "http://localhost:8000/profile/save"
-NUM_PROFILES = 100
+NUM_PROFILES = 100000
 
 names_male = ['Alex', 'Ivan', 'Sergey', 'Dmitry', 'Nikolay', 'Andrey', 'Pavel', 'Roman', 'Mikhail', 'Oleg']
 names_female = ['Maria', 'Anna', 'Olga', 'Elena', 'Natalia', 'Irina', 'Tatiana', 'Svetlana', 'Ekaterina', 'Lyudmila']

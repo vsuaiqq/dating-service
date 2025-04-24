@@ -118,9 +118,6 @@ class ProfileRepository:
                     END
                 )
                 AND age BETWEEN $6 AND $7
-                AND user_id NOT IN (
-                    SELECT to_user_id FROM swipes WHERE from_user_id = $3
-                )
                 LIMIT 100
                 """,
                 user['latitude'], user['longitude'], user_id, max_distance * 1000,
@@ -142,7 +139,7 @@ class ProfileRepository:
                 """
                 SELECT * FROM profiles 
                 WHERE user_id != $1
-                AND user_id != ANY($5::int[])
+                AND user_id != ANY($4::int[])
                 AND is_active = TRUE
                 AND city = $2
                 AND gender = ANY(
@@ -151,10 +148,7 @@ class ProfileRepository:
                         ELSE ARRAY[$3::gender]
                     END
                 )
-                AND age BETWEEN $6 AND $7
-                AND user_id NOT IN (
-                    SELECT to_user_id FROM swipes WHERE from_user_id = $1
-                )
+                AND age BETWEEN $5 AND $6
                 """,
                 user_id,
                 user["city"],

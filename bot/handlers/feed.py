@@ -16,16 +16,23 @@ async def send_next_recommendation(user_id: int, message: types.Message, state: 
     recsys_client = router.recsys_client
     profile_client = router.profile_client
 
-    is_active = await is_profile_active(router.profile_client, message.from_user.id)
-    
+    is_active = await is_profile_active(profile_client, message.from_user.id)
     response = await recsys_client.get_recommendations(user_id)
     recs = response.get("recommendations", [])
     
     if not recs:
         await message.answer(_("no_more_recommendations"), reply_markup=get_main_keyboard(is_active, _))
         return
+    
+    while True:
+        next_user_id = recs.pop()
+        if not next_user_id:
+            await message.answer(_("no_more_recommendations"), reply_markup=get_main_keyboard(is_active, _))
+            return
 
-    profile = next((p for p in recs if p.get("is_active", True)), None)
+        profile = await profile_client.get_profile_by_user_id(next_user_id)
+        if profile and profile.get("is_active"):
+            break
     
     if not profile:
         await message.answer(_("no_more_recommendations"), reply_markup=get_main_keyboard(is_active, _))

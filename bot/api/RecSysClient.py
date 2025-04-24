@@ -10,7 +10,7 @@ class RecSysClient:
         if count is None:
             count = self.num_of_recs
 
-        resp = await self.client.get(f"/recsys/recommendations/{user_id}", params={"count": count})
+        resp = await self.client.get(f"/recsys/recommendations/{user_id}", params={"count": 30})
         resp.raise_for_status()
         return resp.json()
 

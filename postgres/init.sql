@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS profiles (
     about TEXT,
     is_active BOOLEAN DEFAULT TRUE,
     about_embedding DOUBLE PRECISION[],
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     location geography(Point, 4326)
 );
 
