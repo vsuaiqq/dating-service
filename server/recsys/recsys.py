@@ -23,6 +23,7 @@ class EmbeddingRecommender:
             recsys_coeff = 0.7, 
             stop_words = [], 
             max_distance_search = 20, 
+            number_recs = 30,
             model = None
             ):
         self.model = model
@@ -35,6 +36,7 @@ class EmbeddingRecommender:
         self.max_distance_search = max_distance_search
         self.lemmatizer = WordNetLemmatizer()
         self.morph = pymorphy2.MorphAnalyzer()
+        self.number_recs = number_recs
 
     async def _load_model(self):
         if self.model is None:
@@ -116,16 +118,16 @@ class EmbeddingRecommender:
         await self.profile_repo.update_embedding(user_id, embedding)
 
     async def get_hybrid_recommendations(
-            self, user_id: int, count: int = 30
+            self, user_id: int
         ) -> List[int]:
             already_swiped = await self.swipe_cache.get_all_swiped_ids(user_id)
 
             cached = await self.recommendation_cache.get(user_id)
             if cached:
-                return [uid for uid in cached if uid not in already_swiped][:count]
+                return [uid for uid in cached if uid not in already_swiped][:self.number_recs]
 
-            content_count = int(count * self.recsys_coeff)
-            random_count = count - content_count
+            content_count = int(self.number_recs * self.recsys_coeff)
+            random_count = self.number_recs - content_count
     
             content_based = await self._get_similar_profiles_by_embedding(user_id, count=content_count)
             content_based = [uid for uid in content_based if uid not in already_swiped]
@@ -135,7 +137,7 @@ class EmbeddingRecommender:
             )
             random_based = [uid for uid in random_based if uid not in already_swiped]
 
-            final_results = list(set(content_based + random_based))[:count]
+            final_results = list(set(content_based + random_based))[:self.number_recs]
             if final_results:
                 await self.recommendation_cache.set(user_id, final_results)
 

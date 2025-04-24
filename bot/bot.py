@@ -5,7 +5,7 @@ from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
 
-from config import BOT_TOKEN, REDIS_HOST, REDIS_PORT, REDIS_FSM, API_URL, NUM_OF_RECS
+from config import BOT_TOKEN, REDIS_HOST, REDIS_PORT, REDIS_FSM, API_URL
 from utils.logger import setup_logger
 from handlers import all_handlers
 from middlewares.i18n import I18nMiddleware
@@ -21,7 +21,7 @@ async def main():
 
     profile_client = ProfileClient(API_URL)
     s3_client = S3Client(API_URL)
-    recsys_client = RecSysClient(API_URL, NUM_OF_RECS)
+    recsys_client = RecSysClient(API_URL)
     swipe_client = SwipeClient(API_URL)
 
     bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
