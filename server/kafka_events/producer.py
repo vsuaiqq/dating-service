@@ -2,9 +2,8 @@ from aiokafka import AIOKafkaProducer
 import json
 
 class KafkaEventProducer:
-    def __init__(self, bootstrap_servers: str, topic: str):
+    def __init__(self, bootstrap_servers: str):
         self.bootstrap_servers = bootstrap_servers
-        self.topic = topic
         self._producer: AIOKafkaProducer | None = None
 
     async def start(self):
@@ -18,7 +17,7 @@ class KafkaEventProducer:
         if self._producer:
             await self._producer.stop()
 
-    async def send_event(self, event: dict):
+    async def send_event(self, topic: str, event: dict):
         if not self._producer:
             raise RuntimeError("Kafka producer not initialized")
-        await self._producer.send_and_wait(self.topic, event)
+        await self._producer.send_and_wait(topic, event)

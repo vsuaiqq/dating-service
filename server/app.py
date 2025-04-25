@@ -12,9 +12,11 @@ from database.ProfileRepository import ProfileRepository
 from cloud_storage.S3Uploader import S3Uploader
 from recsys.recsys import EmbeddingRecommender
 from kafka_events.producer import KafkaEventProducer
+from kafka_events.consumer import KafkaEventConsumer
 from clickhouse.ClickHouseLogger import ClickHouseLogger
 from geo.CachedLocationResolver import CachedLocationResolver
 from geo.LocationResolver import LocationResolver
+from workers.geo_worker import handle_geo_request
 from cache.CityCoordinatesCache import CityCoordinatesCache
 from cache.SwipeCache import SwipeCache
 from cache.RecommendationCache import RecommendationCache
@@ -25,7 +27,7 @@ from config import (
     CLICKHOUSE_DB, CLICKHOUSE_USER, CLICKHOUSE_PASSWORD,
     CLICKHOUSE_HOST, CLICKHOUSE_PORT,
     REDIS_HOST, REDIS_PORT, REDIS_FASTAPI_CACHE,
-    KAFKA_HOST, KAFKA_PORT, KAFKA_TOPIC
+    KAFKA_HOST, KAFKA_PORT, KAFKA_SWIPES_TOPIC, KAFKA_GEO_TOPIC, KAFKA_GEO_NOTIFICATIONS_TOPIC
 )
 
 ORIGINS = [
@@ -36,6 +38,7 @@ ORIGINS = [
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     redis_client = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_FASTAPI_CACHE, decode_responses=True)
+    recommendation_cache = RecommendationCache(redis_client)
 
     app.state.profile_repo = ProfileRepository(await create_db_pool())
     app.state.s3_uploader = S3Uploader(
@@ -48,10 +51,10 @@ async def lifespan(app: FastAPI):
     app.state.swipe_cache = SwipeCache(redis_client)
     app.state.recsys = EmbeddingRecommender(
         profile_repo=app.state.profile_repo,
-        recommendation_cache=RecommendationCache(redis_client),
+        recommendation_cache=recommendation_cache,
         swipe_cache=app.state.swipe_cache
     )
-    app.state.kafka_producer = KafkaEventProducer(f"{KAFKA_HOST}:{KAFKA_PORT}", KAFKA_TOPIC)
+    app.state.kafka_producer = KafkaEventProducer(f"{KAFKA_HOST}:{KAFKA_PORT}")
     app.state.clickhouse_logger = ClickHouseLogger(
         host=CLICKHOUSE_HOST,
         port=CLICKHOUSE_PORT,
@@ -64,7 +67,21 @@ async def lifespan(app: FastAPI):
         cache=CityCoordinatesCache(redis_client)
     )
 
+    kafka_consumer = KafkaEventConsumer(
+        f"{KAFKA_HOST}:{KAFKA_PORT}",
+        KAFKA_GEO_TOPIC,
+        lambda event: handle_geo_request(
+            app.state.profile_repo, 
+            app.state.cached_location_resolver, 
+            recommendation_cache, 
+            app.state.kafka_producer,
+            event
+        )
+    )
+
     await app.state.kafka_producer.start()
+
+    await kafka_consumer.start()
 
     yield
 
@@ -147,12 +164,21 @@ class SwipeInput(BaseModel):
 @app.post("/profile/save")
 async def save_profile(
     profile: ProfileBase, 
-    repo: ProfileRepository = Depends(get_profile_repo), 
+    repo: ProfileRepository = Depends(get_profile_repo),
+    producer: KafkaEventProducer = Depends(get_kafka_producer), 
     recommender: EmbeddingRecommender = Depends(get_recommender),
-    location_resolver: CachedLocationResolver = Depends(get_cached_location_resolver)
 ):
     if profile.latitude is None or profile.longitude is None:
-        latitude, longitude = await location_resolver.resolve(profile.city)
+        await producer.send_event(KAFKA_GEO_NOTIFICATIONS_TOPIC, {
+            'user_id': profile.user_id,
+            'status': 'waited'
+        })
+        await producer.send_event(KAFKA_GEO_TOPIC, {
+            'user_id': profile.user_id,
+            'city': profile.city
+        })
+
+    fallback_coordinates = (55.625578, 37.6063916)
 
     profile_id = await repo.save_profile(
         profile.user_id,
@@ -162,8 +188,8 @@ async def save_profile(
         profile.age,
         profile.interesting_gender,
         profile.about,
-        profile.latitude or latitude,
-        profile.longitude or longitude
+        profile.latitude or fallback_coordinates[0],
+        profile.longitude or fallback_coordinates[1]
     )
 
     await recommender.update_user_embedding(profile.user_id)
@@ -192,11 +218,25 @@ async def toggle_active(data: ToggleActive, repo: ProfileRepository = Depends(ge
     return {"status": "ok"}
 
 @app.post("/profile/update_field")
-async def update_field(data: UpdateField, repo: ProfileRepository = Depends(get_profile_repo), recommender: EmbeddingRecommender = Depends(get_recommender)):
+async def update_field(
+    data: UpdateField, 
+    repo: ProfileRepository = Depends(get_profile_repo), 
+    producer: KafkaEventProducer = Depends(get_kafka_producer), 
+    recommender: EmbeddingRecommender = Depends(get_recommender)
+):
     await repo.update_profile_field(data.user_id, data.field_name, data.value)
 
     if data.field_name == 'about':
         await recommender.update_user_embedding(data.user_id)
+    if data.field_name == 'city':
+        await producer.send_event(KAFKA_GEO_NOTIFICATIONS_TOPIC, {
+            'user_id': data.user_id,
+            'status': 'waited'
+        })
+        await producer.send_event(KAFKA_GEO_TOPIC, {
+            'user_id': data.user_id,
+            'city': data.value
+        })
 
     return {"status": "ok"}
 
@@ -283,7 +323,7 @@ async def add_swipe(
         )
 
         if swipe.action in {"like", "question"}:
-            await producer.send_event({
+            await producer.send_event(KAFKA_SWIPES_TOPIC,{
                 'from_user_id': swipe.from_user_id,
                 'to_user_id': swipe.to_user_id,
                 'action': swipe.action,

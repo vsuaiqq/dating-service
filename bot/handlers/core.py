@@ -209,7 +209,7 @@ async def update_about(message: types.Message, state: FSMContext, _: Callable):
     await state.clear()
 
 @router.message(EditProfileStates.gender, F.text)
-async def update_city(message: types.Message, state: FSMContext, _: Callable):
+async def update_gender(message: types.Message, state: FSMContext, _: Callable):
     if message.text == _("back_button"):
         await message.answer(_("choose_field_to_edit"), reply_markup=get_edit_profile_keyboard(_))
         await state.set_state(EditProfileStates.field)
@@ -231,7 +231,7 @@ async def update_city(message: types.Message, state: FSMContext, _: Callable):
     await state.clear()
 
 @router.message(EditProfileStates.interesting_gender, F.text)
-async def update_city(message: types.Message, state: FSMContext, _: Callable):
+async def update_interesting_gender(message: types.Message, state: FSMContext, _: Callable):
     if message.text == _("back_button"):
         await message.answer(_("choose_field_to_edit"), reply_markup=get_edit_profile_keyboard(_))
         await state.set_state(EditProfileStates.field)

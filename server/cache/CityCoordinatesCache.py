@@ -3,7 +3,7 @@ from redis.asyncio import Redis
 from typing import Optional, Tuple
 
 class CityCoordinatesCache:
-    def __init__(self, redis: Redis, ttl: int = 60 * 60 * 24 * 7):
+    def __init__(self, redis: Redis, ttl: int = 60 * 60 * 24 * 30):
         self.redis = redis
         self.ttl = ttl
 

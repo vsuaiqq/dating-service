@@ -5,7 +5,7 @@ from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
 
-from config import BOT_TOKEN, REDIS_HOST, REDIS_PORT, REDIS_FSM, API_URL, NUMBER_OF_RECS
+from config import BOT_TOKEN, REDIS_HOST, REDIS_PORT, REDIS_FSM, API_URL, NUMBER_OF_RECS, KAFKA_GEO_NOTIFICATIONS_TOPIC, KAFKA_SWIPES_TOPIC
 from utils.logger import setup_logger
 from handlers import all_handlers
 from middlewares.i18n import I18nMiddleware
@@ -38,7 +38,21 @@ async def main():
             text = f"❓ Вам задали вопрос: {event['message'] or 'Без текста'}"
         await bot.send_message(event['to_user_id'], text, parse_mode=ParseMode.HTML)
     
-    kafka = KafkaEventConsumer("localhost:29092", "swipes", callback=handle_swipe_event)
+    async def handle_geo_notification_event(event):
+        text = ""
+        if event['status'] == "waited":
+            text = f"Ищем подходящие анкеты... Пожалуйста, подождите немного. Пока вы можете смотреть случайные анкеты"
+        elif event['status'] == "success":
+            text = f"Всё готово! Рекомендации настроены"
+        elif event['status'] == "failed":
+            text = f"Не удалось определить ваше местоположение. Пожалуйста, попробуйте еще раз или отправьте вашу текущую локацию, также вы можете продолжить смотреть случайные анкеты"
+        await bot.send_message(event['user_id'], text, parse_mode=ParseMode.HTML)
+    
+    kafka = KafkaEventConsumer(
+        "localhost:29092", 
+        topics=[KAFKA_SWIPES_TOPIC, KAFKA_GEO_NOTIFICATIONS_TOPIC],
+        callback=lambda event: handle_swipe_event(event) if event.get("action") else handle_geo_notification_event(event)
+    )
 
     await kafka.start()
 

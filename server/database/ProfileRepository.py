@@ -159,7 +159,6 @@ class ProfileRepository:
             )
             return [record['user_id'] for record in records]
 
-
     async def save_swipe(
         self,
         from_user_id: int,
@@ -175,3 +174,13 @@ class ProfileRepository:
                 SET action = EXCLUDED.action,
                     message = EXCLUDED.message
             """, from_user_id, to_user_id, action, message)
+    
+    async def update_coordinates(self, user_id: int, latitude: float, longitude: float):
+        async with self.pool.acquire() as conn:
+            await conn.execute("""
+                UPDATE profiles
+                SET latitude = $1,
+                    longitude = $2,
+                    location = ST_SetSRID(ST_MakePoint($2, $1), 4326)::geography
+                WHERE user_id = $3
+            """, latitude, longitude, user_id)

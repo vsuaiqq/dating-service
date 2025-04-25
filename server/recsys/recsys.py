@@ -25,7 +25,7 @@ class EmbeddingRecommender:
             max_distance_search = 20, 
             model = None
             ):
-        self.model = model
+        self.model = model or SentenceTransformer('all-MiniLM-L6-v2')
         self.profile_repo = profile_repo
         self.recommendation_cache = recommendation_cache
         self.swipe_cache = swipe_cache
@@ -35,11 +35,6 @@ class EmbeddingRecommender:
         self.max_distance_search = max_distance_search
         self.lemmatizer = WordNetLemmatizer()
         self.morph = pymorphy2.MorphAnalyzer()
-
-    async def _load_model(self):
-        if self.model is None:
-            self.model = SentenceTransformer('all-MiniLM-L6-v2')
-        return self.model
 
     async def _preprocess_text(self, text: str) -> str:
         text = text.lower()
@@ -110,9 +105,8 @@ class EmbeddingRecommender:
         if not user or not user.get('about'):
             return
 
-        model = await self._load_model()
         preprocessed_about = await self._preprocess_text(user['about'])
-        embedding = model.encode(preprocessed_about, convert_to_tensor=False)
+        embedding = self.model.encode(preprocessed_about, convert_to_tensor=False)
         await self.profile_repo.update_embedding(user_id, embedding)
         
     async def get_hybrid_recommendations(
