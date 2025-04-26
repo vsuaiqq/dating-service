@@ -56,6 +56,20 @@ class ProfileValidator:
         return city, None
 
     @classmethod
+    def validate_location(cls, location: types.Location, _: Callable) -> Tuple[Optional[str], Optional[str]]:
+        try:
+            if not (-90 <= location.latitude <= 90):
+                return None, _("invalid_latitude")
+            if not (-180 <= location.longitude <= 180):
+                return None, _("invalid_longitude")
+
+            coords = f"{location.latitude:.6f},{location.longitude:.6f}"
+            return coords, None
+
+        except AttributeError:
+            return None, _("invalid_location_format")
+
+    @classmethod
     def validate_about(cls, about: str, _: Callable) -> Tuple[Optional[str], Optional[str]]:
         about = about.strip()
 

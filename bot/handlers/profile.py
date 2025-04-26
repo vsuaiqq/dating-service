@@ -97,19 +97,46 @@ async def get_interesting_gender(message: types.Message, state: FSMContext, _: C
     ))
     await state.set_state(ProfileStates.city)
 
-@router.message(ProfileStates.city)
+
+@router.message(ProfileStates.city, F.text | F.location)
 async def get_city(message: types.Message, state: FSMContext, _: Callable):
-    if message.text == _("back_button"):
+    if message.text and message.text == _("back_button"):
         await message.answer(_("ask_interesting_gender"), reply_markup=get_interesting_gender_keyboard(_))
         await state.set_state(ProfileStates.interesting_gender)
         return
-        
-    city, error = ProfileValidator.validate_city(message.text, _)
+
+    update_data = {}
+    error = None
+
+    if message.location:
+        coords, error = ProfileValidator.validate_location(message.location, _)
+        if not error:
+            update_data.update({
+                'latitude': message.location.latitude,
+                'longitude': message.location.longitude,
+                'city': None
+            })
+            await state.update_data(update_data)
+            await message.answer(_("ask_name"), reply_markup=get_back_keyboard(_))
+            await state.set_state(ProfileStates.name)
+            return
+
+    elif message.text:
+        city, error = ProfileValidator.validate_city(message.text, _)
+        if not error:
+            update_data.update({
+                'city': city,
+                'latitude': None,
+                'longitude': None
+            })
+    else:
+        error = _("invalid_input_type")
+
     if error:
         await message.answer(error)
         return
-        
-    await state.update_data(city=city)
+
+    await state.update_data(update_data)
     await message.answer(_("ask_name"), reply_markup=get_back_keyboard(_))
     await state.set_state(ProfileStates.name)
 
@@ -154,7 +181,7 @@ async def get_about(message: types.Message, state: FSMContext, _: Callable):
 async def save_profile(message: types.Message, state: FSMContext, _: Callable):
     data = await state.get_data()
     media_list = data.get("media", [])
-    
+    print(data)
     try:
         profile_id = await router.profile_client.save_profile({
             'user_id': message.from_user.id,
@@ -163,7 +190,9 @@ async def save_profile(message: types.Message, state: FSMContext, _: Callable):
             'city': data["city"],
             'age': int(data["age"]),
             'interesting_gender': data["interesting_gender"],
-            'about': data["about"]
+            'about': data["about"],
+            'latitude' : data["latitude"],
+            'longitude': data["longitude"]
         })
         
         if media_list:
@@ -195,8 +224,11 @@ async def show_profile(message: types.Message, state: FSMContext, _: Callable):
     if not media_list:
         await message.answer(_("no_media_error"), reply_markup=get_back_keyboard(_))
         return False
+    if data['city'] is None:
+        profile_text = f"{data['name']}, {data['age']} - {data['about']} {_('active_status')}"
+    else:
+        profile_text = f"{data['name']}, {data['age']}, {data['city']} - {data['about']} {_('active_status')}"
 
-    profile_text = f"{data['name']}, {data['age']}, {data['city']} - {data['about']} {_('active_status')}"
     media_objects = []
     
     for i, media in enumerate(media_list):

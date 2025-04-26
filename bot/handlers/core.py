@@ -172,22 +172,69 @@ async def update_age(message: types.Message, state: FSMContext, _: Callable):
     await message.answer(_("age_updated"), reply_markup=get_main_keyboard(is_active, _))
     await state.clear()
 
-@router.message(EditProfileStates.city, F.text)
+
+@router.message(EditProfileStates.city, F.text | F.location)
 async def update_city(message: types.Message, state: FSMContext, _: Callable):
-    if message.text == _("back_button"):
+    if message.text and message.text == _("back_button"):
         await message.answer(_("choose_field_to_edit"), reply_markup=get_edit_profile_keyboard(_))
         await state.set_state(EditProfileStates.field)
         return
 
-    city, error = ProfileValidator.validate_city(message.text, _)
+    error = None
+    is_location = False
+
+    try:
+        if message.location:
+            coords, error = ProfileValidator.validate_location(message.location, _)
+            if not error:
+                await router.profile_client.update_coordinates(
+                    user_id=message.from_user.id,
+                    latitude=message.location.latitude,
+                    longitude=message.location.longitude
+                )
+                await router.profile_client.update_profile_field(
+                    user_id=message.from_user.id,
+                    field_name='city',
+                    value=None
+                )
+                is_location = True
+
+        elif message.text:
+            city, error = ProfileValidator.validate_city(message.text, _)
+            if not error:
+                await router.profile_client.update_profile_field(
+                    user_id=message.from_user.id,
+                    field_name='city',
+                    value=city
+                )
+                await router.profile_client.update_profile_field(
+                    user_id=message.from_user.id,
+                    field_name='latitude',
+                    value=None
+                )
+                await router.profile_client.update_profile_field(
+                    user_id=message.from_user.id,
+                    field_name='longitude',
+                    value=None
+                )
+                await router.profile_client.update_profile_field(
+                    user_id=message.from_user.id,
+                    field_name='location',
+                    value=None
+                )
+        else:
+            error = _("invalid_input_type")
+
+    except Exception as e:
+        error = str(e)
+
     if error:
-        await message.answer(error)
+        await message.answer(_("update_error") + f": {error}", reply_markup=get_edit_profile_keyboard(_))
         return
-    
+
     is_active = await is_profile_active(router.profile_client, message.from_user.id)
-    
-    await router.profile_client.update_field(message.from_user.id, "city", city)
-    await message.answer(_("city_updated"), reply_markup=get_main_keyboard(is_active, _))
+    success_message = _("coordinates_updated") if is_location else _("city_updated")
+    await message.answer(success_message, reply_markup=get_main_keyboard(is_active, _))
     await state.clear()
 
 @router.message(EditProfileStates.about, F.text)
@@ -253,7 +300,6 @@ async def update_interesting_gender(message: types.Message, state: FSMContext, _
     await message.answer(_("gender_updated"), reply_markup=get_main_keyboard(is_active, _))
     await state.clear()
 
-# медиа измена
 
 @router.message(EditProfileStates.media, F.media_group_id)
 async def handle_media_group(message: types.Message, state: FSMContext, _: Callable, album: Optional[list[types.Message]] = None):

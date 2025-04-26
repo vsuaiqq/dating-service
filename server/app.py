@@ -6,6 +6,7 @@ from fastapi import UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from io import BytesIO
+import datetime
 
 from database.connection import create_db_pool
 from database.ProfileRepository import ProfileRepository
@@ -27,7 +28,8 @@ from config import (
     CLICKHOUSE_DB, CLICKHOUSE_USER, CLICKHOUSE_PASSWORD,
     CLICKHOUSE_HOST, CLICKHOUSE_PORT,
     REDIS_HOST, REDIS_PORT, REDIS_FASTAPI_CACHE,
-    KAFKA_HOST, KAFKA_PORT, KAFKA_SWIPES_TOPIC, KAFKA_GEO_TOPIC, KAFKA_GEO_NOTIFICATIONS_TOPIC
+    KAFKA_HOST, KAFKA_PORT, KAFKA_SWIPES_TOPIC, KAFKA_GEO_TOPIC, KAFKA_GEO_NOTIFICATIONS_TOPIC,
+    KAFKA_PROFILE_UPDATES_TOPIC
 )
 
 ORIGINS = [
@@ -161,40 +163,63 @@ class SwipeInput(BaseModel):
     action: str
     message: Optional[str] = None
 
+
 @app.post("/profile/save")
 async def save_profile(
-    profile: ProfileBase, 
+    profile: ProfileBase,
     repo: ProfileRepository = Depends(get_profile_repo),
-    producer: KafkaEventProducer = Depends(get_kafka_producer), 
+    producer: KafkaEventProducer = Depends(get_kafka_producer),
     recommender: EmbeddingRecommender = Depends(get_recommender),
+    geocoder: CachedLocationResolver = Depends(get_cached_location_resolver)
 ):
-    if profile.latitude is None or profile.longitude is None:
-        await producer.send_event(KAFKA_GEO_NOTIFICATIONS_TOPIC, {
-            'user_id': profile.user_id,
-            'status': 'waited'
-        })
-        await producer.send_event(KAFKA_GEO_TOPIC, {
-            'user_id': profile.user_id,
-            'city': profile.city
-        })
+    if not profile.city and (profile.latitude is None or profile.longitude is None):
+        raise HTTPException(
+            status_code=400,
+            detail="Укажите либо город, либо координаты"
+        )
 
-    fallback_coordinates = (55.625578, 37.6063916)
+    try:
+        if profile.city and (profile.latitude is None or profile.longitude is None):
+            coords = await geocoder.resolve(profile.city)
+            if coords:
+                profile.latitude, profile.longitude = coords
+            else:
+                await producer.send_event(KAFKA_GEO_TOPIC, {
+                    'user_id': profile.user_id,
+                    'city': profile.city,
+                    'action': 'resolve_coordinates'
+                })
+                profile.latitude = None
+                profile.longitude = None
 
-    profile_id = await repo.save_profile(
-        profile.user_id,
-        profile.name,
-        profile.gender,
-        profile.city,
-        profile.age,
-        profile.interesting_gender,
-        profile.about,
-        profile.latitude or fallback_coordinates[0],
-        profile.longitude or fallback_coordinates[1]
-    )
+        profile_id = await repo.save_profile(
+            user_id=profile.user_id,
+            name=profile.name,
+            gender=profile.gender,
+            city=profile.city,
+            age=profile.age,
+            interesting_gender=profile.interesting_gender,
+            about=profile.about,
+            latitude=profile.latitude,
+            longitude=profile.longitude
+        )
 
-    await recommender.update_user_embedding(profile.user_id)
-    
-    return {"profile_id": profile_id}
+        if profile.latitude and profile.longitude:
+            await recommender.update_user_embedding(profile.user_id)
+        else:
+            await producer.send_event(KAFKA_GEO_NOTIFICATIONS_TOPIC, {
+                'user_id': profile.user_id,
+                'status': 'pending_coordinates',
+                'city': profile.city
+            })
+
+        return {"profile_id": profile_id}
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail="Ошибка при сохранении профиля"
+        )
 
 @app.post("/profile/media/save")
 async def save_media(data: MediaList, repo: ProfileRepository = Depends(get_profile_repo)):
@@ -222,23 +247,68 @@ async def update_field(
     data: UpdateField, 
     repo: ProfileRepository = Depends(get_profile_repo), 
     producer: KafkaEventProducer = Depends(get_kafka_producer), 
-    recommender: EmbeddingRecommender = Depends(get_recommender)
+    recommender: EmbeddingRecommender = Depends(get_recommender),
+    geocoder: CachedLocationResolver = Depends(get_cached_location_resolver)
 ):
-    await repo.update_profile_field(data.user_id, data.field_name, data.value)
+    try:
+        if not data.user_id or not data.field_name:
+            raise HTTPException(
+                status_code=400,
+                detail="user_id and field_name are required"
+            )
 
-    if data.field_name == 'about':
-        await recommender.update_user_embedding(data.user_id)
-    if data.field_name == 'city':
-        await producer.send_event(KAFKA_GEO_NOTIFICATIONS_TOPIC, {
-            'user_id': data.user_id,
-            'status': 'waited'
-        })
-        await producer.send_event(KAFKA_GEO_TOPIC, {
-            'user_id': data.user_id,
-            'city': data.value
-        })
+        await repo.update_profile_field(data.user_id, data.field_name, data.value)
 
-    return {"status": "ok"}
+        if data.field_name == 'about':
+            await recommender.update_user_embedding(data.user_id)
+
+        elif data.field_name == 'city':
+            try:
+                await producer.send_event(KAFKA_GEO_NOTIFICATIONS_TOPIC, {
+                    'user_id': data.user_id,
+                    'status': 'processing',
+                    'city': data.value,
+                    'timestamp': datetime.utcnow().isoformat()
+                })
+
+                coords = await geocoder.resolve(data.value)
+                if coords:
+                    lat, lon = coords
+                    await repo.update_profile_field(data.user_id, 'latitude', lat)
+                    await repo.update_profile_field(data.user_id, 'longitude', lon)
+
+                    await producer.send_event(KAFKA_GEO_TOPIC, {
+                        'user_id': data.user_id,
+                        'city': data.value,
+                        'latitude': lat,
+                        'longitude': lon,
+                        'status': 'completed',
+                        'timestamp': datetime.utcnow().isoformat()
+                    })
+                else:
+                    await producer.send_event(KAFKA_GEO_NOTIFICATIONS_TOPIC, {
+                        'user_id': data.user_id,
+                        'status': 'failed',
+                        'reason': 'geocoding_failed',
+                        'city': data.value,
+                        'timestamp': datetime.utcnow().isoformat()
+                    })
+
+            except Exception as e:
+                await producer.send_event(KAFKA_GEO_NOTIFICATIONS_TOPIC, {
+                    'user_id': data.user_id,
+                    'status': 'error',
+                    'error': str(e),
+                    'timestamp': datetime.utcnow().isoformat()
+                })
+
+        return {"status": "ok"}
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to update field: {str(e)}"
+        )
 
 @app.delete("/profile/media/delete")
 async def delete_media(data: ProfileId, repo: ProfileRepository = Depends(get_profile_repo)):

@@ -8,3 +8,5 @@ class ProfileStates(StatesGroup):
     interesting_gender = State()
     about = State()
     media = State()
+    latitude = State()
+    longitude = State()
