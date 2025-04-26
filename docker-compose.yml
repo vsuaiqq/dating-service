@@ -30,10 +30,45 @@ services:
       - "${CLICKHOUSE_PORT}:${CLICKHOUSE_PORT}"
     volumes:
       - ./clickhouse/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - chdata:/var/lib/clickhouse
     environment:
       CLICKHOUSE_DB: ${CLICKHOUSE_DB}
       CLICKHOUSE_USER: ${CLICKHOUSE_USER}
       CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: dating_grafana
+    restart: always
+    ports:
+      - "${GRAFANA_PORT}:${GRAFANA_PORT}"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana-provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./grafana-provisioning/datasources:/etc/grafana/provisioning/datasources
+    environment:
+      - GF_INSTALL_PLUGINS=vertamedia-clickhouse-datasource
+    depends_on:
+      - clickhouse
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/login"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
@@ -85,3 +120,7 @@ services:
 
 volumes:
   pgdata:
+  chdata:
+  grafana-data:
+  pgadmin-data:
+
