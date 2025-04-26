@@ -21,7 +21,7 @@ async def main():
 
     profile_client = ProfileClient(API_URL)
     s3_client = S3Client(API_URL)
-    recsys_client = RecSysClient(API_URL, NUMBER_OF_RECS)
+    recsys_client = RecSysClient(API_URL, int(NUMBER_OF_RECS))
     swipe_client = SwipeClient(API_URL)
 
     bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))

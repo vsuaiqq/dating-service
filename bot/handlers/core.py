@@ -28,8 +28,11 @@ async def show_my_profile(message: types.Message, _: Callable):
         return
     
     media_list = await router.profile_client.get_media_by_profile_id(profile["id"])
-    
-    profile_text = f"{profile['name']}, {profile['age']}, {profile['city']} - {profile['about']} {_('active_status') if profile['is_active'] else _('inactive_status')}"
+    if profile['city'] is None:
+        profile_text = f"{profile['name']}, {profile['age']} - {profile['about']} {_('active_status') if profile['is_active'] else _('inactive_status')}"
+    else:
+        profile_text = f"{profile['name']}, {profile['age']}, {profile['city']} - {profile['about']} {_('active_status') if profile['is_active'] else _('inactive_status')}"
+
     media_objects = []
     
     for i, media in enumerate(media_list):

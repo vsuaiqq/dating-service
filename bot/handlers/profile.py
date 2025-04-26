@@ -224,6 +224,7 @@ async def show_profile(message: types.Message, state: FSMContext, _: Callable):
     if not media_list:
         await message.answer(_("no_media_error"), reply_markup=get_back_keyboard(_))
         return False
+
     if data['city'] is None:
         profile_text = f"{data['name']}, {data['age']} - {data['about']} {_('active_status')}"
     else:
