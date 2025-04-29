@@ -17,3 +17,4 @@ geopy
 redis
 huggingface_hub[hf_xet]
 celery
+opencv-contrib-python

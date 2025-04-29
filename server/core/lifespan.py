@@ -6,6 +6,7 @@ from database.connection import create_db_pool
 from database.ProfileRepository import ProfileRepository
 from storage.S3Uploader import S3Uploader
 from services.recsys.recsys import EmbeddingRecommender
+from services.validation_video.video_validator import VideoValidator
 from kafka_events.producer import KafkaEventProducer
 from kafka_events.consumer import KafkaEventConsumer
 from analytics.ClickHouseLogger import ClickHouseLogger
@@ -38,6 +39,8 @@ async def lifespan(app: FastAPI):
     )
 
     app.state.recommendation_cache = RecommendationCache(redis_client)
+
+    app.state.video_validator = VideoValidator()
 
     app.state.swipe_cache = SwipeCache(redis_client)
 

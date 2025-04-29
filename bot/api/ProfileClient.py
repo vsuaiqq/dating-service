@@ -50,6 +50,12 @@ class ProfileClient:
             headers=headers,
         )
         return resp
+    
+    async def verify_video_note(self, file_id: str, file_bytes: bytes) -> dict:
+        files = {'file': (f"{file_id}.mp4", file_bytes, 'video/mp4')}
+        resp = await self.client.post("/profile/verify_video", files=files)
+        resp.raise_for_status()
+        return resp.json()
 
     async def close(self):
         await self.client.aclose()

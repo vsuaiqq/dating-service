@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+from fastapi.responses import JSONResponse
 
 from database.ProfileRepository import ProfileRepository
 from services.recsys.recsys import EmbeddingRecommender
+from services.validation_video.video_validator import VideoValidator
 from kafka_events.producer import KafkaEventProducer
 from cache.RecommendationCache import RecommendationCache
-from core.dependecies import get_recommender, get_profile_repo, get_kafka_producer, get_recommendation_cache
+from core.dependecies import get_recommender, get_profile_repo, get_kafka_producer, get_recommendation_cache, get_video_validator
 from core.config import get_settings
 from models.profile import ProfileBase, ProfileId, ToggleActive
 from models.media import MediaList
@@ -52,6 +54,38 @@ async def save_profile(
         return {"profile_id": profile_id}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/profile/verify_video")
+async def verify_video(
+    validator: VideoValidator = Depends(get_video_validator), 
+    file: UploadFile = File(...)
+):
+    try:
+        if not file.content_type.startswith('video/'):
+            raise HTTPException(400, "Invalid file type. Expected video.")
+        
+        file_bytes = await file.read()
+        
+        if len(file_bytes) > 10 * 1024 * 1024:
+            raise HTTPException(400, "File too large. Max 10MB allowed.")
+        
+        result = await validator.validate_video_file(file_bytes)
+        
+        if result["status"] == "error":
+            raise HTTPException(400, result["message"])
+            
+        return JSONResponse({
+            "status": "success",
+            "is_human": result["is_human"],
+            "face_ratio": result["face_ratio"],
+            "total_frames": result["total_frames"],
+            "frames_with_face": result["frames_with_face"]
+        })
+        
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        raise HTTPException(500, f"Internal server error: {str(e)}")
 
 @router.post("/media/save")
 async def save_media(data: MediaList, repo: ProfileRepository = Depends(get_profile_repo)):

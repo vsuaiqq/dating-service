@@ -7,6 +7,7 @@ from api.profile import router as profile_router
 from api.recsys import router as recsys_router
 from api.s3 import router as s3_router
 from api.swipe import router as swipe_router
+from api.validator_video import router as validator_router
 
 app = FastAPI(lifespan=lifespan)
 

@@ -3,6 +3,7 @@ from fastapi import Request
 from database.ProfileRepository import ProfileRepository
 from storage.S3Uploader import S3Uploader
 from services.recsys.recsys import EmbeddingRecommender
+from services.validation_video.video_validator import VideoValidator
 from kafka_events.producer import KafkaEventProducer
 from analytics.ClickHouseLogger import ClickHouseLogger
 from cache.SwipeCache import SwipeCache
@@ -16,6 +17,9 @@ def get_s3_uploader(request: Request) -> S3Uploader:
 
 def get_recommender(request: Request) -> EmbeddingRecommender:
     return request.app.state.recsys
+
+def get_video_validator(request: Request) -> VideoValidator:
+    return request.app.state.video_validator
 
 def get_kafka_producer(request: Request) -> KafkaEventProducer:
     return request.app.state.kafka_producer

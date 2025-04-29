@@ -34,8 +34,35 @@ async def text_start(message: types.Message, state: FSMContext, _: Callable):
     if profile:
         await message.answer(_("profile_already_exists"), reply_markup=get_main_keyboard(profile['is_active'], _))
     else:
+        await message.answer(_("please_send_video_note_verification"))
+        await state.set_state(ProfileStates.waiting_for_video_note)
+
+@router.message(ProfileStates.waiting_for_video_note, F.video_note)
+async def verify_video_note(message: types.Message, state: FSMContext, _: Callable):
+    try:
+        file = await message.bot.get_file(message.video_note.file_id)
+        file_bytes = await message.bot.download_file(file.file_path)
+        
+        verification_result = await router.profile_client.verify_video_note(
+            file_id=file.file_id,
+            file_bytes=file_bytes.read()
+        )
+        
+        if not verification_result.get("is_human", False):
+            await message.answer(_("verification_failed"))
+            return
+            
+        await state.update_data(video_note_verified=True)
+        await message.answer(_("verification_success"))
         await message.answer(_("ask_age"), reply_markup=get_back_keyboard(_))
         await state.set_state(ProfileStates.age)
+        
+    except Exception as e:
+        await message.answer(_("verification_error") + f": {str(e)}")
+
+@router.message(ProfileStates.waiting_for_video_note)
+async def wrong_content_type(message: types.Message, _: Callable):
+    await message.answer(_("please_send_video_note_only"))
 
 @router.message(ProfileStates.age)
 async def get_age(message: types.Message, state: FSMContext, _: Callable):
