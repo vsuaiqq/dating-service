@@ -1,11 +1,11 @@
 from fastapi import Request
 
 from database.ProfileRepository import ProfileRepository
-from cloud_storage.S3Uploader import S3Uploader
-from recsys.recsys import EmbeddingRecommender
+from storage.S3Uploader import S3Uploader
+from services.recsys.recsys import EmbeddingRecommender
 from kafka_events.producer import KafkaEventProducer
-from clickhouse.ClickHouseLogger import ClickHouseLogger
-from geo.CachedLocationResolver import CachedLocationResolver
+from analytics.ClickHouseLogger import ClickHouseLogger
+from services.geo.CachedLocationResolver import CachedLocationResolver
 from cache.SwipeCache import SwipeCache
 from cache.RecommendationCache import RecommendationCache
 

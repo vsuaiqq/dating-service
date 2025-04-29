@@ -3,15 +3,15 @@ import asyncio
 import json
 
 class KafkaEventConsumer:
-    def __init__(self, bootstrap_servers: str, topic: str, callback):
-        self.topic = topic
+    def __init__(self, bootstrap_servers: str, topics: list, callback):
+        self.topics = topics
         self.bootstrap_servers = bootstrap_servers
         self.callback = callback
         self._consumer: AIOKafkaConsumer | None = None
 
     async def start(self):
         self._consumer = AIOKafkaConsumer(
-            self.topic,
+            *self.topics,
             bootstrap_servers=self.bootstrap_servers,
             value_deserializer=lambda m: json.loads(m.decode('utf-8')),
             auto_offset_reset='latest'

@@ -4,13 +4,13 @@ from contextlib import asynccontextmanager
 
 from database.connection import create_db_pool
 from database.ProfileRepository import ProfileRepository
-from cloud_storage.S3Uploader import S3Uploader
-from recsys.recsys import EmbeddingRecommender
+from storage.S3Uploader import S3Uploader
+from services.recsys.recsys import EmbeddingRecommender
 from kafka_events.producer import KafkaEventProducer
 from kafka_events.consumer import KafkaEventConsumer
-from clickhouse.ClickHouseLogger import ClickHouseLogger
-from geo.CachedLocationResolver import CachedLocationResolver
-from geo.LocationResolver import LocationResolver
+from analytics.ClickHouseLogger import ClickHouseLogger
+from services.geo.CachedLocationResolver import CachedLocationResolver
+from services.geo.LocationResolver import LocationResolver
 from workers.geo_worker import handle_geo_request
 from cache.CityCoordinatesCache import CityCoordinatesCache
 from cache.SwipeCache import SwipeCache
@@ -59,7 +59,7 @@ async def lifespan(app: FastAPI):
 
     kafka_consumer = KafkaEventConsumer(
         f"{KAFKA_HOST}:{KAFKA_PORT}",
-        KAFKA_GEO_TOPIC,
+        [KAFKA_GEO_TOPIC],
         lambda event: handle_geo_request(
             app.state.profile_repo, 
             app.state.cached_location_resolver, 

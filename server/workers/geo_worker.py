@@ -1,4 +1,4 @@
-from geo.CachedLocationResolver import CachedLocationResolver
+from services.geo.CachedLocationResolver import CachedLocationResolver
 from database.ProfileRepository import ProfileRepository
 from cache.RecommendationCache import RecommendationCache
 from kafka_events.producer import KafkaEventProducer

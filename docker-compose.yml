@@ -123,4 +123,3 @@ volumes:
   chdata:
   grafana-data:
   pgadmin-data:
-

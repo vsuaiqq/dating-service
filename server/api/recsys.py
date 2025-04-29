@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 
-from recsys.recsys import EmbeddingRecommender
+from services.recsys.recsys import EmbeddingRecommender
 from core.dependecies import get_recommender
 
 router = APIRouter()

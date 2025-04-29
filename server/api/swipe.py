@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from database.ProfileRepository import ProfileRepository
 from kafka_events.producer import KafkaEventProducer
-from clickhouse.ClickHouseLogger import ClickHouseLogger
+from analytics.ClickHouseLogger import ClickHouseLogger
 from cache.SwipeCache import SwipeCache
 from core.dependecies import get_profile_repo, get_kafka_producer, get_clickhouse_logger, get_swipe_cache
 from core.config import KAFKA_SWIPES_TOPIC
@@ -18,9 +18,6 @@ async def add_swipe(
     logger: ClickHouseLogger = Depends(get_clickhouse_logger),
     swipe_cache: SwipeCache = Depends(get_swipe_cache)
 ):
-    if swipe.action not in {"like", "dislike", "question"}:
-        raise HTTPException(status_code=400, detail="Invalid swipe action")
-
     try:
         await repo.save_swipe(
             from_user_id=swipe.from_user_id,

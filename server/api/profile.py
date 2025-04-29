@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 
 from database.ProfileRepository import ProfileRepository
-from recsys.recsys import EmbeddingRecommender
+from services.recsys.recsys import EmbeddingRecommender
 from kafka_events.producer import KafkaEventProducer
 from cache.RecommendationCache import RecommendationCache
 from core.dependecies import get_recommender, get_profile_repo, get_kafka_producer, get_recommendation_cache
@@ -48,31 +48,38 @@ async def save_profile(
 
         return {"profile_id": profile_id}
     except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail="Ошибка при сохранении профиля"
-        )
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/media/save")
 async def save_media(data: MediaList, repo: ProfileRepository = Depends(get_profile_repo)):
-    media = [(item.type, item.s3_key) for item in data.media]
-    await repo.save_media(data.profile_id, media)
-    return {"status": "ok"}
+    try:
+        media = [(item.type, item.s3_key) for item in data.media]
+        await repo.save_media(data.profile_id, media)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/by_user/{user_id}")
 async def get_profile_by_user_id(user_id: int, repo: ProfileRepository = Depends(get_profile_repo)):
-    row = await repo.get_profile_by_user_id(user_id)
-    return dict(row) if row else None
+    try:
+        row = await repo.get_profile_by_user_id(user_id)
+        return dict(row) if row else None
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/media/{profile_id}")
 async def get_media_by_profile_id(profile_id: int, repo: ProfileRepository = Depends(get_profile_repo)):
-    rows = await repo.get_media_by_profile_id(profile_id)
-    return [dict(row) for row in rows]
+    try:
+        rows = await repo.get_media_by_profile_id(profile_id)
+        return [dict(row) for row in rows]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/toggle_active")
 async def toggle_active(data: ToggleActive, repo: ProfileRepository = Depends(get_profile_repo)):
-    await repo.toggle_profile_active(data.user_id, data.is_active)
-    return {"status": "ok"}
+    try:
+        await repo.toggle_profile_active(data.user_id, data.is_active)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/update_field")
 async def update_field(
@@ -82,30 +89,33 @@ async def update_field(
     recommender: EmbeddingRecommender = Depends(get_recommender),
     cache: RecommendationCache = Depends(get_recommendation_cache)
 ):
-    if data.field_name != 'coordinates':
-        await repo.update_profile_field(data.user_id, data.field_name, data.value)
+    try:
+        if data.field_name != 'coordinates':
+            await repo.update_profile_field(data.user_id, data.field_name, data.value)
 
-    if data.field_name == 'about':
-        await recommender.update_user_embedding(data.user_id)
+        if data.field_name == 'about':
+            await recommender.update_user_embedding(data.user_id)
 
-    if data.field_name == 'city':
-        await producer.send_event(KAFKA_GEO_NOTIFICATIONS_TOPIC, {
-            'user_id': data.user_id,
-            'status': 'waited'
-        })
-        await producer.send_event(KAFKA_GEO_TOPIC, {
-            'user_id': data.user_id,
-            'city': data.value
-        })
+        if data.field_name == 'city':
+            await producer.send_event(KAFKA_GEO_NOTIFICATIONS_TOPIC, {
+                'user_id': data.user_id,
+                'status': 'waited'
+            })
+            await producer.send_event(KAFKA_GEO_TOPIC, {
+                'user_id': data.user_id,
+                'city': data.value
+            })
 
-    if data.field_name == 'coordinates':
-        await repo.update_coordinates(data.user_id, data.value.latitude, data.value.longitude)
-        await repo.reset_city(data.user_id)
-        await cache.clear(data.user_id)
-
-    return {"status": "ok"}
+        if data.field_name == 'coordinates':
+            await repo.update_coordinates(data.user_id, data.value.latitude, data.value.longitude)
+            await repo.reset_city(data.user_id)
+            await cache.clear(data.user_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.delete("/media/delete")
 async def delete_media(data: ProfileId, repo: ProfileRepository = Depends(get_profile_repo)):
-    await repo.delete_media_by_profile_id(data.profile_id)
-    return {"status": "deleted"}
+    try:
+        await repo.delete_media_by_profile_id(data.profile_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

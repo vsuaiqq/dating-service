@@ -3,7 +3,7 @@ from typing import Optional
 from fastapi import UploadFile, File, Form
 from io import BytesIO
 
-from cloud_storage.S3Uploader import S3Uploader
+from storage.S3Uploader import S3Uploader
 from core.dependecies import get_s3_uploader
 
 router = APIRouter()
