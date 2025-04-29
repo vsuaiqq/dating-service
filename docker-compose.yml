@@ -100,6 +100,18 @@ services:
       interval: 5s
       timeout: 10s
       retries: 10
+ 
+  celery_worker:
+    build:
+      context: ./server
+    command: ["celery", "-A", "core.celery_app.celery_app", "worker", "--loglevel=info"]
+    restart: always
+    env_file: .env
+    environment:
+      - PYTHONPATH=/app
+    depends_on:
+      - redis
+      - postgres
   
   fastapi:
     build:

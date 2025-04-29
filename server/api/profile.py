@@ -5,12 +5,15 @@ from services.recsys.recsys import EmbeddingRecommender
 from kafka_events.producer import KafkaEventProducer
 from cache.RecommendationCache import RecommendationCache
 from core.dependecies import get_recommender, get_profile_repo, get_kafka_producer, get_recommendation_cache
-from core.config import KAFKA_GEO_NOTIFICATIONS_TOPIC, KAFKA_GEO_TOPIC
+from core.config import get_settings
 from models.profile import ProfileBase, ProfileId, ToggleActive
 from models.media import MediaList
 from models.fields import UpdateField
+from tasks.geo.tasks import update_user_location
 
 router = APIRouter()
+
+settings = get_settings()
 
 @router.post("/save")
 async def save_profile(
@@ -21,14 +24,14 @@ async def save_profile(
 ):
     try:
         if profile.latitude is None or profile.longitude is None:
-            await producer.send_event(KAFKA_GEO_NOTIFICATIONS_TOPIC, {
+            await producer.send_event(settings.KAFKA_GEO_NOTIFICATIONS_TOPIC, {
                 'user_id': profile.user_id,
                 'status': 'waited'
             })
-            await producer.send_event(KAFKA_GEO_TOPIC, {
-                'user_id': profile.user_id,
-                'city': profile.city
-            })
+            update_user_location.delay(
+                user_id=profile.user_id,
+                city=profile.city
+            )
         
         fallback_coordinates = (55.625578, 37.6063916)
 
@@ -97,14 +100,14 @@ async def update_field(
             await recommender.update_user_embedding(data.user_id)
 
         if data.field_name == 'city':
-            await producer.send_event(KAFKA_GEO_NOTIFICATIONS_TOPIC, {
+            await producer.send_event(settings.KAFKA_GEO_NOTIFICATIONS_TOPIC, {
                 'user_id': data.user_id,
                 'status': 'waited'
             })
-            await producer.send_event(KAFKA_GEO_TOPIC, {
-                'user_id': data.user_id,
-                'city': data.value
-            })
+            update_user_location.delay(
+                user_id=data.user_id,
+                city=data.value
+            )
 
         if data.field_name == 'coordinates':
             await repo.update_coordinates(data.user_id, data.value.latitude, data.value.longitude)

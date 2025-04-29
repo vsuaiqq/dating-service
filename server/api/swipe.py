@@ -5,10 +5,12 @@ from kafka_events.producer import KafkaEventProducer
 from analytics.ClickHouseLogger import ClickHouseLogger
 from cache.SwipeCache import SwipeCache
 from core.dependecies import get_profile_repo, get_kafka_producer, get_clickhouse_logger, get_swipe_cache
-from core.config import KAFKA_SWIPES_TOPIC
+from core.config import get_settings
 from models.swipe import SwipeInput
 
 router = APIRouter()
+
+settings = get_settings()
 
 @router.post("/add")
 async def add_swipe(
@@ -48,7 +50,7 @@ async def add_swipe(
         )
 
         if swipe.action in {"like", "question"}:
-            await producer.send_event(KAFKA_SWIPES_TOPIC,{
+            await producer.send_event(settings.KAFKA_SWIPES_TOPIC,{
                 'from_user_id': swipe.from_user_id,
                 'to_user_id': swipe.to_user_id,
                 'action': swipe.action,

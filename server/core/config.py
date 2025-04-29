@@ -1,37 +1,63 @@
-import os
-from dotenv import load_dotenv
+from pydantic import BaseSettings, RedisDsn, PostgresDsn, Field
+from typing import List
+from functools import lru_cache
 
-load_dotenv()
+class Settings(BaseSettings):
 
-POSTGRES_DB = os.getenv("POSTGRES_DB")
-POSTGRES_USER = os.getenv("POSTGRES_USER")
-POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
-DB_HOST = os.getenv("DB_HOST")
-DB_PORT = os.getenv("DB_PORT")
+    POSTGRES_DB: str
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    DB_HOST: str
+    DB_PORT: int
 
-S3_ENDPOINT_URL = os.getenv("S3_ENDPOINT_URL")
-S3_REGION_NAME = os.getenv("S3_REGION_NAME")
-S3_BUCKET_NAME = os.getenv("S3_BUCKET_NAME")
-S3_ACCESS_KEY_ID = os.getenv("S3_ACCESS_KEY_ID")
-S3_SECRET_ACCESS_KEY = os.getenv("S3_SECRET_ACCESS_KEY")
+    REDIS_HOST: str
+    REDIS_PORT: int
+    REDIS_FASTAPI_CACHE: int
+    REDIS_CELERY: int
 
-CLICKHOUSE_HOST = os.getenv("CLICKHOUSE_HOST")
-CLICKHOUSE_PORT = os.getenv("CLICKHOUSE_PORT")
-CLICKHOUSE_DB = os.getenv("CLICKHOUSE_DB")
-CLICKHOUSE_USER = os.getenv("CLICKHOUSE_USER")
-CLICKHOUSE_PASSWORD = os.getenv("CLICKHOUSE_PASSWORD")
+    KAFKA_HOST: str
+    KAFKA_PORT: int
+    KAFKA_SWIPES_TOPIC: str
+    KAFKA_GEO_TOPIC: str
+    KAFKA_GEO_NOTIFICATIONS_TOPIC: str
 
-REDIS_HOST = os.getenv("REDIS_HOST")
-REDIS_PORT = os.getenv("REDIS_PORT")
-REDIS_FASTAPI_CACHE = os.getenv("REDIS_FASTAPI_CACHE")
+    S3_ENDPOINT_URL: str
+    S3_REGION_NAME: str
+    S3_BUCKET_NAME: str
+    S3_ACCESS_KEY_ID: str
+    S3_SECRET_ACCESS_KEY: str
 
-KAFKA_HOST = os.getenv("KAFKA_HOST")
-KAFKA_PORT = os.getenv("KAFKA_PORT")
-KAFKA_SWIPES_TOPIC = os.getenv("KAFKA_SWIPES_TOPIC")
-KAFKA_GEO_TOPIC = os.getenv("KAFKA_GEO_TOPIC")
-KAFKA_GEO_NOTIFICATIONS_TOPIC = os.getenv("KAFKA_GEO_NOTIFICATIONS_TOPIC")
+    CLICKHOUSE_HOST: str
+    CLICKHOUSE_PORT: int
+    CLICKHOUSE_DB: str
+    CLICKHOUSE_USER: str
+    CLICKHOUSE_PASSWORD: str
 
-ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-]
+    ORIGINS: List[str] = Field(default_factory=lambda: [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ])
+
+    class Config:
+        env_file = ".env"
+        env_file_encoding = "utf-8"
+
+    @property
+    def postgres_dsn(self) -> PostgresDsn:
+        return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.POSTGRES_DB}"
+
+    @property
+    def redis_url_cache(self) -> RedisDsn:
+        return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_FASTAPI_CACHE}"
+
+    @property
+    def redis_url_celery(self) -> RedisDsn:
+        return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_CELERY}"
+
+    @property
+    def kafka_bootstrap_servers(self) -> str:
+        return f"{self.KAFKA_HOST}:{self.KAFKA_PORT}"
+
+@lru_cache()
+def get_settings() -> Settings:
+    return Settings()

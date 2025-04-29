@@ -5,7 +5,6 @@ from storage.S3Uploader import S3Uploader
 from services.recsys.recsys import EmbeddingRecommender
 from kafka_events.producer import KafkaEventProducer
 from analytics.ClickHouseLogger import ClickHouseLogger
-from services.geo.CachedLocationResolver import CachedLocationResolver
 from cache.SwipeCache import SwipeCache
 from cache.RecommendationCache import RecommendationCache
 
@@ -23,9 +22,6 @@ def get_kafka_producer(request: Request) -> KafkaEventProducer:
 
 def get_clickhouse_logger(request: Request) -> ClickHouseLogger:
     return request.app.state.clickhouse_logger
-
-def get_cached_location_resolver(request: Request) -> CachedLocationResolver:
-    return request.app.state.cached_location_resolver
 
 def get_swipe_cache(request: Request) -> SwipeCache:
     return request.app.state.swipe_cache

@@ -16,3 +16,4 @@ python-multipart
 geopy
 redis
 huggingface_hub[hf_xet]
+celery

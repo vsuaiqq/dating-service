@@ -1,13 +1,15 @@
 import asyncpg
 import logging
-from core.config import POSTGRES_DB, POSTGRES_PASSWORD, POSTGRES_USER, DB_PORT, DB_HOST
+
+from core.config import get_settings
+
+settings = get_settings()
 
 async def create_db_pool() -> asyncpg.Pool:
     try:
-        dsn = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{DB_HOST}:{DB_PORT}/{POSTGRES_DB}"
-        pool =  await asyncpg.create_pool(dsn=dsn, min_size=1, max_size=10)
-        logging.info("Успешное подключение к базе данных.")
+        pool =  await asyncpg.create_pool(dsn=settings.postgres_dsn, min_size=1, max_size=10)
+        logging.info("POSTGRES connection success.")
         return pool
     except Exception as e:
-        logging.error(f"Ошибка при подключении к базе данных: {e}")
+        logging.error(f"Failed to connect POSTGRES: {e}")
         raise

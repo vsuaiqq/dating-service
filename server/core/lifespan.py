@@ -9,60 +9,59 @@ from services.recsys.recsys import EmbeddingRecommender
 from kafka_events.producer import KafkaEventProducer
 from kafka_events.consumer import KafkaEventConsumer
 from analytics.ClickHouseLogger import ClickHouseLogger
-from services.geo.CachedLocationResolver import CachedLocationResolver
-from services.geo.LocationResolver import LocationResolver
-from workers.geo_worker import handle_geo_request
-from cache.CityCoordinatesCache import CityCoordinatesCache
+from utils.geo import on_geo_resolve_event
 from cache.SwipeCache import SwipeCache
 from cache.RecommendationCache import RecommendationCache
+from core.config import get_settings
 
-from core.config import (
-    S3_BUCKET_NAME, S3_REGION_NAME, S3_ACCESS_KEY_ID,
-    S3_SECRET_ACCESS_KEY, S3_ENDPOINT_URL, 
-    CLICKHOUSE_DB, CLICKHOUSE_USER, CLICKHOUSE_PASSWORD,
-    CLICKHOUSE_HOST, CLICKHOUSE_PORT,
-    REDIS_HOST, REDIS_PORT, REDIS_FASTAPI_CACHE,
-    KAFKA_HOST, KAFKA_PORT, KAFKA_GEO_TOPIC
-)
+settings = get_settings()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    redis_client = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_FASTAPI_CACHE, decode_responses=True)
+    redis_client = redis.Redis(
+        host=settings.REDIS_HOST, 
+        port=settings.REDIS_PORT, 
+        db=settings.REDIS_FASTAPI_CACHE, 
+        decode_responses=True
+    )
+
+    kafka_bootstrap_servers = settings.kafka_bootstrap_servers
 
     app.state.profile_repo = ProfileRepository(await create_db_pool())
+
     app.state.s3_uploader = S3Uploader(
-        bucket_name=S3_BUCKET_NAME,
-        region=S3_REGION_NAME,
-        access_key=S3_ACCESS_KEY_ID,
-        secret_key=S3_SECRET_ACCESS_KEY,
-        endpoint_url=S3_ENDPOINT_URL
+        bucket_name=settings.S3_BUCKET_NAME,
+        region=settings.S3_REGION_NAME,
+        access_key=settings.S3_ACCESS_KEY_ID,
+        secret_key=settings.S3_SECRET_ACCESS_KEY,
+        endpoint_url=settings.S3_ENDPOINT_URL
     )
+
     app.state.recommendation_cache = RecommendationCache(redis_client)
+
     app.state.swipe_cache = SwipeCache(redis_client)
+
     app.state.recsys = EmbeddingRecommender(
         profile_repo=app.state.profile_repo,
         recommendation_cache=app.state.recommendation_cache,
         swipe_cache=app.state.swipe_cache
     )
-    app.state.kafka_producer = KafkaEventProducer(f"{KAFKA_HOST}:{KAFKA_PORT}")
+
+    app.state.kafka_producer = KafkaEventProducer(kafka_bootstrap_servers)
+
     app.state.clickhouse_logger = ClickHouseLogger(
-        host=CLICKHOUSE_HOST,
-        port=CLICKHOUSE_PORT,
-        user=CLICKHOUSE_USER,
-        password=CLICKHOUSE_PASSWORD,
-        database=CLICKHOUSE_DB
-    )
-    app.state.cached_location_resolver = CachedLocationResolver(
-        resolver=LocationResolver(),
-        cache=CityCoordinatesCache(redis_client)
+        host=settings.CLICKHOUSE_HOST,
+        port=settings.CLICKHOUSE_PORT,
+        user=settings.CLICKHOUSE_USER,
+        password=settings.CLICKHOUSE_PASSWORD,
+        database=settings.CLICKHOUSE_DB
     )
 
     kafka_consumer = KafkaEventConsumer(
-        f"{KAFKA_HOST}:{KAFKA_PORT}",
-        [KAFKA_GEO_TOPIC],
-        lambda event: handle_geo_request(
+        kafka_bootstrap_servers,
+        [settings.KAFKA_GEO_TOPIC],
+        lambda event: on_geo_resolve_event(
             app.state.profile_repo, 
-            app.state.cached_location_resolver, 
             app.state.recommendation_cache, 
             app.state.kafka_producer,
             event

@@ -1,5 +1,5 @@
-from aiokafka import AIOKafkaProducer
 import json
+from aiokafka import AIOKafkaProducer
 
 class KafkaEventProducer:
     def __init__(self, bootstrap_servers: str):
