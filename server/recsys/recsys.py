@@ -1,16 +1,16 @@
 import numpy as np
+import random
+import re
+import pymorphy2
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from typing import List
-import random
-import re
 from nltk.stem import WordNetLemmatizer
-import pymorphy2
 from langdetect import detect
+
 from database.ProfileRepository import ProfileRepository
 from cache.RecommendationCache import RecommendationCache
 from cache.SwipeCache import SwipeCache
-
 from utils.age import get_match_age_range
 
 class EmbeddingRecommender:

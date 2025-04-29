@@ -1,6 +1,6 @@
 import asyncpg
 import logging
-from config import POSTGRES_DB, POSTGRES_PASSWORD, POSTGRES_USER, DB_PORT, DB_HOST
+from core.config import POSTGRES_DB, POSTGRES_PASSWORD, POSTGRES_USER, DB_PORT, DB_HOST
 
 async def create_db_pool() -> asyncpg.Pool:
     try:

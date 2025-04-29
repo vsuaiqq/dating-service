@@ -184,3 +184,11 @@ class ProfileRepository:
                     location = ST_SetSRID(ST_MakePoint($2, $1), 4326)::geography
                 WHERE user_id = $3
             """, latitude, longitude, user_id)
+    
+    async def reset_city(self, user_id: int):
+        async with self.pool.acquire() as conn:
+            await conn.execute("""
+                UPDATE profiles
+                SET city = NULL
+                WHERE user_id = $1
+            """, user_id)

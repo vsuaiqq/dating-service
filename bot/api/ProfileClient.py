@@ -1,6 +1,6 @@
 import httpx
 import json
-from typing import List
+from typing import List, Union
 
 class ProfileClient:
     def __init__(self, base_url: str):
@@ -34,7 +34,7 @@ class ProfileClient:
         resp.raise_for_status()
         return resp.json()
 
-    async def update_field(self, user_id: int, field_name: str, value: str) -> dict:
+    async def update_field(self, user_id: int, field_name: str, value: Union[str, dict]) -> dict:
         payload = {"user_id": user_id, "field_name": field_name, "value": value}
         resp = await self.client.post("/profile/update_field", json=payload)
         resp.raise_for_status()

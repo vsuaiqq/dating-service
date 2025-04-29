@@ -1,7 +1,5 @@
 from aiogram.filters import BaseFilter
 from aiogram.types import Message
-from typing import Dict, Any
-from pprint import pprint
 from utils.i18n import get_translator
 
 class I18nTextFilter(BaseFilter):

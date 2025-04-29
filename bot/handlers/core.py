@@ -190,40 +190,23 @@ async def update_city(message: types.Message, state: FSMContext, _: Callable):
         if message.location:
             coords, error = ProfileValidator.validate_location(message.location, _)
             if not error:
-                await router.profile_client.update_coordinates(
+                await router.profile_client.update_field(
                     user_id=message.from_user.id,
-                    latitude=message.location.latitude,
-                    longitude=message.location.longitude
-                )
-                await router.profile_client.update_profile_field(
-                    user_id=message.from_user.id,
-                    field_name='city',
-                    value=None
+                    field_name='coordinates',
+                    value={
+                        'latitude': message.location.latitude,
+                        'longitude': message.location.longitude
+                    }
                 )
                 is_location = True
 
         elif message.text:
             city, error = ProfileValidator.validate_city(message.text, _)
             if not error:
-                await router.profile_client.update_profile_field(
+                await router.profile_client.update_field(
                     user_id=message.from_user.id,
                     field_name='city',
                     value=city
-                )
-                await router.profile_client.update_profile_field(
-                    user_id=message.from_user.id,
-                    field_name='latitude',
-                    value=None
-                )
-                await router.profile_client.update_profile_field(
-                    user_id=message.from_user.id,
-                    field_name='longitude',
-                    value=None
-                )
-                await router.profile_client.update_profile_field(
-                    user_id=message.from_user.id,
-                    field_name='location',
-                    value=None
                 )
         else:
             error = _("invalid_input_type")
