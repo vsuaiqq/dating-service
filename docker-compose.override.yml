@@ -8,7 +8,15 @@ services:
       KAFKA_LISTENERS: PLAINTEXT_INTERNAL://0.0.0.0:9092,PLAINTEXT://0.0.0.0:29092
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT_INTERNAL://kafka:9092,PLAINTEXT://localhost:29092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
-
+  
+  celery_worker:
+    command: 
+      - bash
+      - -c
+      - "watchmedo auto-restart --directory=/app --pattern='*.py' --recursive -- celery -A core.celery_app.celery_app worker --loglevel=info"
+    volumes:
+      - ./server:/app
+  
   fastapi:
     build:
       dockerfile: Dockerfile

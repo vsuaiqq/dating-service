@@ -1,7 +1,7 @@
 from core.celery_app import celery_app
 from core.config import get_settings
-from services.geo.LocationResolver import LocationResolver
-from services.geo.CachedLocationResolver import CachedLocationResolver
+from geo.LocationResolver import LocationResolver
+from geo.CachedLocationResolver import CachedLocationResolver
 from cache.CityCoordinatesCache import CityCoordinatesCache
 from kafka_events.producer_sync import KafkaEventProducerSync
 
@@ -15,7 +15,7 @@ def update_user_location(user_id: int, city: str):
     
     resolver = CachedLocationResolver(
         resolver=LocationResolver(), 
-        cache=CityCoordinatesCache(redis_url=settings.redis_url_celery)
+        cache=CityCoordinatesCache(redis_url=settings.redis_url_cache)
     )
 
     coords = resolver.resolve(city)

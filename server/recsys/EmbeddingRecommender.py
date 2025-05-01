@@ -71,6 +71,7 @@ class EmbeddingRecommender:
             user_id, user, self.max_distance_search, min_age, max_age
         )
 
+        print('\n\n\n', users, '\n\n\n')
         if not users:
             return []
 
@@ -114,8 +115,13 @@ class EmbeddingRecommender:
         ) -> List[int]:
             already_swiped = await self.swipe_cache.get_all_swiped_ids(user_id)
 
+            already_swiped = []
+
+            print('\n', 'already_swiped: ', already_swiped, '\n')
+
             cached = await self.recommendation_cache.get(user_id)
             if cached:
+                print('\n', 'cached:', cached, '\n')
                 return [uid for uid in cached if uid not in already_swiped][:count]
 
             content_count = int(count * self.recsys_coeff)

@@ -1,6 +1,6 @@
-from aiokafka import AIOKafkaConsumer
 import asyncio
 import json
+from aiokafka import AIOKafkaConsumer
 
 class KafkaEventConsumer:
     def __init__(self, bootstrap_servers: str, topics: list, callback):

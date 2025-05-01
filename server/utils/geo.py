@@ -33,6 +33,6 @@ async def on_geo_resolve_event(
         })
     except Exception:
         await producer.send_event(settings.KAFKA_GEO_NOTIFICATIONS_TOPIC, {
-            'user_id': user_id,
+            'user_id': event["user_id"],
             'status': 'failed'
         })

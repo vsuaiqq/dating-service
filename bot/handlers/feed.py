@@ -9,6 +9,7 @@ from keyboards.swipe import get_swipe_keyboard
 from keyboards.main import get_main_keyboard
 from keyboards.back import get_back_keyboard
 from states.message import Message
+from models.swipe.requests import AddSwipeRequest
 
 router = CustomRouter()
 
@@ -18,29 +19,31 @@ async def send_next_recommendation(user_id: int, message: types.Message, state: 
 
     is_active = await is_profile_active(profile_client, message.from_user.id)
     response = await recsys_client.get_recommendations(user_id)
-    recs = response.get("recommendations", [])
+    recs = response.recommendations
     
     if not recs:
         await message.answer(_("no_more_recommendations"), reply_markup=get_main_keyboard(is_active, _))
         return
     
     while True:
+        print('\n\n', recs)
         next_user_id = recs.pop()
+        print(recs, '\n\n')
         if not next_user_id:
             await message.answer(_("no_more_recommendations"), reply_markup=get_main_keyboard(is_active, _))
             return
 
         profile = await profile_client.get_profile_by_user_id(next_user_id)
-        if profile and profile.get("is_active"):
+        if profile and profile.is_active:
             break
     
     if not profile:
         await message.answer(_("no_more_recommendations"), reply_markup=get_main_keyboard(is_active, _))
         return
 
-    text = f"{profile['name']}, {profile['age']}\n{profile.get('about', '')}"
+    text = f"{profile.name}, {profile.age}\n{profile.about or ''}"
 
-    await state.update_data(current_profile_id=profile['user_id'])
+    await state.update_data(current_profile_id=profile.user_id)
 
     await message.answer(text, reply_markup=get_swipe_keyboard(_))
 
@@ -63,11 +66,12 @@ async def handle_swipe_text(message: types.Message, state: FSMContext, _: Callab
         return
 
     action = "like" if action_emoji == "👍" else "dislike"
-    await router.swipe_client.add_swipe(
+    await router.swipe_client.add_swipe(AddSwipeRequest(
         from_user_id=from_user_id,
         to_user_id=to_user_id,
         action=action
-    )
+    ))
+
     await message.answer(_("swipe_sent"))
     await send_next_recommendation(from_user_id, message, state, _)
 
@@ -78,12 +82,12 @@ async def handle_question_input(message: types.Message, state: FSMContext, _: Ca
     to_user_id = data.get("current_profile_id")
     question_text = message.text
 
-    await router.swipe_client.add_swipe(
+    await router.swipe_client.add_swipe(AddSwipeRequest(
         from_user_id=from_user_id,
         to_user_id=to_user_id,
         action="question",
         message=question_text
-    )
+    ))
 
     await state.clear()
     await message.answer(_("question_sent"))

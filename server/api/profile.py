@@ -1,158 +1,93 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
-from fastapi.responses import JSONResponse
 
-from database.ProfileRepository import ProfileRepository
-from services.recsys.recsys import EmbeddingRecommender
-from services.validation_video.video_validator import VideoValidator
-from kafka_events.producer import KafkaEventProducer
-from cache.RecommendationCache import RecommendationCache
-from core.dependecies import get_recommender, get_profile_repo, get_kafka_producer, get_recommendation_cache, get_video_validator
-from core.config import get_settings
-from models.profile import ProfileBase, ProfileId, ToggleActive
-from models.media import MediaList
-from models.fields import UpdateField
-from tasks.geo.tasks import update_user_location
+from core.dependecies import get_profile_service
+from services.profile.ProfileService import ProfileService
+from models.profile.requests import SaveProfileRequest, SaveMediaRequest, ToggleActiveRequest, UpdateFieldRequest
+from models.profile.responses import SaveProfileResponse, GetProfileResponse, GetMediaResponse
 
 router = APIRouter()
 
-settings = get_settings()
-
-@router.post("/save")
+@router.put("/{user_id}", response_model=SaveProfileResponse)
 async def save_profile(
-    profile: ProfileBase,
-    repo: ProfileRepository = Depends(get_profile_repo),
-    producer: KafkaEventProducer = Depends(get_kafka_producer),
-    recommender: EmbeddingRecommender = Depends(get_recommender),
+    user_id: int,
+    data: SaveProfileRequest,
+    profile_service: ProfileService = Depends(get_profile_service)
 ):
     try:
-        if profile.latitude is None or profile.longitude is None:
-            await producer.send_event(settings.KAFKA_GEO_NOTIFICATIONS_TOPIC, {
-                'user_id': profile.user_id,
-                'status': 'waited'
-            })
-            update_user_location.delay(
-                user_id=profile.user_id,
-                city=profile.city
-            )
-        
-        fallback_coordinates = (55.625578, 37.6063916)
-
-        profile_id = await repo.save_profile(
-            profile.user_id,
-            profile.name,
-            profile.gender,
-            profile.city,
-            profile.age,
-            profile.interesting_gender,
-            profile.about,
-            profile.latitude or fallback_coordinates[0],
-            profile.longitude or fallback_coordinates[1]
-        )
-
-        await recommender.update_user_embedding(profile.user_id)
-
-        return {"profile_id": profile_id}
+        return await profile_service.save_profile(user_id, data)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/profile/verify_video")
-async def verify_video(
-    validator: VideoValidator = Depends(get_video_validator), 
-    file: UploadFile = File(...)
+@router.get("/{user_id}", response_model=GetProfileResponse)
+async def get_profile_by_user_id(
+    user_id: int,
+    profile_service: ProfileService = Depends(get_profile_service)
 ):
-    try:
-        if not file.content_type.startswith('video/'):
-            raise HTTPException(400, "Invalid file type. Expected video.")
-        
-        file_bytes = await file.read()
-        
-        if len(file_bytes) > 10 * 1024 * 1024:
-            raise HTTPException(400, "File too large. Max 10MB allowed.")
-        
-        result = await validator.validate_video_file(file_bytes)
-        
-        if result["status"] == "error":
-            raise HTTPException(400, result["message"])
-            
-        return JSONResponse({
-            "status": "success",
-            "is_human": result["is_human"],
-            "face_ratio": result["face_ratio"],
-            "total_frames": result["total_frames"],
-            "frames_with_face": result["frames_with_face"]
-        })
-        
-    except HTTPException as he:
-        raise he
-    except Exception as e:
-        raise HTTPException(500, f"Internal server error: {str(e)}")
+    result = await profile_service.get_profile_by_user_id(user_id)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Profile not found")
+    return result
 
-@router.post("/media/save")
-async def save_media(data: MediaList, repo: ProfileRepository = Depends(get_profile_repo)):
-    try:
-        media = [(item.type, item.s3_key) for item in data.media]
-        await repo.save_media(data.profile_id, media)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.get("/by_user/{user_id}")
-async def get_profile_by_user_id(user_id: int, repo: ProfileRepository = Depends(get_profile_repo)):
-    try:
-        row = await repo.get_profile_by_user_id(user_id)
-        return dict(row) if row else None
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.get("/media/{profile_id}")
-async def get_media_by_profile_id(profile_id: int, repo: ProfileRepository = Depends(get_profile_repo)):
-    try:
-        rows = await repo.get_media_by_profile_id(profile_id)
-        return [dict(row) for row in rows]
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.post("/toggle_active")
-async def toggle_active(data: ToggleActive, repo: ProfileRepository = Depends(get_profile_repo)):
-    try:
-        await repo.toggle_profile_active(data.user_id, data.is_active)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.post("/update_field")
+@router.patch("/{user_id}")
 async def update_field(
-    data: UpdateField, 
-    repo: ProfileRepository = Depends(get_profile_repo), 
-    producer: KafkaEventProducer = Depends(get_kafka_producer), 
-    recommender: EmbeddingRecommender = Depends(get_recommender),
-    cache: RecommendationCache = Depends(get_recommendation_cache)
+    user_id: int,
+    data: UpdateFieldRequest, 
+    profile_service: ProfileService = Depends(get_profile_service)
 ):
     try:
-        if data.field_name != 'coordinates':
-            await repo.update_profile_field(data.user_id, data.field_name, data.value)
-
-        if data.field_name == 'about':
-            await recommender.update_user_embedding(data.user_id)
-
-        if data.field_name == 'city':
-            await producer.send_event(settings.KAFKA_GEO_NOTIFICATIONS_TOPIC, {
-                'user_id': data.user_id,
-                'status': 'waited'
-            })
-            update_user_location.delay(
-                user_id=data.user_id,
-                city=data.value
-            )
-
-        if data.field_name == 'coordinates':
-            await repo.update_coordinates(data.user_id, data.value.latitude, data.value.longitude)
-            await repo.reset_city(data.user_id)
-            await cache.clear(data.user_id)
+        await profile_service.update_field(user_id, data)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.delete("/media/delete")
-async def delete_media(data: ProfileId, repo: ProfileRepository = Depends(get_profile_repo)):
+@router.patch("/{user_id}/active")
+async def toggle_active(
+    user_id: int,
+    data: ToggleActiveRequest, 
+    profile_service: ProfileService = Depends(get_profile_service)
+):
     try:
-        await repo.delete_media_by_profile_id(data.profile_id)
+        await profile_service.toggle_active(user_id, data)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/{user_id}/verify-video")
+async def verify_video(
+    user_id: int,
+    file: UploadFile = File(...),
+    profile_service: ProfileService = Depends(get_profile_service)
+):
+    try:
+        profile_service.verify_video(user_id, await file.read())
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/{user_id}/media")
+async def save_media(
+    user_id: int,
+    data: SaveMediaRequest, 
+    profile_service: ProfileService = Depends(get_profile_service)
+):
+    try:
+        await profile_service.save_media(user_id, data)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/{user_id}/media", response_model=GetMediaResponse)
+async def get_media_by_profile_id(
+    user_id: int,
+    profile_service: ProfileService = Depends(get_profile_service)
+):
+    try:
+        return await profile_service.get_media_by_profile_id(user_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.delete("/{user_id}/media")
+async def delete_media(
+    user_id: int,
+    profile_service: ProfileService = Depends(get_profile_service)
+):
+    try:
+        await profile_service.delete_media(user_id)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

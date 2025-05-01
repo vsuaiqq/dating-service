@@ -1,24 +1,20 @@
 import httpx
-from typing import Optional, Literal
+from models.swipe.requests import AddSwipeRequest
 
 class SwipeClient:
     def __init__(self, base_url: str):
         self.base_url = base_url.rstrip("/")
         self.client = httpx.AsyncClient(base_url=self.base_url)
 
-    async def add_swipe(
-        self,
-        from_user_id: int,
-        to_user_id: int,
-        action: Literal["like", "dislike", "question"],
-        message: Optional[str] = None
-    ) -> dict:
-        payload = {
-            "from_user_id": from_user_id,
-            "to_user_id": to_user_id,
-            "action": action,
-            "message": message
-        }
-        resp = await self.client.post("/swipe/add", json=payload)
+    async def add_swipe(self, swipe_data: AddSwipeRequest) -> None:
+        resp = await self.client.post("/swipe", json=swipe_data.model_dump())
         resp.raise_for_status()
-        return resp.json()
+
+    async def close(self):
+        await self.client.aclose()
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.close()

@@ -16,11 +16,11 @@ class LocationResolver:
 
     def resolve_coordinates(self, city: str) -> Optional[Tuple[float, float]]:
         for _ in range(5):
+            time.sleep(1)
             try:
                 location = self.geocode(city)
                 if location:
                     return location.latitude, location.longitude
             except GeopyError:
                 pass
-            time.sleep(1)
         return None

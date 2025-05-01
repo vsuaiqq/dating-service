@@ -2,12 +2,12 @@ import random
 import asyncio
 import aiohttp
 
-API_URL = "http://localhost:8000/profile/save"
-NUM_PROFILES = 100000
+API_URL = "http://localhost:8000/profile/"
+NUM_PROFILES = 100
 
 names_male = ['Alex', 'Ivan', 'Sergey', 'Dmitry', 'Nikolay', 'Andrey', 'Pavel', 'Roman', 'Mikhail', 'Oleg']
 names_female = ['Maria', 'Anna', 'Olga', 'Elena', 'Natalia', 'Irina', 'Tatiana', 'Svetlana', 'Ekaterina', 'Lyudmila']
-cities = ['Moscow', 'Saint Petersburg', 'Kazan', 'Novosibirsk', 'Sochi', 'Rostov-on-Don', 'Yekaterinburg', 'Krasnodar', 'Vladivostok', 'Kaliningrad']
+cities = ['Moscow', 'Saint Petersburg', 'казань', "мск", 'дудинка улица', 'владивосток']
 
 about_templates = [
     "Hi, I'm {name} from {city}. I love {hobby} and I'm looking for someone who enjoys {interest}.",
@@ -40,8 +40,7 @@ def generate_profile(user_id: int) -> dict:
     age = random.randint(18, 45)
     about = generate_about(name, city, age)
 
-    return {
-        "user_id": user_id,
+    return user_id, {
         "name": name,
         "gender": gender,
         "city": city,
@@ -50,20 +49,21 @@ def generate_profile(user_id: int) -> dict:
         "about": about
     }
 
-async def send_profile(session, profile):
-    async with session.post(API_URL, json=profile) as resp:
+async def send_profile(session, user_id, profile):
+    await asyncio.sleep(3)
+    async with session.put(API_URL+str(user_id), json=profile) as resp:
         if resp.status != 200:
             text = await resp.text()
-            print(f"❌ Error {resp.status} for user {profile['user_id']}: {text}")
+            print(f"❌ Error {resp.status} for user {user_id}: {text}")
         else:
-            print(f"✅ Created user {profile['user_id']} - {profile['name']}")
+            print(f"✅ Created user {user_id} - {profile['name']}")
 
 async def main():
     async with aiohttp.ClientSession() as session:
         tasks = []
         for i in range(1, NUM_PROFILES + 1):
-            profile = generate_profile(user_id=1000 + i)
-            tasks.append(send_profile(session, profile))
+            user_id, profile = generate_profile(user_id=0 + i)
+            tasks.append(send_profile(session, user_id, profile))
         await asyncio.gather(*tasks)
 
 if __name__ == "__main__":

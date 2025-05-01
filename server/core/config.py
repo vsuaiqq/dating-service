@@ -1,4 +1,5 @@
-from pydantic import BaseSettings, RedisDsn, PostgresDsn, Field
+from pydantic_settings import BaseSettings
+from pydantic import RedisDsn, PostgresDsn, Field
 from typing import List
 from functools import lru_cache
 
@@ -19,8 +20,10 @@ class Settings(BaseSettings):
     KAFKA_PORT: int
     KAFKA_SWIPES_TOPIC: str
     KAFKA_GEO_TOPIC: str
+    KAFKA_VIDEO_TOPIC: str
     KAFKA_GEO_NOTIFICATIONS_TOPIC: str
-
+    KAFKA_VIDEO_NOTIFICATIONS_TOPIC: str
+    
     S3_ENDPOINT_URL: str
     S3_REGION_NAME: str
     S3_BUCKET_NAME: str

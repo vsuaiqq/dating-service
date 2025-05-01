@@ -17,6 +17,7 @@ from utils.ProfileValidator import ProfileValidator
 from utils.I18nTextFilter import I18nTextFilter
 from utils.media import MAX_MEDIA_FILES, process_media_file
 from utils.CustomRouter import CustomRouter
+from models.profile.requests import SaveProfileRequest, MediaItem, SaveMediaRequest
 
 router = CustomRouter()
 
@@ -24,7 +25,7 @@ router = CustomRouter()
 async def cmd_start(message: types.Message, _: Callable):
     profile = await router.profile_client.get_profile_by_user_id(message.from_user.id)
     if profile:
-        await message.answer(_("greeting_start"), reply_markup=get_main_keyboard(profile['is_active'], _))
+        await message.answer(_("greeting_start"), reply_markup=get_main_keyboard(profile.is_active, _))
     else:
         await message.answer(_("greeting_start"), reply_markup=get_start_keyboard(_))
 
@@ -38,25 +39,16 @@ async def text_start(message: types.Message, state: FSMContext, _: Callable):
         await state.set_state(ProfileStates.waiting_for_video_note)
 
 @router.message(ProfileStates.waiting_for_video_note, F.video_note)
-async def verify_video_note(message: types.Message, state: FSMContext, _: Callable):
+async def verify_video_note(message: types.Message, _: Callable):
     try:
         file = await message.bot.get_file(message.video_note.file_id)
         file_bytes = await message.bot.download_file(file.file_path)
         
-        verification_result = await router.profile_client.verify_video_note(
-            file_id=file.file_id,
-            file_bytes=file_bytes.read()
+        await router.profile_client.verify_video(
+            user_id=message.from_user.id,
+            file_bytes=file_bytes.read(),
+            file_id=file.file_id
         )
-        
-        if not verification_result.get("is_human", False):
-            await message.answer(_("verification_failed"))
-            return
-            
-        await state.update_data(video_note_verified=True)
-        await message.answer(_("verification_success"))
-        await message.answer(_("ask_age"), reply_markup=get_back_keyboard(_))
-        await state.set_state(ProfileStates.age)
-        
     except Exception as e:
         await message.answer(_("verification_error") + f": {str(e)}")
 
@@ -208,19 +200,21 @@ async def get_about(message: types.Message, state: FSMContext, _: Callable):
 async def save_profile(message: types.Message, state: FSMContext, _: Callable):
     data = await state.get_data()
     media_list = data.get("media", [])
-    print(data)
+
     try:
-        profile_id = await router.profile_client.save_profile({
-            'user_id': message.from_user.id,
-            'name': data["name"],
-            'gender': data["gender"],
-            'city': data["city"],
-            'age': int(data["age"]),
-            'interesting_gender': data["interesting_gender"],
-            'about': data["about"],
-            'latitude' : data["latitude"],
-            'longitude': data["longitude"]
-        })
+        await router.profile_client.save_profile(
+            message.from_user.id,
+            SaveProfileRequest(**{
+                'name': data["name"],
+                'gender': data["gender"],
+                'city': data["city"],
+                'age': int(data["age"]),
+                'interesting_gender': data["interesting_gender"],
+                'about': data["about"],
+                'latitude' : data["latitude"],
+                'longitude': data["longitude"]
+            })
+        )
         
         if media_list:
             saved_media = []
@@ -232,12 +226,12 @@ async def save_profile(message: types.Message, state: FSMContext, _: Callable):
                 filename = f"{message.from_user.id}_{file.file_id}{extension}"
                 s3_key = await router.s3_client.upload_file(byte_data, filename)
                 
-                saved_media.append({
-                    'type': media['type'],
-                    's3_key': s3_key['key']
-                })
+                saved_media.append(MediaItem(
+                    type=media['type'],
+                    s3_key=s3_key.key
+                ))
             
-            await router.profile_client.save_media(profile_id['profile_id'], saved_media)
+            await router.profile_client.save_media(message.from_user.id, SaveMediaRequest(media=saved_media))
         
         return True
     except Exception as e:

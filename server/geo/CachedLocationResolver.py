@@ -1,7 +1,7 @@
 from typing import Optional, Tuple
 
 from cache.CityCoordinatesCache import CityCoordinatesCache
-from services.geo.LocationResolver import LocationResolver
+from geo.LocationResolver import LocationResolver
 
 class CachedLocationResolver:
     def __init__(self, resolver: LocationResolver, cache: CityCoordinatesCache):

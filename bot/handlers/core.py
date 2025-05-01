@@ -17,6 +17,7 @@ from utils.CustomRouter import CustomRouter
 from utils.profile import is_profile_active, is_profile_exists
 from states.edit_profile import EditProfileStates
 from aiogram.types import ContentType
+from models.profile.requests import ToggleActiveRequest, UpdateFieldRequest, SaveMediaRequest, MediaItem
 
 router = CustomRouter()
     
@@ -27,20 +28,20 @@ async def show_my_profile(message: types.Message, _: Callable):
         await message.answer(_("no_profile_error"), reply_markup=get_start_keyboard(_))
         return
     
-    media_list = await router.profile_client.get_media_by_profile_id(profile["id"])
-    if profile['city'] is None:
-        profile_text = f"{profile['name']}, {profile['age']} - {profile['about']} {_('active_status') if profile['is_active'] else _('inactive_status')}"
+    media_list = await router.profile_client.get_media_by_profile_id(message.from_user.id)
+    if profile.city is None:
+        profile_text = f"{profile.name}, {profile.age} - {profile.about} {_('active_status') if profile.is_active else _('inactive_status')}"
     else:
-        profile_text = f"{profile['name']}, {profile['age']}, {profile['city']} - {profile['about']} {_('active_status') if profile['is_active'] else _('inactive_status')}"
+        profile_text = f"{profile.name}, {profile.age}, {profile.city} - {profile.about} {_('active_status') if profile.is_active else _('inactive_status')}"
 
     media_objects = []
     
-    for i, media in enumerate(media_list):
-        media_url = await router.s3_client.get_presigned_url(media["s3_key"])
-        if media["type"] == "photo":
-            media_obj = InputMediaPhoto(media=media_url['url'], caption=profile_text if i == 0 else None)
+    for i, media in enumerate(media_list.media):
+        media_url = await router.s3_client.get_presigned_url(media.s3_key)
+        if media.type == "photo":
+            media_obj = InputMediaPhoto(media=media_url.url, caption=profile_text if i == 0 else None)
         else:
-            media_obj = InputMediaVideo(media=media_url['url'], caption=profile_text if i == 0 else None)
+            media_obj = InputMediaVideo(media=media_url.url, caption=profile_text if i == 0 else None)
         media_objects.append(media_obj)
 
     try:
@@ -48,7 +49,7 @@ async def show_my_profile(message: types.Message, _: Callable):
         await message.answer_media_group(media=media_objects)
         return True
     except Exception as e:
-        await message.answer(_("preview_error") + f": {str(e)}", reply_markup=get_main_keyboard(profile['is_active'], _))
+        await message.answer(_("preview_error") + f": {str(e)}", reply_markup=get_main_keyboard(profile.is_active, _))
         return False
 
 @router.message(I18nTextFilter("disable_profile_button"))
@@ -67,7 +68,7 @@ async def confirm_disable_profile(message: types.Message, _: Callable):
         await message.answer(_("no_profile_error"), reply_markup=get_start_keyboard(_))
         return
     try:
-        await router.profile_client.toggle_active(message.from_user.id, False)
+        await router.profile_client.toggle_active(message.from_user.id, ToggleActiveRequest(is_active=False))
         await message.answer(
             _("profile_disabled_success"),
             reply_markup=get_main_keyboard(False, _)
@@ -91,7 +92,7 @@ async def enable_profile(message: types.Message, _: Callable):
         await message.answer(_("no_profile_error"), reply_markup=get_start_keyboard(_))
         return
     try:
-        await router.profile_client.toggle_active(message.from_user.id, True)
+        await router.profile_client.toggle_active(message.from_user.id, ToggleActiveRequest(is_active=True))
         await message.answer(
             _("profile_enabled_success"),
             reply_markup=get_main_keyboard(True, _)
@@ -153,7 +154,7 @@ async def update_name(message: types.Message, state: FSMContext, _: Callable):
     
     is_active = await is_profile_active(router.profile_client, message.from_user.id)
     
-    await router.profile_client.update_field(message.from_user.id, "name", name)
+    await router.profile_client.update_field(message.from_user.id, UpdateFieldRequest(field_name='name', value=name))
     await message.answer(_("name_updated"), reply_markup=get_main_keyboard(is_active, _))
     await state.clear()
 
@@ -171,10 +172,9 @@ async def update_age(message: types.Message, state: FSMContext, _: Callable):
     
     is_active = await is_profile_active(router.profile_client, message.from_user.id)
     
-    await router.profile_client.update_field(message.from_user.id, "age", age)
+    await router.profile_client.update_field(message.from_user.id, UpdateFieldRequest(field_name='age', value=age))
     await message.answer(_("age_updated"), reply_markup=get_main_keyboard(is_active, _))
     await state.clear()
-
 
 @router.message(EditProfileStates.city, F.text | F.location)
 async def update_city(message: types.Message, state: FSMContext, _: Callable):
@@ -191,12 +191,11 @@ async def update_city(message: types.Message, state: FSMContext, _: Callable):
             coords, error = ProfileValidator.validate_location(message.location, _)
             if not error:
                 await router.profile_client.update_field(
-                    user_id=message.from_user.id,
-                    field_name='coordinates',
-                    value={
+                    message.from_user.id,
+                    UpdateFieldRequest(field_name='coordinates', value={
                         'latitude': message.location.latitude,
                         'longitude': message.location.longitude
-                    }
+                    })
                 )
                 is_location = True
 
@@ -204,9 +203,8 @@ async def update_city(message: types.Message, state: FSMContext, _: Callable):
             city, error = ProfileValidator.validate_city(message.text, _)
             if not error:
                 await router.profile_client.update_field(
-                    user_id=message.from_user.id,
-                    field_name='city',
-                    value=city
+                    message.from_user.id,
+                    UpdateFieldRequest(field_name='city', value=city)
                 )
         else:
             error = _("invalid_input_type")
@@ -237,7 +235,7 @@ async def update_about(message: types.Message, state: FSMContext, _: Callable):
     
     is_active = await is_profile_active(router.profile_client, message.from_user.id)
     
-    await router.profile_client.update_field(message.from_user.id, "about", about)
+    await router.profile_client.update_field(message.from_user.id, UpdateFieldRequest(field_name='about', value=about))
     await message.answer(_("about_updated"), reply_markup=get_main_keyboard(is_active, _))
     await state.clear()
 
@@ -259,7 +257,7 @@ async def update_gender(message: types.Message, state: FSMContext, _: Callable):
     
     is_active = await is_profile_active(router.profile_client, message.from_user.id)
     
-    await router.profile_client.update_field(message.from_user.id, "gender", gender_map[message.text])
+    await router.profile_client.update_field(message.from_user.id, UpdateFieldRequest(field_name='gender', value=gender_map[message.text]))
     await message.answer(_("gender_updated"), reply_markup=get_main_keyboard(is_active, _))
     await state.clear()
 
@@ -282,7 +280,7 @@ async def update_interesting_gender(message: types.Message, state: FSMContext, _
     
     is_active = await is_profile_active(router.profile_client, message.from_user.id)
     
-    await router.profile_client.update_field(message.from_user.id, "gender", gender_map[message.text])
+    await router.profile_client.update_field(message.from_user.id, UpdateFieldRequest(field_name='interesting_gender', value=gender_map[message.text]))
     await message.answer(_("gender_updated"), reply_markup=get_main_keyboard(is_active, _))
     await state.clear()
 
@@ -344,13 +342,13 @@ async def finish_media_upload(message: types.Message, state: FSMContext, _: Call
         await message.answer(_("no_profile_error"), reply_markup=get_start_keyboard(_))
         return
     
-    is_active = profile['is_active']
+    is_active = profile.is_active
 
-    media_list = await router.profile_client.get_media_by_profile_id(profile['id'])
-    for media in media_list:
-        await router.s3_client.delete_file(media['s3_key'])
+    media_list = await router.profile_client.get_media_by_profile_id(message.from_user.id)
+    for media in media_list.media:
+        await router.s3_client.delete_file(media.s3_key)
 
-    await router.profile_client.delete_media(profile['id'])
+    await router.profile_client.delete_media(message.from_user.id)
 
     data = await state.get_data()
     new_media_list = data.get("media", [])
@@ -365,12 +363,12 @@ async def finish_media_upload(message: types.Message, state: FSMContext, _: Call
         filename = f"{message.from_user.id}_{file.file_id}{extension}"
         s3_key = await router.s3_client.upload_file(byte_data, filename)
         
-        saved_media.append({
-            'type': media['type'],
-            's3_key': s3_key['key']
-        })
+        saved_media.append(MediaItem(
+            type=media['type'],
+            s3_key=s3_key.key
+        ))
     
-    await router.profile_client.save_media(profile['id'], saved_media)
+    await router.profile_client.save_media(message.from_user.id, SaveMediaRequest(media=saved_media))
 
     await message.answer(_("media_updated"), reply_markup=get_main_keyboard(is_active, _))
     await state.clear()

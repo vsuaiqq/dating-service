@@ -5,32 +5,58 @@ from contextlib import asynccontextmanager
 from database.connection import create_db_pool
 from database.ProfileRepository import ProfileRepository
 from storage.S3Uploader import S3Uploader
-from services.recsys.recsys import EmbeddingRecommender
-from services.validation_video.video_validator import VideoValidator
+from recsys.EmbeddingRecommender import EmbeddingRecommender
 from kafka_events.producer import KafkaEventProducer
 from kafka_events.consumer import KafkaEventConsumer
 from analytics.ClickHouseLogger import ClickHouseLogger
 from utils.geo import on_geo_resolve_event
+from utils.video import on_video_validation_event
 from cache.SwipeCache import SwipeCache
 from cache.RecommendationCache import RecommendationCache
 from core.config import get_settings
+from services.profile.ProfileService import ProfileService
+from services.recsys.RecommendationsService import RecommendationsService
+from services.s3.S3Service import S3Service
+from services.swipe.SwipeService import SwipeService
 
 settings = get_settings()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+
     redis_client = redis.Redis(
         host=settings.REDIS_HOST, 
         port=settings.REDIS_PORT, 
         db=settings.REDIS_FASTAPI_CACHE, 
         decode_responses=True
     )
+    recommendation_cache = RecommendationCache(redis_client)
+    swipe_cache = SwipeCache(redis_client)
 
-    kafka_bootstrap_servers = settings.kafka_bootstrap_servers
+    repo = ProfileRepository(await create_db_pool())
 
-    app.state.profile_repo = ProfileRepository(await create_db_pool())
+    producer = KafkaEventProducer(settings.kafka_bootstrap_servers)
+    consumer = KafkaEventConsumer(
+        settings.kafka_bootstrap_servers,
+        [settings.KAFKA_GEO_TOPIC, settings.KAFKA_VIDEO_TOPIC],
+        lambda event: on_video_validation_event(
+            producer,
+            event
+        ) if event.get("is_human") else on_geo_resolve_event(
+            repo, 
+            recommendation_cache, 
+            producer,
+            event
+        ) 
+    )
 
-    app.state.s3_uploader = S3Uploader(
+    recommender = EmbeddingRecommender(
+        profile_repo=repo,
+        recommendation_cache=recommendation_cache,
+        swipe_cache=swipe_cache
+    )
+
+    uploader = S3Uploader(
         bucket_name=settings.S3_BUCKET_NAME,
         region=settings.S3_REGION_NAME,
         access_key=settings.S3_ACCESS_KEY_ID,
@@ -38,21 +64,7 @@ async def lifespan(app: FastAPI):
         endpoint_url=settings.S3_ENDPOINT_URL
     )
 
-    app.state.recommendation_cache = RecommendationCache(redis_client)
-
-    app.state.video_validator = VideoValidator()
-
-    app.state.swipe_cache = SwipeCache(redis_client)
-
-    app.state.recsys = EmbeddingRecommender(
-        profile_repo=app.state.profile_repo,
-        recommendation_cache=app.state.recommendation_cache,
-        swipe_cache=app.state.swipe_cache
-    )
-
-    app.state.kafka_producer = KafkaEventProducer(kafka_bootstrap_servers)
-
-    app.state.clickhouse_logger = ClickHouseLogger(
+    logger = ClickHouseLogger(
         host=settings.CLICKHOUSE_HOST,
         port=settings.CLICKHOUSE_PORT,
         user=settings.CLICKHOUSE_USER,
@@ -60,21 +72,34 @@ async def lifespan(app: FastAPI):
         database=settings.CLICKHOUSE_DB
     )
 
-    kafka_consumer = KafkaEventConsumer(
-        kafka_bootstrap_servers,
-        [settings.KAFKA_GEO_TOPIC],
-        lambda event: on_geo_resolve_event(
-            app.state.profile_repo, 
-            app.state.recommendation_cache, 
-            app.state.kafka_producer,
-            event
-        )
+    app.state.profile_service = ProfileService(
+        repo=repo,
+        producer=producer,
+        recommender=recommender,
+        cache=recommendation_cache,
+        settings=settings
     )
 
-    await app.state.kafka_producer.start()
+    app.state.recommendations_service = RecommendationsService(
+        recommender=recommender
+    )
 
-    await kafka_consumer.start()
+    app.state.s3_service = S3Service(
+        uploader=uploader
+    )
+
+    app.state.swipe_service = SwipeService(
+        repo=repo,
+        producer=producer,
+        logger=logger,
+        swipe_cache=swipe_cache,
+        settings=settings
+    )
+
+    await producer.start()
+
+    await consumer.start()
 
     yield
 
-    await app.state.kafka_producer.stop()
+    await producer.stop()

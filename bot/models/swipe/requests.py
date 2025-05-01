@@ -7,7 +7,7 @@ class SwipeAction(str, Enum):
     DISLIKE = "dislike"
     QUESTION = "question"
 
-class SwipeInput(BaseModel):
+class AddSwipeRequest(BaseModel):
     from_user_id: int
     to_user_id: int
     action: SwipeAction

@@ -19,4 +19,7 @@ celery_app.conf.update(
     enable_utc=True,
 )
 
-celery_app.autodiscover_tasks(['tasks.geo'])
+celery_app.autodiscover_tasks([
+    'tasks.geo',
+    'tasks.video'
+])

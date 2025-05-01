@@ -1,14 +1,18 @@
 from fastapi import APIRouter, Depends, HTTPException
 
-from services.recsys.recsys import EmbeddingRecommender
-from core.dependecies import get_recommender
+from core.dependecies import get_recommendations_service
+from services.recsys.RecommendationsService import RecommendationsService
+from models.recsys.responses import GetRecommendationsResponse
 
 router = APIRouter()
 
-@router.get("/recommendations/{user_id}")
-async def get_recommendations(user_id: int, count: int = 10, recommender: EmbeddingRecommender = Depends(get_recommender)):
+@router.get("/users/{user_id}/recommendations", response_model=GetRecommendationsResponse)
+async def get_recommendations(
+    user_id: int,
+    count: int,
+    recommendations_service: RecommendationsService = Depends(get_recommendations_service)
+):
     try:
-        recommendations = await recommender.get_hybrid_recommendations(user_id=user_id, count=count)
-        return {"recommendations": recommendations}
+        return await recommendations_service.get_recommendations(user_id, count)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

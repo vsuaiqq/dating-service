@@ -1,61 +1,57 @@
 import httpx
-import json
-from typing import List, Union
+from typing import Optional
+
+from models.profile.requests import SaveMediaRequest, SaveProfileRequest, UpdateFieldRequest, ToggleActiveRequest
+from models.profile.responses import GetMediaResponse, GetProfileResponse, SaveProfileResponse
 
 class ProfileClient:
     def __init__(self, base_url: str):
         self.base_url = base_url.rstrip("/")
         self.client = httpx.AsyncClient(base_url=self.base_url)
 
-    async def save_profile(self, profile_data: dict) -> dict:
-        resp = await self.client.post("/profile/save", json=profile_data)
+    async def save_profile(self, user_id: int, data: SaveProfileRequest) -> SaveProfileResponse:
+        resp = await self.client.put(f"/profile/{user_id}", json=data.model_dump())
         resp.raise_for_status()
-        return resp.json()
+        return SaveProfileResponse(**resp.json())
 
-    async def save_media(self, profile_id: int, media: List[dict]) -> dict:
-        payload = {"profile_id": profile_id, "media": media}
-        resp = await self.client.post("/profile/media/save", json=payload)
+    async def get_profile_by_user_id(self, user_id: int) -> Optional[GetProfileResponse]:
+        resp = await self.client.get(f"/profile/{user_id}")
+        if resp.status_code == 404:
+            return None
         resp.raise_for_status()
-        return resp.json()
+        return GetProfileResponse(**resp.json())
 
-    async def get_profile_by_user_id(self, user_id: int) -> dict:
-        resp = await self.client.get(f"/profile/by_user/{user_id}")
+    async def update_field(self, user_id: int, data: UpdateFieldRequest):
+        resp = await self.client.patch(f"/profile/{user_id}", json=data.model_dump())
         resp.raise_for_status()
-        return resp.json()
 
-    async def get_media_by_profile_id(self, profile_id: int) -> List[dict]:
-        resp = await self.client.get(f"/profile/media/{profile_id}")
+    async def toggle_active(self, user_id: int, data: ToggleActiveRequest):
+        resp = await self.client.patch(f"/profile/{user_id}/active", json=data.model_dump())
         resp.raise_for_status()
-        return resp.json()
 
-    async def toggle_active(self, user_id: int, is_active: bool) -> dict:
-        payload = {"user_id": user_id, "is_active": is_active}
-        resp = await self.client.post("/profile/toggle_active", json=payload)
-        resp.raise_for_status()
-        return resp.json()
-
-    async def update_field(self, user_id: int, field_name: str, value: Union[str, dict]) -> dict:
-        payload = {"user_id": user_id, "field_name": field_name, "value": value}
-        resp = await self.client.post("/profile/update_field", json=payload)
-        resp.raise_for_status()
-        return resp.json()
-
-    async def delete_media(self, profile_id: int):
-        headers = httpx.Headers({"Content-Type": "application/json"})
-        payload = json.dumps({"profile_id": profile_id})
-        resp = await self.client.request(
-            method="DELETE",
-            url="/profile/media/delete",
-            content=payload,
-            headers=headers,
-        )
-        return resp
-    
-    async def verify_video_note(self, file_id: str, file_bytes: bytes) -> dict:
+    async def verify_video(self, user_id: int, file_bytes: bytes, file_id: str):
         files = {'file': (f"{file_id}.mp4", file_bytes, 'video/mp4')}
-        resp = await self.client.post("/profile/verify_video", files=files)
+        resp = await self.client.post(f"/profile/{user_id}/verify-video", files=files)
         resp.raise_for_status()
-        return resp.json()
+
+    async def save_media(self, user_id: int, data: SaveMediaRequest):
+        resp = await self.client.post(f"/profile/{user_id}/media", json=data.model_dump())
+        resp.raise_for_status()
+
+    async def get_media_by_profile_id(self, user_id: int) -> GetMediaResponse:
+        resp = await self.client.get(f"/profile/{user_id}/media")
+        resp.raise_for_status()
+        return GetMediaResponse(**resp.json())
+
+    async def delete_media(self, user_id: int):
+        resp = await self.client.delete(f"/profile/{user_id}/media")
+        resp.raise_for_status()
 
     async def close(self):
         await self.client.aclose()
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.close()
