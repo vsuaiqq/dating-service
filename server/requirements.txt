@@ -20,3 +20,4 @@ huggingface_hub[hf_xet]
 celery
 opencv-python
 face-recognition
+prometheus-fastapi-instrumentator

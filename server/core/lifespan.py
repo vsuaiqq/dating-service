@@ -20,6 +20,7 @@ from services.recsys.RecommendationsService import RecommendationsService
 from services.media.MediaService import MediaService
 from services.swipe.SwipeService import SwipeService
 from models.kafka.events import LocationResolveResultEvent, VideoValidationResultEvent
+from core.logger import logger
 
 settings = get_settings()
 
@@ -35,9 +36,9 @@ def handle_kafka_event(event: dict, repo: ProfileRepository, recommendation_cach
 
         raise ValueError(f"Unknown event type: {event}")
     except ValidationError as e:
-        print(f"Validation failed: {e.json()}")
+        logger.error(f"Validation failed: {e.json()}")
     except Exception as e:
-        print(f"Unexpected error while handling event: {e}")
+        logger.error(f"Unexpected error while handling event: {e}")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

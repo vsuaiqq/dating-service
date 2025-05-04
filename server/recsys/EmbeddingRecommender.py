@@ -24,7 +24,7 @@ class EmbeddingRecommender:
             stop_words = [], 
             max_distance_search = 20, 
             model = None
-            ):
+    ):
         self.model = model or SentenceTransformer('all-MiniLM-L6-v2')
         self.profile_repo = profile_repo
         self.recommendation_cache = recommendation_cache
@@ -63,7 +63,6 @@ class EmbeddingRecommender:
     ) -> List[int]:
         user = await self.profile_repo.get_profile_by_user_id(user_id)
         if not user or not user.get('about_embedding'):
-            print("\n\n NO EMBEDDING ! \n\n")
             return []
 
         user_embedding = np.array(user['about_embedding']).reshape(1, -1)
@@ -95,7 +94,6 @@ class EmbeddingRecommender:
         min_age, max_age = get_match_age_range(user['age'])
         
         users = await self.profile_repo.get_candidates_by_criteria(user_id, user, rec_list, min_age, max_age, self.max_distance_search)
-        print('\n\n', user, rec_list, min_age, max_age, users, '\n\n')
         if not users:
             return []
 

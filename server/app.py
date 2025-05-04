@@ -7,8 +7,11 @@ from api.profile import router as profile_router
 from api.recsys import router as recsys_router
 from api.media import router as media_router
 from api.swipe import router as swipe_router
+from prometheus_fastapi_instrumentator import Instrumentator
 
 app = FastAPI(lifespan=lifespan)
+
+Instrumentator().instrument(app).expose(app)
 
 settings = get_settings()
 

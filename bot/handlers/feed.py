@@ -20,15 +20,13 @@ async def send_next_recommendation(user_id: int, message: types.Message, state: 
     is_active = await is_profile_active(profile_client, message.from_user.id)
     response = await recsys_client.get_recommendations(user_id)
     recs = response.recommendations
-    
+
     if not recs:
         await message.answer(_("no_more_recommendations"), reply_markup=get_main_keyboard(is_active, _))
         return
     
     while True:
-        print('\n\n', recs)
         next_user_id = recs.pop()
-        print(recs, '\n\n')
         if not next_user_id:
             await message.answer(_("no_more_recommendations"), reply_markup=get_main_keyboard(is_active, _))
             return
