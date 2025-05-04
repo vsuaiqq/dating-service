@@ -1,16 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 
-from core.dependecies import get_profile_service
+from core.dependecies import get_profile_service, get_user_id_from_headers
 from services.profile.ProfileService import ProfileService
-from models.profile.requests import SaveProfileRequest, SaveMediaRequest, ToggleActiveRequest, UpdateFieldRequest
-from models.profile.responses import SaveProfileResponse, GetProfileResponse, GetMediaResponse
+from models.api.profile.requests import SaveProfileRequest, SaveMediaRequest, ToggleActiveRequest, UpdateFieldRequest
+from models.api.profile.responses import SaveProfileResponse, GetProfileResponse, GetMediaResponse
 
 router = APIRouter()
 
-@router.put("/{user_id}", response_model=SaveProfileResponse)
+@router.put("", response_model=SaveProfileResponse)
 async def save_profile(
-    user_id: int,
     data: SaveProfileRequest,
+    user_id: int = Depends(get_user_id_from_headers),
     profile_service: ProfileService = Depends(get_profile_service)
 ):
     try:
@@ -18,9 +18,9 @@ async def save_profile(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/{user_id}", response_model=GetProfileResponse)
+@router.get("", response_model=GetProfileResponse)
 async def get_profile_by_user_id(
-    user_id: int,
+    user_id: int = Depends(get_user_id_from_headers),
     profile_service: ProfileService = Depends(get_profile_service)
 ):
     result = await profile_service.get_profile_by_user_id(user_id)
@@ -28,10 +28,10 @@ async def get_profile_by_user_id(
         raise HTTPException(status_code=404, detail="Profile not found")
     return result
 
-@router.patch("/{user_id}")
+@router.patch("")
 async def update_field(
-    user_id: int,
     data: UpdateFieldRequest, 
+    user_id: int = Depends(get_user_id_from_headers),
     profile_service: ProfileService = Depends(get_profile_service)
 ):
     try:
@@ -39,10 +39,10 @@ async def update_field(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.patch("/{user_id}/active")
+@router.patch("/active")
 async def toggle_active(
-    user_id: int,
     data: ToggleActiveRequest, 
+    user_id: int = Depends(get_user_id_from_headers),
     profile_service: ProfileService = Depends(get_profile_service)
 ):
     try:
@@ -50,9 +50,9 @@ async def toggle_active(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/{user_id}/verify-video")
+@router.post("/verify-video")
 async def verify_video(
-    user_id: int,
+    user_id: int = Depends(get_user_id_from_headers),
     file: UploadFile = File(...),
     profile_service: ProfileService = Depends(get_profile_service)
 ):
@@ -61,10 +61,10 @@ async def verify_video(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/{user_id}/media")
+@router.post("/media")
 async def save_media(
-    user_id: int,
-    data: SaveMediaRequest, 
+    data: SaveMediaRequest,
+    user_id: int = Depends(get_user_id_from_headers),
     profile_service: ProfileService = Depends(get_profile_service)
 ):
     try:
@@ -72,9 +72,9 @@ async def save_media(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/{user_id}/media", response_model=GetMediaResponse)
+@router.get("/media", response_model=GetMediaResponse)
 async def get_media_by_profile_id(
-    user_id: int,
+    user_id: int = Depends(get_user_id_from_headers),
     profile_service: ProfileService = Depends(get_profile_service)
 ):
     try:
@@ -82,9 +82,9 @@ async def get_media_by_profile_id(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.delete("/{user_id}/media")
+@router.delete("/media")
 async def delete_media(
-    user_id: int,
+    user_id: int = Depends(get_user_id_from_headers),
     profile_service: ProfileService = Depends(get_profile_service)
 ):
     try:

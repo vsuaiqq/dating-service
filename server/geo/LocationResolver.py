@@ -16,7 +16,7 @@ class LocationResolver:
 
     def resolve_coordinates(self, city: str) -> Optional[Tuple[float, float]]:
         for _ in range(5):
-            time.sleep(1)
+            time.sleep(2)
             try:
                 location = self.geocode(city)
                 if location:

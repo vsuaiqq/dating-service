@@ -3,7 +3,7 @@ import asyncio
 import aiohttp
 
 API_URL = "http://localhost:8000/profile/"
-NUM_PROFILES = 100
+NUM_PROFILES = 15
 
 names_male = ['Alex', 'Ivan', 'Sergey', 'Dmitry', 'Nikolay', 'Andrey', 'Pavel', 'Roman', 'Mikhail', 'Oleg']
 names_female = ['Maria', 'Anna', 'Olga', 'Elena', 'Natalia', 'Irina', 'Tatiana', 'Svetlana', 'Ekaterina', 'Lyudmila']
@@ -42,10 +42,10 @@ def generate_profile(user_id: int) -> dict:
 
     return user_id, {
         "name": name,
-        "gender": gender,
+        "gender": 'female',
         "city": city,
         "age": age,
-        "interesting_gender": interesting_gender,
+        "interesting_gender": 'male',
         "about": about
     }
 

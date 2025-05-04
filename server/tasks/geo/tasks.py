@@ -4,6 +4,7 @@ from geo.LocationResolver import LocationResolver
 from geo.CachedLocationResolver import CachedLocationResolver
 from cache.CityCoordinatesCache import CityCoordinatesCache
 from kafka_events.producer_sync import KafkaEventProducerSync
+from models.kafka.events import LocationResolveResultEvent
 
 settings = get_settings()
 
@@ -19,18 +20,21 @@ def update_user_location(user_id: int, city: str):
     )
 
     coords = resolver.resolve(city)
-    
+
     if coords:
-        latitiude, longitude = coords
-        producer.send_event(settings.KAFKA_GEO_TOPIC, {
-            'user_id': user_id,
-            'status': 'success',
-            'latitude': latitiude,
-            'longitude': longitude
-        })
-        return
-    
-    producer.send_event(settings.KAFKA_GEO_TOPIC, {
-        'user_id': user_id,
-        'status': 'failed',
-    })
+        latitude, longitude = coords
+        event = LocationResolveResultEvent(
+            user_id=user_id,
+            status='success',
+            latitude=latitude,
+            longitude=longitude
+        )
+    else:
+        event = LocationResolveResultEvent(
+            user_id=user_id,
+            status='failed'
+        )
+
+    producer.send_event(settings.KAFKA_GEO_TOPIC, event.model_dump())
+
+    producer.stop()

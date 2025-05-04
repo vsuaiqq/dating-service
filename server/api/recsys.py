@@ -1,15 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException
 
-from core.dependecies import get_recommendations_service
+from core.dependecies import get_recommendations_service, get_user_id_from_headers
 from services.recsys.RecommendationsService import RecommendationsService
-from models.recsys.responses import GetRecommendationsResponse
+from models.api.recsys.responses import GetRecommendationsResponse
 
 router = APIRouter()
 
-@router.get("/users/{user_id}/recommendations", response_model=GetRecommendationsResponse)
+@router.get("/users/recommendations", response_model=GetRecommendationsResponse)
 async def get_recommendations(
-    user_id: int,
     count: int,
+    user_id: int = Depends(get_user_id_from_headers),
     recommendations_service: RecommendationsService = Depends(get_recommendations_service)
 ):
     try:

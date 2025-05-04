@@ -1,9 +1,9 @@
 from io import BytesIO
 
 from storage.S3Uploader import S3Uploader
-from models.s3.responses import UploadFileResponse, GetPresignedUrlResponse
+from models.api.media.responses import UploadFileResponse, GetPresignedUrlResponse
 
-class S3Service:
+class MediaService:
     def __init__(self, uploader: S3Uploader):
         self.uploader = uploader
 

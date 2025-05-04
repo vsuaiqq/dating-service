@@ -17,7 +17,7 @@ from utils.CustomRouter import CustomRouter
 from utils.profile import is_profile_active, is_profile_exists
 from states.edit_profile import EditProfileStates
 from aiogram.types import ContentType
-from models.profile.requests import ToggleActiveRequest, UpdateFieldRequest, SaveMediaRequest, MediaItem
+from models.api.profile.requests import ToggleActiveRequest, UpdateFieldRequest, SaveMediaRequest, MediaItem, Coordinates
 
 router = CustomRouter()
     
@@ -37,7 +37,7 @@ async def show_my_profile(message: types.Message, _: Callable):
     media_objects = []
     
     for i, media in enumerate(media_list.media):
-        media_url = await router.s3_client.get_presigned_url(media.s3_key)
+        media_url = await router.media_client.get_presigned_url(media.s3_key)
         if media.type == "photo":
             media_obj = InputMediaPhoto(media=media_url.url, caption=profile_text if i == 0 else None)
         else:
@@ -129,10 +129,10 @@ async def choose_field_to_edit(message: types.Message, state: FSMContext, _: Cal
         await message.answer(_("enter_new_about"), reply_markup=get_back_keyboard(_))
         await state.set_state(EditProfileStates.about)
     elif text == _("edit_gender_button"):
-        await message.answer(_("enter_new_gender"), reply_markup=get_gender_keyboard(_))
+        await message.answer(_("choose_new_gender"), reply_markup=get_gender_keyboard(_))
         await state.set_state(EditProfileStates.gender)
     elif text == _("edit_interesting_gender_button"):
-        await message.answer(_("enter_new_interesting_gender"), reply_markup=get_interesting_gender_keyboard(_))
+        await message.answer(_("choose_new_interesting_gender"), reply_markup=get_interesting_gender_keyboard(_))
         await state.set_state(EditProfileStates.interesting_gender)
     elif text == _("edit_media_button"):
         await message.answer(_("send_new_media"), reply_markup=get_back_keyboard(_))
@@ -192,10 +192,10 @@ async def update_city(message: types.Message, state: FSMContext, _: Callable):
             if not error:
                 await router.profile_client.update_field(
                     message.from_user.id,
-                    UpdateFieldRequest(field_name='coordinates', value={
-                        'latitude': message.location.latitude,
-                        'longitude': message.location.longitude
-                    })
+                    UpdateFieldRequest(field_name='coordinates', value=Coordinates(
+                        latitude=message.location.latitude,
+                        longitude=message.location.longitude
+                    ))
                 )
                 is_location = True
 
@@ -346,7 +346,7 @@ async def finish_media_upload(message: types.Message, state: FSMContext, _: Call
 
     media_list = await router.profile_client.get_media_by_profile_id(message.from_user.id)
     for media in media_list.media:
-        await router.s3_client.delete_file(media.s3_key)
+        await router.media_client.delete_file(media.s3_key)
 
     await router.profile_client.delete_media(message.from_user.id)
 
@@ -361,7 +361,7 @@ async def finish_media_upload(message: types.Message, state: FSMContext, _: Call
         
         extension = ".jpg" if media['type'] == "photo" else ".mp4"
         filename = f"{message.from_user.id}_{file.file_id}{extension}"
-        s3_key = await router.s3_client.upload_file(byte_data, filename)
+        s3_key = await router.media_client.upload_file(byte_data, filename)
         
         saved_media.append(MediaItem(
             type=media['type'],

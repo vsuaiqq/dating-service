@@ -53,6 +53,9 @@ msgstr "That`s all, save photo"
 msgid "edit_profile_button"
 msgstr "Change profile"
 
+msgid "feed_button"
+msgstr "Show profiles"
+
 msgid "my_profile_button"
 msgstr "My profile"
 
@@ -131,6 +134,27 @@ msgstr "Profile has been disabled"
 msgid "profile_enabled_success"
 msgstr "Profile has been enabled"
 
+msgid "edit_name_button"
+msgstr "Edit name"
+
+msgid "edit_age_button"
+msgstr "Edit age"
+
+msgid "edit_gender_button"
+msgstr "Edit gender"
+
+msgid "edit_interesting_gender_button"
+msgstr "Edit interesting gender"
+
+msgid "edit_city_button"
+msgstr "Edit city"
+
+msgid "edit_about_button"
+msgstr "Edit about"
+
+msgid "edit_media_button"
+msgstr "Edit media"
+
 msgid "choose_field_to_edit"
 msgstr "Choose a field to edit"
 
@@ -181,3 +205,12 @@ msgstr "Maximum number of media reached"
 
 msgid "profile_already_exists"
 msgstr "Profile already exists"
+
+msgid "geo_notification_waited"
+msgstr "Finding great matches for you... Just a moment! While we're searching, feel free to browse random profiles"
+
+msgid "geo_notification_success"
+msgstr "Perfect! Your personalized recommendations are ready"
+
+msgid "geo_notification_failed"
+msgstr "We couldn't detect your location. You can try again or share your current location. Also you can continue browsing random profiles"

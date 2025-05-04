@@ -2,6 +2,17 @@ import asyncpg
 import numpy as np
 from typing import List, Tuple, Optional, Any
 
+ALLOWED_FIELDS = {
+    "name", 
+    "age",
+    "city",
+    "gender",
+    "about",
+    "latitude",
+    "longitude",
+    "interesting_gender"
+}
+
 class ProfileRepository:
     def __init__(self, pool: asyncpg.Pool):
         self.pool = pool
@@ -73,10 +84,9 @@ class ProfileRepository:
             """, is_active, user_id)
     
     async def update_profile_field(self, user_id: int, field_name: str, value: Any):
-        allowed_fields = {"name", "age", "city", "gender", "is_active", "about", "latitude", "longitude", "interesting_gender"}
-        if field_name not in allowed_fields:
-            raise ValueError(f"Invalid field name: {field_name}")
-        print('\n\n', field_name, value, user_id, '\n\n')
+        if field_name not in ALLOWED_FIELDS:
+            raise ValueError(f"Field '{field_name}' is not allowed to be updated")
+        
         async with self.pool.acquire() as conn:
             query = f"""
                 UPDATE profiles
@@ -138,33 +148,38 @@ class ProfileRepository:
         user: dict,
         rec_list: List[int],
         min_age: int,
-        max_age: int
+        max_age: int,
+        max_distance: int
     ) -> List[int]:
         async with self.pool.acquire() as conn:
-            print('\n\n', user, user_id, rec_list, min_age, max_age, '\n\n')
             records = await conn.fetch(
                 """
-                SELECT * FROM profiles 
+                SELECT * FROM profiles
                 WHERE user_id != $1
-                AND user_id != ANY($4::bigint[])
+                AND (
+                    COALESCE(array_length($3::bigint[], 1), 0) = 0 
+                    OR user_id != ANY($3::bigint[])
+                )
                 AND is_active = TRUE
-                AND city = $2
+                AND location IS NOT NULL
+                AND ST_DWithin(location, ST_MakePoint($6, $5)::geography, $4)
                 AND gender = ANY(
                     CASE 
-                        WHEN $3 = 'any' THEN ARRAY['male'::gender, 'female'::gender]
-                        ELSE ARRAY[$3::gender]
+                        WHEN $2 = 'any' THEN ARRAY['male'::gender, 'female'::gender]
+                        ELSE ARRAY[$2::gender]
                     END
                 )
-                AND age BETWEEN $5 AND $6
+                AND age BETWEEN $7 AND $8
                 """,
-                user_id,
-                user["city"],
+                user_id,                    
                 user["interesting_gender"],
                 rec_list,
+                max_distance * 1000,
+                user["latitude"],
+                user["longitude"],
                 min_age,
                 max_age
             )
-            print('\n\n', records, '\n\n')
             return [record['user_id'] for record in records]
 
     async def save_swipe(
@@ -182,16 +197,6 @@ class ProfileRepository:
                 SET action = EXCLUDED.action,
                     message = EXCLUDED.message
             """, from_user_id, to_user_id, action, message)
-    
-    async def update_coordinates(self, user_id: int, latitude: float, longitude: float):
-        async with self.pool.acquire() as conn:
-            await conn.execute("""
-                UPDATE profiles
-                SET latitude = $1,
-                    longitude = $2,
-                    location = ST_SetSRID(ST_MakePoint($2, $1), 4326)::geography
-                WHERE user_id = $3
-            """, latitude, longitude, user_id)
     
     async def reset_city(self, user_id: int):
         async with self.pool.acquire() as conn:

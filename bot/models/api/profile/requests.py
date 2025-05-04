@@ -1,5 +1,5 @@
 from pydantic import BaseModel, model_validator
-from typing import Optional, List, Union
+from typing import Optional, List, Union, Literal
 
 class SaveProfileRequest(BaseModel):
     name: str
@@ -32,7 +32,7 @@ class Coordinates(BaseModel):
     longitude: float
 
 class UpdateFieldRequest(BaseModel):
-    field_name: str
+    field_name: Literal["name", "age", "city", "gender", "is_active", "about", "latitude", "longitude", "interesting_gender", "coordinates", "username"]
     value: Union[str, int, Coordinates]
 
     @model_validator(mode='after')

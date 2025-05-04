@@ -53,6 +53,9 @@ msgstr "Это все, сохранить photo"
 msgid "edit_profile_button"
 msgstr "Изменить анкету"
 
+msgid "feed_button"
+msgstr "Смотреть анкеты"
+
 msgid "my_profile_button"
 msgstr "Моя анкета"
 
@@ -131,6 +134,27 @@ msgstr "Анкета отключена"
 msgid "profile_enabled_success"
 msgstr "Анкета включена"
 
+msgid "edit_name_button"
+msgstr "Изменить имя"
+
+msgid "edit_age_button"
+msgstr "Изменить возраст"
+
+msgid "edit_gender_button"
+msgstr "Изменить пол"
+
+msgid "edit_interesting_gender_button"
+msgstr "Изменить интересующий пол"
+
+msgid "edit_city_button"
+msgstr "Изменить город"
+
+msgid "edit_about_button"
+msgstr "Изменить текст анкеты"
+
+msgid "edit_media_button"
+msgstr "Изменить медиа"
+
 msgid "choose_field_to_edit"
 msgstr "Выберите поле для изменения"
 
@@ -181,3 +205,12 @@ msgstr "Достигнуто максимальное число медиа"
 
 msgid "profile_already_exists"
 msgstr "Анкета уже существует"
+
+msgid "geo_notification_waited"
+msgstr "Ищем подходящие анкеты... Пожалуйста, подождите немного. Пока вы можете смотреть случайные анкеты"
+
+msgid "geo_notification_success"
+msgstr "Всё готово! Рекомендации настроены"
+
+msgid "geo_notification_failed"
+msgstr "Не удалось определить ваше местоположение. Пожалуйста, попробуйте еще раз или отправьте вашу текущую локацию, также вы можете продолжить смотреть случайные анкеты"

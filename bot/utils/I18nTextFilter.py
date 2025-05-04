@@ -7,6 +7,5 @@ class I18nTextFilter(BaseFilter):
         self.key = key
 
     async def __call__(self, message: Message) -> bool:
-        lang_code = getattr(message.from_user, 'language_code', 'en')
-        _ = get_translator(lang_code).gettext
+        _ = get_translator(message.from_user)
         return message.text == _(self.key)

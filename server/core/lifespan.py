@@ -1,6 +1,7 @@
 import redis.asyncio as redis
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
+from pydantic import ValidationError
 
 from database.connection import create_db_pool
 from database.ProfileRepository import ProfileRepository
@@ -16,10 +17,27 @@ from cache.RecommendationCache import RecommendationCache
 from core.config import get_settings
 from services.profile.ProfileService import ProfileService
 from services.recsys.RecommendationsService import RecommendationsService
-from services.s3.S3Service import S3Service
+from services.media.MediaService import MediaService
 from services.swipe.SwipeService import SwipeService
+from models.kafka.events import LocationResolveResultEvent, VideoValidationResultEvent
 
 settings = get_settings()
+
+def handle_kafka_event(event: dict, repo: ProfileRepository, recommendation_cache: RecommendationCache, producer: KafkaEventProducer):
+    try:
+        if 'is_human' in event:
+            video_event = VideoValidationResultEvent(**event)
+            return on_video_validation_event(producer, video_event)
+
+        if 'status' in event:
+            geo_event = LocationResolveResultEvent(**event)
+            return on_geo_resolve_event(repo, recommendation_cache, producer, geo_event)
+
+        raise ValueError(f"Unknown event type: {event}")
+    except ValidationError as e:
+        print(f"Validation failed: {e.json()}")
+    except Exception as e:
+        print(f"Unexpected error while handling event: {e}")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -39,15 +57,7 @@ async def lifespan(app: FastAPI):
     consumer = KafkaEventConsumer(
         settings.kafka_bootstrap_servers,
         [settings.KAFKA_GEO_TOPIC, settings.KAFKA_VIDEO_TOPIC],
-        lambda event: on_video_validation_event(
-            producer,
-            event
-        ) if event.get("is_human") else on_geo_resolve_event(
-            repo, 
-            recommendation_cache, 
-            producer,
-            event
-        ) 
+        lambda event: handle_kafka_event(event, repo, recommendation_cache, producer)
     )
 
     recommender = EmbeddingRecommender(
@@ -84,7 +94,7 @@ async def lifespan(app: FastAPI):
         recommender=recommender
     )
 
-    app.state.s3_service = S3Service(
+    app.state.media_service = MediaService(
         uploader=uploader
     )
 

@@ -9,7 +9,7 @@ from keyboards.swipe import get_swipe_keyboard
 from keyboards.main import get_main_keyboard
 from keyboards.back import get_back_keyboard
 from states.message import Message
-from models.swipe.requests import AddSwipeRequest
+from models.api.swipe.requests import AddSwipeRequest
 
 router = CustomRouter()
 
@@ -66,7 +66,7 @@ async def handle_swipe_text(message: types.Message, state: FSMContext, _: Callab
         return
 
     action = "like" if action_emoji == "👍" else "dislike"
-    await router.swipe_client.add_swipe(AddSwipeRequest(
+    await router.swipe_client.add_swipe(message.from_user.id, message.from_user.username, AddSwipeRequest(
         from_user_id=from_user_id,
         to_user_id=to_user_id,
         action=action
@@ -82,7 +82,7 @@ async def handle_question_input(message: types.Message, state: FSMContext, _: Ca
     to_user_id = data.get("current_profile_id")
     question_text = message.text
 
-    await router.swipe_client.add_swipe(AddSwipeRequest(
+    await router.swipe_client.add_swipe(message.from_user.id, message.from_user.username, AddSwipeRequest(
         from_user_id=from_user_id,
         to_user_id=to_user_id,
         action="question",

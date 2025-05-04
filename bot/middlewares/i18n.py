@@ -11,7 +11,5 @@ class I18nMiddleware(BaseMiddleware):
         event: TelegramObject,
         data: Dict[str, Any]
     ) -> Any:
-        lang_code = getattr(event.from_user, 'language_code', 'en')
-        translator = get_translator(lang_code).gettext
-        data["_"] = translator
+        data["_"] = get_translator(event.from_user)
         return await handler(event, data)

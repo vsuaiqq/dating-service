@@ -3,7 +3,8 @@ from kafka_events.producer import KafkaEventProducer
 from analytics.ClickHouseLogger import ClickHouseLogger
 from cache.SwipeCache import SwipeCache
 from core.config import Settings
-from models.swipe.requests import AddSwipeRequest
+from models.api.swipe.requests import AddSwipeRequest
+from models.kafka.events import SwipeEvent
 
 class SwipeService:
     def __init__(
@@ -20,7 +21,7 @@ class SwipeService:
         self.cache = swipe_cache
         self.settings = settings
 
-    async def add_swipe(self, swipe: AddSwipeRequest):
+    async def add_swipe(self, username: str, swipe: AddSwipeRequest):
         await self.repo.save_swipe(
             from_user_id=swipe.from_user_id,
             to_user_id=swipe.to_user_id,
@@ -28,14 +29,10 @@ class SwipeService:
             message=swipe.message
         )
 
-        print('\n\n', dict(swipe), '\n\n')
-
         await self.cache.add_swipe(
             swipe.from_user_id,
             swipe.to_user_id
         )
-
-        print('\n\n', dict(swipe), '\n\n')
 
         from_profile = await self.repo.get_profile_by_user_id(swipe.from_user_id)
         to_profile = await self.repo.get_profile_by_user_id(swipe.to_user_id)
@@ -53,15 +50,12 @@ class SwipeService:
             message=swipe.message
         )
 
-        print('\n\n', dict(swipe), '\n\n')
-
         if swipe.action in {"like", "question"}:
-            await self.producer.send_event(
-                self.settings.KAFKA_SWIPES_TOPIC,
-                {
-                    "from_user_id": swipe.from_user_id,
-                    "to_user_id": swipe.to_user_id,
-                    "action": swipe.action,
-                    "message": swipe.message
-                }
+            event = SwipeEvent(
+                from_username=username,
+                from_user_id=swipe.from_user_id,
+                to_user_id=swipe.to_user_id,
+                action=swipe.action,
+                message=swipe.message
             )
+            await self.producer.send_event(self.settings.KAFKA_SWIPES_TOPIC, event.model_dump())

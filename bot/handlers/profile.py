@@ -17,7 +17,7 @@ from utils.ProfileValidator import ProfileValidator
 from utils.I18nTextFilter import I18nTextFilter
 from utils.media import MAX_MEDIA_FILES, process_media_file
 from utils.CustomRouter import CustomRouter
-from models.profile.requests import SaveProfileRequest, MediaItem, SaveMediaRequest
+from models.api.profile.requests import SaveProfileRequest, MediaItem, SaveMediaRequest
 
 router = CustomRouter()
 
@@ -224,7 +224,7 @@ async def save_profile(message: types.Message, state: FSMContext, _: Callable):
                 byte_data = BytesIO(file_bytes.read())
                 extension = ".jpg" if media['type'] == "photo" else ".mp4"
                 filename = f"{message.from_user.id}_{file.file_id}{extension}"
-                s3_key = await router.s3_client.upload_file(byte_data, filename)
+                s3_key = await router.media_client.upload_file(byte_data, filename)
                 
                 saved_media.append(MediaItem(
                     type=media['type'],

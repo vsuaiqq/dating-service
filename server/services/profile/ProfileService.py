@@ -5,8 +5,8 @@ from recsys.EmbeddingRecommender import EmbeddingRecommender
 from kafka_events.producer import KafkaEventProducer
 from cache.RecommendationCache import RecommendationCache
 from core.config import Settings
-from models.profile.requests import SaveProfileRequest, SaveMediaRequest, ToggleActiveRequest, UpdateFieldRequest
-from models.profile.responses import SaveProfileResponse, GetProfileResponse, GetMediaResponse, MediaItem
+from models.api.profile.requests import SaveProfileRequest, SaveMediaRequest, ToggleActiveRequest, UpdateFieldRequest
+from models.api.profile.responses import SaveProfileResponse, GetProfileResponse, GetMediaResponse, MediaItem
 from tasks.geo.tasks import update_user_location
 from tasks.video.tasks import validate_video
 
@@ -63,7 +63,8 @@ class ProfileService:
             update_user_location.delay(user_id=user_id, city=data.value)
 
         if data.field_name == 'coordinates':
-            await self.repo.update_coordinates(user_id, data.value.latitude, data.value.longitude)
+            await self.repo.update_profile_field(user_id, 'latitude', data.value.latitude)
+            await self.repo.update_profile_field(user_id, 'longitude', data.value.longitude)
             await self.repo.reset_city(user_id)
             await self.cache.clear(user_id)
 

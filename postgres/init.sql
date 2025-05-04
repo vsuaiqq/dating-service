@@ -63,3 +63,18 @@ CREATE INDEX idx_profile_media ON media(profile_id);
 CREATE INDEX idx_swipes_from_user ON swipes(from_user_id);
 CREATE INDEX idx_swipes_to_user ON swipes(to_user_id);
 CREATE INDEX idx_swipes_action ON swipes(action);
+
+CREATE OR REPLACE FUNCTION update_location_on_coords_change()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.latitude IS DISTINCT FROM OLD.latitude OR NEW.longitude IS DISTINCT FROM OLD.longitude THEN
+        NEW.location := ST_SetSRID(ST_MakePoint(NEW.longitude, NEW.latitude), 4326)::geography;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_update_location
+BEFORE UPDATE ON users
+FOR EACH ROW
+EXECUTE FUNCTION update_location_on_coords_change();
