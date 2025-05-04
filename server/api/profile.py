@@ -26,17 +26,13 @@ async def get_profile_by_user_id(
     user_id: int = Depends(get_user_id_from_headers),
     profile_service: ProfileService = Depends(get_profile_service)
 ):
-    try:
-        logger.info(f"Fetching profile for user {user_id}")
-        result = await profile_service.get_profile_by_user_id(user_id)
-        if result is None:
-            logger.warning(f"Profile not found for user {user_id}")
-            raise HTTPException(status_code=404, detail="Profile not found")
-        logger.info(f"Profile retrieved successfully for user {user_id}")
-        return result
-    except Exception as e:
-        logger.error(f"Failed to fetch profile for user {user_id}: {str(e)}", exc_info=True)
-        raise HTTPException(status_code=500, detail=str(e))
+    logger.info(f"Fetching profile for user {user_id}")
+    result = await profile_service.get_profile_by_user_id(user_id)
+    if result is None:
+        logger.warning(f"Profile not found for user {user_id}")
+        raise HTTPException(status_code=404, detail="Profile not found")
+    logger.info(f"Profile retrieved successfully for user {user_id}")
+    return result
 
 @router.patch("")
 async def update_field(
