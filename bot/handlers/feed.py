@@ -13,36 +13,47 @@ from models.api.swipe.requests import AddSwipeRequest
 
 router = CustomRouter()
 
+
 async def send_next_recommendation(user_id: int, message: types.Message, state: FSMContext, _: Callable):
     recsys_client = router.recsys_client
     profile_client = router.profile_client
 
     is_active = await is_profile_active(profile_client, message.from_user.id)
+
     response = await recsys_client.get_recommendations(user_id)
     recs = response.recommendations
 
     if not recs:
         await message.answer(_("no_more_recommendations"), reply_markup=get_main_keyboard(is_active, _))
         return
-    
+
     while True:
-        next_user_id = recs.pop()
-        if not next_user_id:
+        if not recs:
             await message.answer(_("no_more_recommendations"), reply_markup=get_main_keyboard(is_active, _))
             return
+
+        next_user_id, distance = recs.pop()
 
         profile = await profile_client.get_profile_by_user_id(next_user_id)
         if profile and profile.is_active:
             break
-    
+
     if not profile:
         await message.answer(_("no_more_recommendations"), reply_markup=get_main_keyboard(is_active, _))
         return
 
-    text = f"{profile.name}, {profile.age}\n{profile.about or ''}"
+    if distance < 1:
+        distance_str = f"{int(distance * 1000)} {_('meters_away')}"
+    else:
+        distance_str = f"{round(distance, 1)} {_('kilometers_away')}"
+
+    text = (
+        f"{profile.name}, {profile.age}\n"
+        f"{distance_str}\n\n"
+        f"{profile.about or ''}"
+    )
 
     await state.update_data(current_profile_id=profile.user_id)
-
     await message.answer(text, reply_markup=get_swipe_keyboard(_))
 
 @router.message(F.text.in_(["👎", "👍", "❓"]))

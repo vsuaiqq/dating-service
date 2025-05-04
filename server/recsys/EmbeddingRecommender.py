@@ -4,9 +4,10 @@ import re
 import pymorphy2
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
-from typing import List
+from typing import List, Tuple
 from nltk.stem import WordNetLemmatizer
 from langdetect import detect
+from math import radians, sin, cos, sqrt, atan2
 
 from database.ProfileRepository import ProfileRepository
 from cache.RecommendationCache import RecommendationCache
@@ -36,6 +37,15 @@ class EmbeddingRecommender:
         self.lemmatizer = WordNetLemmatizer()
         self.morph = pymorphy2.MorphAnalyzer()
 
+    @staticmethod
+    def calculate_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+        lat1, lon1, lat2, lon2 = map(radians, [lat1, lon1, lat2, lon2])
+        dlat = lat2 - lat1
+        dlon = lon2 - lon1
+        a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
+        c = 2 * atan2(sqrt(a), sqrt(1 - a))
+        return 6371 * c
+
     async def _preprocess_text(self, text: str) -> str:
         text = text.lower()
         text = re.sub(r'<[^>]+>', '', text)
@@ -60,7 +70,7 @@ class EmbeddingRecommender:
 
     async def _get_similar_profiles_by_embedding(
         self, user_id: int, count: int = 5
-    ) -> List[int]:
+    ) -> List[Tuple[int, float]]:
         user = await self.profile_repo.get_profile_by_user_id(user_id)
         if not user or not user.get('about_embedding'):
             return []
@@ -81,24 +91,42 @@ class EmbeddingRecommender:
             similarities.append((similarity, candidate))
 
         similarities.sort(key=lambda x: x[0], reverse=True)
-        top_matches = [candidate['user_id'] for _, candidate in similarities[:count]]
+        top_matches = [
+            (candidate['user_id'], candidate['dist'])
+            for _, candidate in similarities[:count]
+        ]
         return top_matches
 
     async def _get_random_profiles_by_criteria(
-        self, user_id: int, count: int = 5, rec_list: List[int] = None
-    ) -> List[int]:
+            self, user_id: int, count: int = 5, rec_list: List[int] = None
+    ) -> List[Tuple[int, float]]:
         user = await self.profile_repo.get_profile_by_user_id(user_id)
         if not user:
             return []
 
         min_age, max_age = get_match_age_range(user['age'])
-        
-        users = await self.profile_repo.get_candidates_by_criteria(user_id, user, rec_list, min_age, max_age, self.max_distance_search)
-        if not users:
+
+        candidate_ids = await self.profile_repo.get_candidates_by_criteria(
+            user_id, user, rec_list, min_age, max_age, self.max_distance_search
+        )
+        if not candidate_ids:
             return []
 
-        random.shuffle(users)
-        return users[:count]
+        results = []
+        user_lat = user['latitude']
+        user_lon = user['longitude']
+
+        for cand_id in candidate_ids:
+            cand_profile = await self.profile_repo.get_profile_by_user_id(cand_id)
+            if cand_profile and cand_profile.get('latitude') and cand_profile.get('longitude'):
+                distance = self.calculate_distance(
+                    user_lat, user_lon,
+                    cand_profile['latitude'], cand_profile['longitude']
+                )
+                results.append((cand_id, distance))
+
+        random.shuffle(results)
+        return results[:count]
 
     async def update_user_embedding(self, user_id: int):
         user = await self.profile_repo.get_profile_by_user_id(user_id)
@@ -110,27 +138,47 @@ class EmbeddingRecommender:
         await self.profile_repo.update_embedding(user_id, embedding)
         
     async def get_hybrid_recommendations(
-            self, user_id: int, count: int
-        ) -> List[int]:
-            already_swiped = await self.swipe_cache.get_all_swiped_ids(user_id)
+        self, user_id: int, count: int
+    ) -> List[Tuple[int, float]]:
+        already_swiped = await self.swipe_cache.get_all_swiped_ids(user_id)
 
-            cached = await self.recommendation_cache.get(user_id)
-            if cached:
-                return [uid for uid in cached if uid not in already_swiped][:count]
+        cached = await self.recommendation_cache.get(user_id)
+        if cached:
+            filtered = [
+                (uid, dist)
+                for uid, dist in cached
+                if uid not in already_swiped
+            ][:count]
+            return filtered
 
-            content_count = int(count * self.recsys_coeff)
-            random_count = count - content_count
-    
-            content_based = await self._get_similar_profiles_by_embedding(user_id, count=content_count)
-            content_based = [uid for uid in content_based if uid not in already_swiped]
+        content_count = int(count * self.recsys_coeff)
+        random_count = count - content_count
 
-            random_based = await self._get_random_profiles_by_criteria(
-                user_id, count=random_count, rec_list=content_based
-            )
-            random_based = [uid for uid in random_based if uid not in already_swiped]
+        content_based = await self._get_similar_profiles_by_embedding(user_id, content_count)
+        content_filtered = [
+            (uid, dist)
+            for uid, dist in content_based
+            if uid not in already_swiped
+        ]
 
-            final_results = list(set(content_based + random_based))[:count]
-            if final_results:
-                await self.recommendation_cache.set(user_id, final_results)
+        random_based = await self._get_random_profiles_by_criteria(
+            user_id, random_count, [uid for uid, _ in content_filtered]
+        )
+        random_filtered = [
+            (uid, dist)
+            for uid, dist in random_based
+            if uid not in already_swiped
+        ]
 
-            return final_results
+        seen = set()
+        final_results = []
+        for uid, dist in content_filtered + random_filtered:
+            if uid not in seen:
+                seen.add(uid)
+                final_results.append((uid, dist))
+        final_results = final_results[:count]
+
+        if final_results:
+            await self.recommendation_cache.set(user_id, final_results)
+
+        return final_results
