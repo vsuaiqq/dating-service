@@ -3,6 +3,7 @@ import httpx
 
 async def save_profile():
     url = "http://localhost:8000/profile/save"
+
     payload = {
         "user_id": 9000,
         "name": "Alice",

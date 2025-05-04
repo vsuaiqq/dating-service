@@ -32,7 +32,9 @@ async def send_next_recommendation(user_id: int, message: types.Message, state: 
             await message.answer(_("no_more_recommendations"), reply_markup=get_main_keyboard(is_active, _))
             return
 
-        next_user_id, distance = recs.pop()
+        recommendation = recs.pop()
+        next_user_id = recommendation.user_id
+        distance = recommendation.distance
 
         profile = await profile_client.get_profile_by_user_id(next_user_id)
         if profile and profile.is_active:
