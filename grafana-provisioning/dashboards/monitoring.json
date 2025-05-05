@@ -1,7 +1,7 @@
 {
   "id": null,
   "title": "Dating Service Monitoring",
-  "tags": ["fastapi", "redis", "postgres"],
+  "tags": ["fastapi", "redis", "postgres", "kafka"],
   "timezone": "browser",
   "schemaVersion": 16,
   "version": 1,
@@ -45,6 +45,73 @@
         }
       ],
       "id": 3
+    },
+    {
+      "type": "graph",
+      "title": "Kafka Messages In/Out per Second",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "rate(kafka_topic_messages_in_total[1m])",
+          "legendFormat": "In - {{topic}}",
+          "interval": ""
+        },
+        {
+          "expr": "rate(kafka_topic_messages_out_total[1m])",
+          "legendFormat": "Out - {{topic}}",
+          "interval": ""
+        }
+      ],
+      "id": 4
+    },
+    {
+      "type": "graph",
+      "title": "Kafka Consumer Lag",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "kafka_consumer_group_lag",
+          "legendFormat": "Lag - {{group}}",
+          "interval": ""
+        }
+      ],
+      "id": 5
+    },
+    {
+      "type": "graph",
+      "title": "Kafka Broker Metrics",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "kafka_broker_leader_count",
+          "legendFormat": "Leaders",
+          "interval": ""
+        },
+        {
+          "expr": "kafka_broker_partition_count",
+          "legendFormat": "Partitions",
+          "interval": ""
+        }
+      ],
+      "id": 6
     }
-  ]
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "kafka_topic",
+        "label": "Kafka Topic",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(kafka_topic_messages_in_total, topic)"
+      },
+      {
+        "name": "consumer_group",
+        "label": "Consumer Group",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(kafka_consumer_group_lag, group)"
+      }
+    ]
+  }
 }

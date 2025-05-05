@@ -75,6 +75,6 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trg_update_location
-BEFORE UPDATE ON users
+BEFORE UPDATE ON profiles
 FOR EACH ROW
 EXECUTE FUNCTION update_location_on_coords_change();

@@ -1,6 +1,7 @@
 from aiogram import types, F
 from aiogram.fsm.context import FSMContext
 from typing import Callable
+from aiogram.types import ContentType, InputMediaPhoto, InputMediaVideo
 
 from utils.I18nTextFilter import I18nTextFilter
 from utils.CustomRouter import CustomRouter
@@ -13,9 +14,11 @@ from models.api.swipe.requests import AddSwipeRequest
 
 router = CustomRouter()
 
+
 async def send_next_recommendation(user_id: int, message: types.Message, state: FSMContext, _: Callable):
     recsys_client = router.recsys_client
     profile_client = router.profile_client
+    media_client = router.media_client
 
     is_active = await is_profile_active(profile_client, message.from_user.id)
 
@@ -44,9 +47,9 @@ async def send_next_recommendation(user_id: int, message: types.Message, state: 
         return
 
     if distance < 1:
-        distance_str = f"{int(distance * 1000)} {_('meters_away')}"
+        distance_str = f"{int(distance * 1000)} {_('kilometers_away')}"
     else:
-        distance_str = f"{round(distance, 1)} {_('kilometers_away')}"
+        distance_str = f"{round(distance, 1)} {_('meters_away')}"
 
     text = (
         f"{profile.name}, {profile.age}\n"
@@ -54,8 +57,27 @@ async def send_next_recommendation(user_id: int, message: types.Message, state: 
         f"{profile.about or ''}"
     )
 
+    media_objects = []
+    presigned_media_resp = await media_client.get_presigned_urls(next_user_id)
+    presigned_media = presigned_media_resp.presigned_media
+
+    for i, media in enumerate(presigned_media):
+        if media.type.value == "photo":
+            media_obj = InputMediaPhoto(media=media.url, caption=text if i == 0 else None)
+        else:
+            media_obj = InputMediaVideo(media=media.url, caption=text if i == 0 else None)
+        media_objects.append(media_obj)
+
     await state.update_data(current_profile_id=profile.user_id)
-    await message.answer(text, reply_markup=get_swipe_keyboard(_))
+
+    if media_objects:
+        try:
+            await message.answer_media_group(media=media_objects)
+            await message.answer(_("swipe_prompt"), reply_markup=get_swipe_keyboard(_))
+        except Exception as e:
+            await message.answer(text, reply_markup=get_swipe_keyboard(_))
+    else:
+        await message.answer(text, reply_markup=get_swipe_keyboard(_))
 
 @router.message(F.text.in_(["👎", "👍", "❓"]))
 async def handle_swipe_text(message: types.Message, state: FSMContext, _: Callable):

@@ -6,10 +6,11 @@ datasources:
     access: proxy
     url: http://clickhouse:8123
     database: ${CLICKHOUSE_DB}
-    user: grafana
+    user: ${CLICKHOUSE_USER}
     secureJsonData:
-      password: ${GRAFANA_PASSWORD}
+      password: ${CLICKHOUSE_PASSWORD}
     isDefault: true
     jsonData:
       addCorsHeader: true
       usePOST: true
+      defaultDatabase: ${CLICKHOUSE_DB}
