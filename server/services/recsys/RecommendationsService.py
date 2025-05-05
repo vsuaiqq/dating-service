@@ -1,7 +1,6 @@
 from recsys.EmbeddingRecommender import EmbeddingRecommender
 from models.api.recsys.responses import GetRecommendationsResponse, RecommendationItem
 
-
 class RecommendationsService:
     def __init__(self, recommender: EmbeddingRecommender):
         self.recommender = recommender

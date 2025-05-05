@@ -13,7 +13,6 @@ from models.api.swipe.requests import AddSwipeRequest
 
 router = CustomRouter()
 
-
 async def send_next_recommendation(user_id: int, message: types.Message, state: FSMContext, _: Callable):
     recsys_client = router.recsys_client
     profile_client = router.profile_client

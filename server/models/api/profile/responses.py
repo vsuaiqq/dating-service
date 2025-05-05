@@ -13,10 +13,3 @@ class GetProfileResponse(BaseModel):
     interesting_gender: str
     about: Optional[str]
     is_active: bool
-
-class MediaItem(BaseModel):
-    type: str
-    s3_key: str
-
-class GetMediaResponse(BaseModel):
-    media: List[MediaItem]

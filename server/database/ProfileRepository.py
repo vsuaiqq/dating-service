@@ -59,13 +59,13 @@ class ProfileRepository:
             """, user_id)
             return row
     
-    async def save_media(self, user_id: int, media: List[Tuple[str, str]]):
+    async def save_media(self, user_id: int, s3_key: str, media_type: str):
         profile_id = (await self.get_profile_by_user_id(user_id))['id']
         async with self.pool.acquire() as conn:
-            await conn.executemany("""
+            await conn.execute("""
                 INSERT INTO media (profile_id, type, s3_key)
                 VALUES ($1, $2, $3)
-            """, [(profile_id, mtype, key) for mtype, key in media])
+            """, profile_id, media_type, s3_key)
 
     async def get_media_by_profile_id(self, user_id: int) -> List[asyncpg.Record]:
         profile_id = (await self.get_profile_by_user_id(user_id))['id']

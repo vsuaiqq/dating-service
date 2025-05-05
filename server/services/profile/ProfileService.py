@@ -5,8 +5,8 @@ from recsys.EmbeddingRecommender import EmbeddingRecommender
 from kafka_events.producer import KafkaEventProducer
 from cache.RecommendationCache import RecommendationCache
 from core.config import Settings
-from models.api.profile.requests import SaveProfileRequest, SaveMediaRequest, ToggleActiveRequest, UpdateFieldRequest
-from models.api.profile.responses import SaveProfileResponse, GetProfileResponse, GetMediaResponse, MediaItem
+from models.api.profile.requests import SaveProfileRequest, ToggleActiveRequest, UpdateFieldRequest
+from models.api.profile.responses import SaveProfileResponse, GetProfileResponse
 from tasks.geo.tasks import update_user_location
 from tasks.video.tasks import validate_video
 
@@ -71,22 +71,11 @@ class ProfileService:
     async def toggle_active(self, user_id: int, data: ToggleActiveRequest):
         await self.repo.toggle_profile_active(user_id, data.is_active)
 
-    async def save_media(self, user_id: int, data: SaveMediaRequest):
-        media_tuples = [(item.type, item.s3_key) for item in data.media]
-        await self.repo.save_media(user_id, media_tuples)
-
-    async def delete_media(self, user_id: int):
-        await self.repo.delete_media_by_profile_id(user_id)
-
     async def get_profile_by_user_id(self, user_id: int) -> Optional[GetProfileResponse]:
         row = await self.repo.get_profile_by_user_id(user_id)
         if row:
             return GetProfileResponse(**row)
         return None
-
-    async def get_media_by_profile_id(self, user_id: int) -> GetMediaResponse:
-        rows = await self.repo.get_media_by_profile_id(user_id)
-        return GetMediaResponse(media=[MediaItem(**row) for row in rows])
 
     def verify_video(self, user_id: int, file_bytes: bytes):
         validate_video.delay(user_id, file_bytes)

@@ -17,7 +17,7 @@ from utils.CustomRouter import CustomRouter
 from utils.profile import is_profile_active, is_profile_exists
 from states.edit_profile import EditProfileStates
 from aiogram.types import ContentType
-from models.api.profile.requests import ToggleActiveRequest, UpdateFieldRequest, SaveMediaRequest, MediaItem, Coordinates
+from models.api.profile.requests import ToggleActiveRequest, UpdateFieldRequest, Coordinates
 
 router = CustomRouter()
     
@@ -28,7 +28,6 @@ async def show_my_profile(message: types.Message, _: Callable):
         await message.answer(_("no_profile_error"), reply_markup=get_start_keyboard(_))
         return
     
-    media_list = await router.profile_client.get_media_by_profile_id(message.from_user.id)
     if profile.city is None:
         profile_text = f"{profile.name}, {profile.age} - {profile.about} {_('active_status') if profile.is_active else _('inactive_status')}"
     else:
@@ -36,12 +35,15 @@ async def show_my_profile(message: types.Message, _: Callable):
 
     media_objects = []
     
-    for i, media in enumerate(media_list.media):
-        media_url = await router.media_client.get_presigned_url(media.s3_key)
-        if media.type == "photo":
-            media_obj = InputMediaPhoto(media=media_url.url, caption=profile_text if i == 0 else None)
+    presigned_media_resp = await router.media_client.get_presigned_urls(message.from_user.id)
+
+    print('\n\n', presigned_media_resp, '\n\n')
+    presigned_media = presigned_media_resp.presigned_media
+    for i, media in enumerate(presigned_media):
+        if media.type.value == "photo":
+            media_obj = InputMediaPhoto(media=media.url, caption=profile_text if i == 0 else None)
         else:
-            media_obj = InputMediaVideo(media=media_url.url, caption=profile_text if i == 0 else None)
+            media_obj = InputMediaVideo(media=media.url, caption=profile_text if i == 0 else None)
         media_objects.append(media_obj)
 
     try:
@@ -284,7 +286,6 @@ async def update_interesting_gender(message: types.Message, state: FSMContext, _
     await message.answer(_("gender_updated"), reply_markup=get_main_keyboard(is_active, _))
     await state.clear()
 
-
 @router.message(EditProfileStates.media, F.media_group_id)
 async def handle_media_group(message: types.Message, state: FSMContext, _: Callable, album: Optional[list[types.Message]] = None):
     is_valid, error = ProfileValidator.validate_media(message, _)
@@ -344,31 +345,18 @@ async def finish_media_upload(message: types.Message, state: FSMContext, _: Call
     
     is_active = profile.is_active
 
-    media_list = await router.profile_client.get_media_by_profile_id(message.from_user.id)
-    for media in media_list.media:
-        await router.media_client.delete_file(media.s3_key)
-
-    await router.profile_client.delete_media(message.from_user.id)
+    await router.media_client.delete_files(message.from_user.id)
 
     data = await state.get_data()
     new_media_list = data.get("media", [])
 
-    saved_media = []
     for media in new_media_list:
         file = await message.bot.get_file(media['file_id'])
         file_bytes = await message.bot.download_file(file.file_path)
         byte_data = BytesIO(file_bytes.read())
-        
         extension = ".jpg" if media['type'] == "photo" else ".mp4"
         filename = f"{message.from_user.id}_{file.file_id}{extension}"
-        s3_key = await router.media_client.upload_file(byte_data, filename)
-        
-        saved_media.append(MediaItem(
-            type=media['type'],
-            s3_key=s3_key.key
-        ))
-    
-    await router.profile_client.save_media(message.from_user.id, SaveMediaRequest(media=saved_media))
+        await router.media_client.upload_file(message.from_user.id, media['type'], byte_data, filename)
 
     await message.answer(_("media_updated"), reply_markup=get_main_keyboard(is_active, _))
     await state.clear()

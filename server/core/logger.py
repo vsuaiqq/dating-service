@@ -1,7 +1,5 @@
 import logging
 from logging.handlers import RotatingFileHandler
-import os
-
 
 def setup_logger(name: str = "app"):
     logger = logging.getLogger(name)
@@ -23,6 +21,5 @@ def setup_logger(name: str = "app"):
     logger.addHandler(file_handler)
 
     return logger
-
 
 logger = setup_logger("app")

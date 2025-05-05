@@ -76,8 +76,6 @@ class TelegramBot:
     async def _show_profile(self, from_user_id: int, to_user_id: int):
         profile = await self.profile_client.get_profile_by_user_id(from_user_id)
 
-        media_list = await self.profile_client.get_media_by_profile_id(from_user_id)
-
         _ = get_translator(await self.bot.get_chat(to_user_id))
 
         if profile.city is None:
@@ -86,13 +84,14 @@ class TelegramBot:
             profile_text = f"{profile.name}, {profile.age}, {profile.city} - {profile.about}"
 
         media_objects = []
-        
-        for i, media in enumerate(media_list.media):
-            media_url = await self.media_client.get_presigned_url(media.s3_key)
-            if media.type == "photo":
-                media_obj = InputMediaPhoto(media=media_url.url, caption=profile_text if i == 0 else None)
+
+        presigned_media_resp = await self.media_client.get_presigned_urls(from_user_id)
+        presigned_media = presigned_media_resp.presigned_media
+        for i, media in enumerate(presigned_media):
+            if media.type.value == "photo":
+                media_obj = InputMediaPhoto(media=media.url, caption=profile_text if i == 0 else None)
             else:
-                media_obj = InputMediaVideo(media=media_url.url, caption=profile_text if i == 0 else None)
+                media_obj = InputMediaVideo(media=media.url, caption=profile_text if i == 0 else None)
             media_objects.append(media_obj)
 
         try:

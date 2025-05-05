@@ -1,5 +1,5 @@
 from redis.asyncio import Redis
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 class RecommendationCache:
     def __init__(self, redis: Redis, ttl: int = 60 * 60):
@@ -9,26 +9,26 @@ class RecommendationCache:
     def _key(self, user_id: int) -> str:
         return f"recs:{user_id}"
 
-    async def get(self, user_id: int) -> List[int]:
+    async def get(self, user_id: int) -> List[Tuple[int, float]]:
         key = self._key(user_id)
-        data = await self.redis.lrange(key, 0, -1)
-        return [int(x) for x in data]
+        results = await self.redis.zrange(key, 0, -1, withscores=True)
+        return [(int(member), score) for member, score in results]
 
-    async def set(self, user_id: int, recs: List[int]):
+    async def set(self, user_id: int, recs: List[Tuple[int, float]]):
         key = self._key(user_id)
         if not recs:
             return
+        members = {str(uid): float(score) for uid, score in recs}
+        await self.redis.zadd(key, members)
+        await self.redis.expire(key, self.ttl)
 
-        pipe = self.redis.pipeline()
-        for rec_id in recs:
-            pipe.rpush(key, rec_id)
-        pipe.expire(key, self.ttl)
-        await pipe.execute()
-
-    async def pop_next(self, user_id: int) -> Optional[int]:
+    async def pop_next(self, user_id: int) -> Optional[Tuple[int, float]]:
         key = self._key(user_id)
-        value = await self.redis.lpop(key)
-        return int(value) if value else None
+        results = await self.redis.zpopmin(key, count=1)
+        if results:
+            member, score = results[0]
+            return int(member), score
+        return None
 
     async def clear(self, user_id: int):
         await self.redis.delete(self._key(user_id))

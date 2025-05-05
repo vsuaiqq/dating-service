@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
+
 from core.dependecies import get_swipe_service, get_username_from_headers
+from core.logger import logger
 from services.swipe.SwipeService import SwipeService
 from models.api.swipe.requests import AddSwipeRequest
-from core.logger import logger
-import datetime
 
 router = APIRouter()
 
@@ -37,34 +37,6 @@ async def add_swipe(
                 "processing_result": result
             }
         )
-
-        return {
-            "status": "success",
-            "action": swipe.action.value,
-            "from_user": username,
-            "to_user_id": swipe.to_user_id,
-            "timestamp": datetime.utcnow().isoformat()
-        }
-
-    except ValueError as e:
-        logger.warning(
-            "Swipe validation failed",
-            extra={
-                "event": "swipe_validation_error",
-                "from_user": username,
-                "error": str(e),
-                "swipe_data": {
-                    "to_user_id": swipe.to_user_id,
-                    "action": swipe.action.value,
-                    "message_length": len(swipe.message) if swipe.message else 0
-                }
-            }
-        )
-        raise HTTPException(
-            status_code=400,
-            detail={"error": str(e), "code": "validation_error"}
-        )
-
     except Exception as e:
         logger.error(
             "Swipe processing failed",

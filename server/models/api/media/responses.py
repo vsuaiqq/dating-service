@@ -1,7 +1,11 @@
 from pydantic import BaseModel
+from typing import List
 
-class UploadFileResponse(BaseModel):
-    key: str
+from models.api.media.requests import MediaType
 
-class GetPresignedUrlResponse(BaseModel):
+class PresignedMedia(BaseModel):
     url: str
+    type: MediaType
+
+class GetPresignedUrlsResponse(BaseModel):
+    presigned_media: List[PresignedMedia]

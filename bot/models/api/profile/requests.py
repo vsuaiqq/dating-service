@@ -17,13 +17,6 @@ class SaveProfileRequest(BaseModel):
             raise ValueError("Укажите либо город, либо координаты (широту и долготу).")
         return self
 
-class MediaItem(BaseModel):
-    type: str
-    s3_key: str
-
-class SaveMediaRequest(BaseModel):
-    media: List[MediaItem]
-
 class ToggleActiveRequest(BaseModel):
     is_active: bool
 

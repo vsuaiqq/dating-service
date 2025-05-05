@@ -17,13 +17,6 @@ class SaveProfileRequest(BaseModel):
             raise ValueError("Укажите либо город, либо координаты (широту и долготу).")
         return self
 
-class MediaItem(BaseModel):
-    type: str
-    s3_key: str
-
-class SaveMediaRequest(BaseModel):
-    media: List[MediaItem]
-
 class ToggleActiveRequest(BaseModel):
     is_active: bool
 
@@ -32,7 +25,7 @@ class Coordinates(BaseModel):
     longitude: float
 
 class UpdateFieldRequest(BaseModel):
-    field_name: Literal["name", "age", "city", "gender", "is_active", "about", "latitude", "longitude", "interesting_gender", "coordinates", "username"]
+    field_name: Literal["name", "age", "city", "gender", "is_active", "about", "latitude", "longitude", "interesting_gender", "coordinates"]
     value: Union[str, int, Coordinates]
 
     @model_validator(mode='after')

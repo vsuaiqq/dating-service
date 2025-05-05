@@ -1,17 +1,17 @@
 from fastapi import APIRouter, Depends, HTTPException
+
 from core.dependecies import get_recommendations_service, get_user_id_from_headers
+from core.logger import logger
 from services.recsys.RecommendationsService import RecommendationsService
 from models.api.recsys.responses import GetRecommendationsResponse
-from core.logger import logger
 
 router = APIRouter()
 
-
 @router.get("/users/recommendations", response_model=GetRecommendationsResponse)
 async def get_recommendations(
-        count: int,
-        user_id: int = Depends(get_user_id_from_headers),
-        recommendations_service: RecommendationsService = Depends(get_recommendations_service)
+    count: int,
+    user_id: int = Depends(get_user_id_from_headers),
+    recommendations_service: RecommendationsService = Depends(get_recommendations_service)
 ):
     try:
         logger.info(
@@ -30,7 +30,6 @@ async def get_recommendations(
         )
 
         return result
-
     except Exception as e:
         logger.error(
             f"Failed to get recommendations for user {user_id}: {str(e)}",

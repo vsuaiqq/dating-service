@@ -96,7 +96,8 @@ async def lifespan(app: FastAPI):
     )
 
     app.state.media_service = MediaService(
-        uploader=uploader
+        uploader=uploader,
+        profile_repo=repo
     )
 
     app.state.swipe_service = SwipeService(

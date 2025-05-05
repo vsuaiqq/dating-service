@@ -1,8 +1,8 @@
 from typing import Optional
 
 from api.BaseApiClient import BaseApiClient
-from models.api.profile.requests import SaveMediaRequest, SaveProfileRequest, UpdateFieldRequest, ToggleActiveRequest
-from models.api.profile.responses import GetMediaResponse, GetProfileResponse, SaveProfileResponse
+from models.api.profile.requests import SaveProfileRequest, UpdateFieldRequest, ToggleActiveRequest
+from models.api.profile.responses import GetProfileResponse, SaveProfileResponse
 
 class ProfileClient(BaseApiClient):
     def __init__(self, base_url: str):
@@ -31,17 +31,4 @@ class ProfileClient(BaseApiClient):
     async def verify_video(self, user_id: int, file_bytes: bytes, file_id: str):
         files = {'file': (f"{file_id}.mp4", file_bytes, 'video/mp4')}
         resp = await self.client.post(f"/profile/verify-video", files=files, headers=self._headers(user_id))
-        resp.raise_for_status()
-
-    async def save_media(self, user_id: int, data: SaveMediaRequest):
-        resp = await self.client.post(f"/profile/media", json=data.model_dump(), headers=self._headers(user_id))
-        resp.raise_for_status()
-
-    async def get_media_by_profile_id(self, user_id: int) -> GetMediaResponse:
-        resp = await self.client.get(f"/profile/media", headers=self._headers(user_id))
-        resp.raise_for_status()
-        return GetMediaResponse(**resp.json())
-
-    async def delete_media(self, user_id: int):
-        resp = await self.client.delete(f"/profile/media", headers=self._headers(user_id))
         resp.raise_for_status()
