@@ -13,7 +13,7 @@ services:
     command: 
       - bash
       - -c
-      - "watchmedo auto-restart --directory=/app --pattern='*.py' --recursive -- celery -A core.celery_app.celery_app worker --loglevel=info"
+      - "watchmedo auto-restart --directory=/app --pattern='*.py' --recursive -- celery -A infrastructure.messaging.celery.app.celery_app worker --loglevel=info"
     volumes:
       - ./server:/app
   

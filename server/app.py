@@ -1,12 +1,16 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from core.lifespan import lifespan
 from core.config import get_settings
-from api.profile import router as profile_router
-from api.recsys import router as recsys_router
-from api.media import router as media_router
-from api.swipe import router as swipe_router
+from shared.exceptions.exceptions import AppException
+from shared.exceptions.error_handlers import http_exception_handler, app_exception_handler, unhandled_exception_handler, validation_exception_handler
+from api.v1.routers.profile import router as profile_router
+from api.v1.routers.recommendation import router as recommendation_router
+from api.v1.routers.media import router as media_router
+from api.v1.routers.swipe import router as swipe_router
 from prometheus_fastapi_instrumentator import Instrumentator
 
 app = FastAPI(lifespan=lifespan)
@@ -23,7 +27,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(profile_router, prefix='/profile', tags=['Profile'])
-app.include_router(recsys_router, prefix='/recsys', tags=['Recommendations'])
+app.add_exception_handler(AppException, app_exception_handler)
+app.add_exception_handler(StarletteHTTPException, http_exception_handler)
+app.add_exception_handler(RequestValidationError, validation_exception_handler)
+app.add_exception_handler(Exception, unhandled_exception_handler)
+
+app.include_router(profile_router, prefix='/profile', tags=['Profiles'])
+app.include_router(recommendation_router, prefix='/recsys', tags=['Recommendations'])
 app.include_router(media_router, prefix='/media', tags=['Media'])
 app.include_router(swipe_router, prefix='/swipe', tags=['Swipes'])
