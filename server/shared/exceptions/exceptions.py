@@ -8,3 +8,7 @@ class AppException(Exception):
 class NotFoundException(AppException):
     def __init__(self, message="Not found", details=None):
         super().__init__(message, 404, details)
+
+class TokenException(AppException):
+    def __init__(self, message="Token is missing or invalid", details=None):
+        super().__init__(message, 401, details)

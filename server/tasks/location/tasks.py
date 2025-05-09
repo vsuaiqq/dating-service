@@ -3,7 +3,7 @@ from location.resolver import LocationResolver
 from location.cached_resolver import CachedLocationResolver
 from infrastructure.messaging.celery.app import celery_app
 from infrastructure.messaging.kafka.producer_sync import KafkaEventProducerSync
-from infrastructure.cache.redis.city_coordinates_cache import CityCoordinatesCache
+from infrastructure.cache.redis.city_coordinates import CityCoordinatesCache
 from contracts.kafka.events import LocationResolveResultEvent
 
 settings = get_settings()

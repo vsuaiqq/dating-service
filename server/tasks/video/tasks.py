@@ -1,5 +1,5 @@
 from core.config import get_settings
-from video.video_validator import VideoValidator
+from video.validator import VideoValidator
 from infrastructure.messaging.celery.app import celery_app
 from infrastructure.messaging.kafka.producer_sync import KafkaEventProducerSync
 from contracts.kafka.events import VideoValidationResultEvent

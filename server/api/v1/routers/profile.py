@@ -1,18 +1,26 @@
-from fastapi import APIRouter, Depends, UploadFile, File
+from fastapi import APIRouter, Request, Depends, UploadFile, File
 from dependency_injector.wiring import inject, Provide
+from slowapi import Limiter
 
 from api.v1.dependecies.headers import get_user_id_from_headers
 from api.v1.schemas.profile import SaveProfileRequest, UpdateFieldRequest, ToggleActiveRequest, GetProfileResponse, SaveProfileResponse
 from domain.profile.services.profile_service import ProfileService
 from di.container import Container
 from shared.exceptions.exceptions import NotFoundException
+from core.limiter import user_id_rate_key
 from core.logger import logger
 
 router = APIRouter()
 
+limiter = Limiter(
+    key_func=user_id_rate_key,
+    storage_uri=Container.config().redis_url_limiter
+)
+
 @router.put("", response_model=SaveProfileResponse)
 @inject
 async def save_profile(
+    request: Request,
     data: SaveProfileRequest,
     user_id: int = Depends(get_user_id_from_headers),
     profile_service: ProfileService = Depends(Provide[Container.services.provided.profile])
@@ -23,8 +31,10 @@ async def save_profile(
     return result
 
 @router.get("", response_model=GetProfileResponse)
+@limiter.limit("3/minute")
 @inject
 async def get_profile_by_user_id(
+    request: Request,
     user_id: int = Depends(get_user_id_from_headers),
     profile_service: ProfileService = Depends(Provide[Container.services.provided.profile])
 ):
@@ -39,6 +49,7 @@ async def get_profile_by_user_id(
 @router.patch("")
 @inject
 async def update_field(
+    request: Request,
     data: UpdateFieldRequest,
     user_id: int = Depends(get_user_id_from_headers),
     profile_service: ProfileService = Depends(Provide[Container.services.provided.profile])
@@ -50,6 +61,7 @@ async def update_field(
 @router.patch("/active")
 @inject
 async def toggle_active(
+    request: Request,
     data: ToggleActiveRequest,
     user_id: int = Depends(get_user_id_from_headers),
     profile_service: ProfileService = Depends(Provide[Container.services.provided.profile])
@@ -61,6 +73,7 @@ async def toggle_active(
 @router.post("/verify-video")
 @inject
 async def verify_video(
+    request: Request,
     user_id: int = Depends(get_user_id_from_headers),
     file: UploadFile = File(...),
     profile_service: ProfileService = Depends(Provide[Container.services.provided.profile])

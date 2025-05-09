@@ -22,3 +22,4 @@ opencv-python
 face-recognition
 prometheus-fastapi-instrumentator
 dependency_injector
+slowapi

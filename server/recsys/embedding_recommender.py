@@ -10,8 +10,8 @@ from langdetect import detect
 from math import radians, sin, cos, sqrt, atan2
 
 from domain.profile.repositories.profile_repository import ProfileRepository
-from infrastructure.cache.redis.recommendation_cache import RecommendationCache
-from infrastructure.cache.redis.swipe_cache import SwipeCache
+from infrastructure.cache.redis.recommendation import RecommendationCache
+from infrastructure.cache.redis.swipe import SwipeCache
 from shared.utils.age import get_match_age_range
 
 class EmbeddingRecommender:

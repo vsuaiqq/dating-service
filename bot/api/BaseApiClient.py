@@ -1,6 +1,8 @@
 from typing import Optional
 import httpx
 
+from config import API_SECRET_KEY
+
 class BaseApiClient:
     def __init__(self, base_url: str):
         self.base_url = base_url.rstrip("/")
@@ -9,6 +11,8 @@ class BaseApiClient:
     def _headers(self, user_id: int, username: Optional[str] = None) -> dict:
         headers = {"X-User-ID": str(user_id)}
         headers["X-Telegram-Username"] = username if username is not None else ''
+        if API_SECRET_KEY:
+            headers["Authorization"] = f"Bearer {API_SECRET_KEY}"
         return headers
 
     async def close(self):

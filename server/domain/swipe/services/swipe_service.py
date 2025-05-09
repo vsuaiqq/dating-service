@@ -2,7 +2,7 @@ from core.config import Settings
 from domain.swipe.repositories.swipe_repository import SwipeRepository
 from infrastructure.messaging.kafka.producer import KafkaEventProducer
 from infrastructure.db.clickhouse.logger import ClickHouseLogger
-from infrastructure.cache.redis.swipe_cache import SwipeCache
+from infrastructure.cache.redis.swipe import SwipeCache
 from api.v1.schemas.swipe import AddSwipeRequest
 from contracts.kafka.events import SwipeEvent
 

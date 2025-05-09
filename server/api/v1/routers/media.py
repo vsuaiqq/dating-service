@@ -1,18 +1,26 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Request, Depends
 from fastapi import UploadFile, File, Form
 from dependency_injector.wiring import inject, Provide
+from slowapi import Limiter
 
 from api.v1.dependecies.headers import get_user_id_from_headers
 from api.v1.schemas.media import MediaType, GetPresignedUrlsResponse
 from domain.media.services.media_service import MediaService
 from di.container import Container
+from core.limiter import user_id_rate_key
 from core.logger import logger
 
 router = APIRouter()
 
+limiter = Limiter(
+    key_func=user_id_rate_key,
+    storage_uri=Container.config().redis_url_limiter
+)
+
 @router.post("/upload")
 @inject
 async def upload_file(
+    request: Request,
     user_id: int = Depends(get_user_id_from_headers),
     file: UploadFile = File(...),
     type: MediaType = Form(...),
@@ -25,6 +33,7 @@ async def upload_file(
 @router.get("/presigned-urls", response_model=GetPresignedUrlsResponse)
 @inject
 async def get_presigned_urls(
+    request: Request,
     user_id: int = Depends(get_user_id_from_headers),
     media_service: MediaService = Depends(Provide[Container.services.provided.media])
 ):
@@ -36,6 +45,7 @@ async def get_presigned_urls(
 @router.delete("/files")
 @inject
 async def delete_files(
+    request: Request,
     user_id: int = Depends(get_user_id_from_headers),
     media_service: MediaService = Depends(Provide[Container.services.provided.media])
 ):

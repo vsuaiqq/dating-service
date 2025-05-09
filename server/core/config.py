@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     REDIS_PORT: int
     REDIS_FASTAPI_CACHE: int
     REDIS_CELERY: int
+    REDIS_LIMITER: int
 
     KAFKA_HOST: str
     KAFKA_PORT: int
@@ -36,6 +37,8 @@ class Settings(BaseSettings):
     CLICKHOUSE_USER: str
     CLICKHOUSE_PASSWORD: str
 
+    API_SECRET_KEY: str
+
     ORIGINS: List[str] = Field(default_factory=lambda: [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
@@ -56,6 +59,10 @@ class Settings(BaseSettings):
     @property
     def redis_url_celery(self) -> RedisDsn:
         return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_CELERY}"
+    
+    @property
+    def redis_url_limiter(self) -> RedisDsn:
+        return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_LIMITER}"
 
     @property
     def kafka_bootstrap_servers(self) -> str:
