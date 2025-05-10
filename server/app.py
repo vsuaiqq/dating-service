@@ -13,9 +13,16 @@ from api.v1.routers.profile import router as profile_router
 from api.v1.routers.recommendation import router as recommendation_router
 from api.v1.routers.media import router as media_router
 from api.v1.routers.swipe import router as swipe_router
+from api.v1.meta.tags import tags_metadata
 from prometheus_fastapi_instrumentator import Instrumentator
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    title="API dating-service",
+    description="API включает работу с профилем, рекомендациями, свайпами и загрузкой медиа.",
+    version="1.0.0",
+    openapi_tags=tags_metadata,
+    lifespan=lifespan
+)
 
 Instrumentator().instrument(app).expose(app)
 

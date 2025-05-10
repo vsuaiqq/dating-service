@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, Depends
+from fastapi import APIRouter, Request, Depends, Query
 from dependency_injector.wiring import inject, Provide
 from slowapi import Limiter
 
@@ -16,23 +16,30 @@ limiter = Limiter(
     storage_uri=Container.config().redis_url_limiter
 )
 
-@router.get("/users/recommendations", response_model=GetRecommendationsResponse)
+@router.get(
+    "/users/recommendations",
+    summary="Получить рекомендации",
+    description="Возвращает список рекомендованных пользователей, основываясь на профиле пользователя.",
+    tags=["Рекомендации"],
+    response_model=GetRecommendationsResponse
+)
 @inject
+@limiter.limit("10/minute")
 async def get_recommendations(
     request: Request,
-    count: int,
+    count: int = Query(..., description="Количество запрашиваемых рекомендаций"),
     user_id: int = Depends(get_user_id_from_headers),
     recommendation_service: RecommendationService = Depends(Provide[Container.services.provided.recommendation])
 ):
     logger.info(
-        f"Starting to get recommendations for user {user_id}, count: {count}",
+        f"Запрос рекомендаций для пользователя {user_id}, количество: {count}",
         extra={"user_id": user_id, "count": count}
     )
 
     result = await recommendation_service.get_recommendations(user_id, count)
 
     logger.info(
-        f"Successfully got {len(result.recommendations)} recommendations for user {user_id}",
+        f"Успешно получено {len(result.recommendations)} рекомендаций для пользователя {user_id}",
         extra={
             "user_id": user_id,
             "recommendations_count": len(result.recommendations)

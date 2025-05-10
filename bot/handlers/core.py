@@ -37,7 +37,6 @@ async def show_my_profile(message: types.Message, _: Callable):
     
     presigned_media_resp = await router.media_client.get_presigned_urls(message.from_user.id)
 
-    print('\n\n', presigned_media_resp, '\n\n')
     presigned_media = presigned_media_resp.presigned_media
     for i, media in enumerate(presigned_media):
         if media.type.value == "photo":

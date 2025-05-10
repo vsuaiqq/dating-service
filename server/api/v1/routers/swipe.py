@@ -16,8 +16,14 @@ limiter = Limiter(
     storage_uri=Container.config().redis_url_limiter
 )
 
-@router.post("")
+@router.post(
+    "",
+    summary="Добавить свайп",
+    description="Обрабатывает действие свайпа (лайк или дизлайк) пользователя по отношению к другому пользователю. Также может содержать сообщение.",
+    tags=["Свайпы"]
+)
 @inject
+@limiter.limit("25/minute")
 async def add_swipe(
     request: Request,
     swipe: AddSwipeRequest,
@@ -25,7 +31,7 @@ async def add_swipe(
     swipe_service: SwipeService = Depends(Provide[Container.services.provided.swipe])
 ):
     logger.info(
-        "Starting swipe processing",
+        "Начало обработки свайпа",
         extra={
             "event": "swipe_initiated",
             "from_user": username,
@@ -38,7 +44,7 @@ async def add_swipe(
     result = await swipe_service.add_swipe(username, swipe)
 
     logger.info(
-        "Swipe processed successfully",
+        "Свайп успешно обработан",
         extra={
             "event": "swipe_processed",
             "from_user": username,

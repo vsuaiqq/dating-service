@@ -1,8 +1,7 @@
 from aiogram import types
 from aiogram.fsm.context import FSMContext
 from typing import Literal, Union
-
-MAX_MEDIA_FILES = 3
+from config import MAX_MEDIA_FILES
 
 async def process_media_file(message: types.Message, file: Union[types.PhotoSize, types.Video], file_type: Literal["photo", "video"], state: FSMContext) -> bool:
     data = await state.get_data()

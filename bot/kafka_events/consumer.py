@@ -1,6 +1,7 @@
 from aiokafka import AIOKafkaConsumer
 import asyncio
 import json
+from utils.logger import logger
 
 class KafkaEventConsumer:
     def __init__(self, bootstrap_servers: str, topics: list, callback):
@@ -25,4 +26,4 @@ class KafkaEventConsumer:
             try:
                 await self.callback(data)
             except Exception as e:
-                print(f"Invalid event: {e}")
+                logger.warning(f"Invalid event: {e}")

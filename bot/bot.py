@@ -10,9 +10,10 @@ from pydantic import ValidationError
 
 from config import (
     BOT_TOKEN, REDIS_HOST, REDIS_PORT, REDIS_FSM,
-    API_URL, KAFKA_GEO_NOTIFICATIONS_TOPIC, KAFKA_SWIPES_TOPIC, KAFKA_VIDEO_NOTIFICATIONS_TOPIC
+    API_URL, KAFKA_GEO_NOTIFICATIONS_TOPIC, KAFKA_SWIPES_TOPIC, KAFKA_VIDEO_NOTIFICATIONS_TOPIC,
+    KAFKA_HOST, KAFKA_PORT
 )
-from utils.logger import setup_logger
+from utils.logger import logger
 from handlers import all_handlers
 from middlewares.i18n import I18nMiddleware
 from api.ProfileClient import ProfileClient
@@ -27,7 +28,6 @@ from models.kafka.events import SwipeEvent, VideoValidationResultEvent, Location
 
 class TelegramBot:
     def __init__(self):
-        setup_logger()
         self._init_clients()
         self._init_bot()
         self._init_dispatcher()
@@ -47,7 +47,7 @@ class TelegramBot:
 
     def _init_dispatcher(self):
         redis_instance = redis.Redis(
-            host='localhost',
+            host=REDIS_HOST,
             port=REDIS_PORT,
             db=REDIS_FSM
         )
@@ -68,7 +68,7 @@ class TelegramBot:
 
     def _init_kafka_consumer(self):
         self.kafka_consumer = KafkaEventConsumer(
-            bootstrap_servers="localhost:29092",
+            bootstrap_servers=f"{KAFKA_HOST}:{KAFKA_PORT}",
             topics=[KAFKA_SWIPES_TOPIC, KAFKA_GEO_NOTIFICATIONS_TOPIC, KAFKA_VIDEO_NOTIFICATIONS_TOPIC],
             callback=self._handle_kafka_event
         )
