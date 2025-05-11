@@ -4,7 +4,7 @@ from core.config import Settings
 from domain.profile.repositories.profile_repository import ProfileRepository
 from recsys.embedding_recommender import EmbeddingRecommender
 from infrastructure.messaging.kafka.producer import KafkaEventProducer
-from infrastructure.cache.redis.recommendation import RecommendationCache
+from infrastructure.cache.redis.recommendation_cache import RecommendationCache
 from api.v1.schemas.profile import SaveProfileRequest, ToggleActiveRequest, UpdateFieldRequest, SaveProfileResponse, GetProfileResponse
 from contracts.kafka.events import LocationResolveResultEvent
 from tasks.location.tasks import update_user_location

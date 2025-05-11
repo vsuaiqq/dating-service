@@ -11,12 +11,12 @@ from domain.media.services.media_service import MediaService
 from domain.profile.services.profile_service import ProfileService
 from domain.recommendation.services.recommendation_service import RecommendationService
 from domain.swipe.services.swipe_service import SwipeService
-from infrastructure.cache.redis.recommendation import RecommendationCache
-from infrastructure.cache.redis.swipe import SwipeCache
-from infrastructure.s3.uploader import S3Uploader
+from infrastructure.cache.redis.recommendation_cache import RecommendationCache
+from infrastructure.cache.redis.swipe_cache import SwipeCache
+from infrastructure.storage.s3.s3_uploader import S3Uploader
 from infrastructure.messaging.kafka.consumer import KafkaEventConsumer
 from infrastructure.messaging.kafka.producer import KafkaEventProducer
-from infrastructure.db.clickhouse.logger import ClickHouseLogger
+from infrastructure.db.clickhouse.clickhouse_logger import ClickHouseLogger
 from recsys.embedding_recommender import EmbeddingRecommender
 
 @dataclass

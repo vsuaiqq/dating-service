@@ -2,7 +2,8 @@ import json
 import redis
 from typing import Optional, Tuple
 
-from infrastructure.cache.redis.keys import get_city_coords_key
+def get_city_coords_key(city: str) -> str:
+        return f"city_coords:{city.lower()}"
 
 class CityCoordinatesCache:
     def __init__(self, redis_url: str, ttl: int = 60 * 60 * 24 * 30):

@@ -1,7 +1,8 @@
 from redis.asyncio import Redis
 from typing import List, Tuple
 
-from infrastructure.cache.redis.keys import get_recs_key
+def get_recs_key(user_id: int) -> str:
+        return f"recs:{user_id}"
 
 class RecommendationCache:
     def __init__(self, redis: Redis, ttl: int = 60 * 60):

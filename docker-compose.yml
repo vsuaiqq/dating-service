@@ -85,7 +85,7 @@ services:
   celery_worker:
     build:
       context: ./server
-    command: ["celery", "-A", "infrastructure.messaging.celery.app.celery_app", "worker", "--loglevel=info"]
+    command: ["celery", "-A", "infrastructure.messaging.celery.celery_app.celery_app", "worker", "--loglevel=info"]
     restart: always
     env_file: .env
     environment:

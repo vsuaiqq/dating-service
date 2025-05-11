@@ -2,12 +2,12 @@ from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from core.config import get_settings
-from api.v1.dependecies.headers import get_token_from_headers
+from api.v1.deps.headers import get_token_from_headers
 from shared.exceptions.exceptions import TokenException
 
 settings = get_settings()
 
-class TokenVerificationMiddleware(BaseHTTPMiddleware):
+class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         if request.url.path == "/metrics":
             return await call_next(request)

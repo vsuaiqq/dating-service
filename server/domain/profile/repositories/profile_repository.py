@@ -16,13 +16,6 @@ ALLOWED_FIELDS = {
 class ProfileRepository:
     def __init__(self, pool: asyncpg.Pool):
         self.pool = pool
-    
-    async def get_profile_id_by_user_id(self, user_id: int) -> Optional[int]:
-        async with self.pool.acquire() as conn:
-            row = await conn.fetchrow("""
-                SELECT id FROM profiles WHERE user_id = $1
-            """, user_id)
-            return row["id"] if row else None
 
     async def save_profile(
         self,

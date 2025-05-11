@@ -1,7 +1,8 @@
 from typing import Set
 from redis.asyncio import Redis
 
-from infrastructure.cache.redis.keys import get_swipes_key
+def get_swipes_key(user_id: int) -> str:
+        return f"swipes:{user_id}"
 
 class SwipeCache:
     def __init__(self, redis: Redis, ttl: int = 60 * 60 * 24 * 3):

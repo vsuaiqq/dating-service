@@ -7,7 +7,7 @@ class VideoValidator:
         self.frame_skip = frame_skip
         self.face_threshold = face_threshold
 
-    def analyze_video_bytes(self, file_bytes: bytes) -> dict:
+    def analyze_video_bytes(self, file_bytes: bytes) -> bool:
         with NamedTemporaryFile(suffix=".mp4", delete=True) as temp_file:
             temp_file.write(file_bytes)
             temp_file.flush()
@@ -17,7 +17,7 @@ class VideoValidator:
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         return face_recognition.face_locations(rgb)
 
-    def _analyze(self, video_path: str) -> dict:
+    def _analyze(self, video_path: str) -> bool:
         try:
             cap = cv2.VideoCapture(video_path)
             if not cap.isOpened():
@@ -52,5 +52,5 @@ class VideoValidator:
 
             return is_human
 
-        except Exception as e:
+        except Exception:
             return False

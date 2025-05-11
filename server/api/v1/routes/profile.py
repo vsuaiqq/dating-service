@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, Depends, UploadFile, File
 from dependency_injector.wiring import inject, Provide
 from slowapi import Limiter
 
-from api.v1.dependecies.headers import get_user_id_from_headers
+from api.v1.deps.headers import get_user_id_from_headers
 from api.v1.schemas.profile import (
     SaveProfileRequest,
     UpdateFieldRequest,
@@ -13,13 +13,13 @@ from api.v1.schemas.profile import (
 from domain.profile.services.profile_service import ProfileService
 from di.container import Container
 from shared.exceptions.exceptions import NotFoundException
-from core.limiter import user_id_rate_key
+from core.limiter import get_user_id_rate_key
 from core.logger import logger
 
 router = APIRouter()
 
 limiter = Limiter(
-    key_func=user_id_rate_key,
+    key_func=get_user_id_rate_key,
     storage_uri=Container.config().redis_url_limiter
 )
 

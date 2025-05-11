@@ -68,7 +68,7 @@ class TelegramBot:
 
     def _init_kafka_consumer(self):
         self.kafka_consumer = KafkaEventConsumer(
-            bootstrap_servers=f"{KAFKA_HOST}:{KAFKA_PORT}",
+            bootstrap_servers=f"{'localhost'}:{'29092'}",
             topics=[KAFKA_SWIPES_TOPIC, KAFKA_GEO_NOTIFICATIONS_TOPIC, KAFKA_VIDEO_NOTIFICATIONS_TOPIC],
             callback=self._handle_kafka_event
         )

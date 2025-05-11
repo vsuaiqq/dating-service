@@ -2,9 +2,9 @@ from pydantic import ValidationError
 
 from domain.profile.repositories.profile_repository import ProfileRepository
 from infrastructure.messaging.kafka.producer import KafkaEventProducer
-from infrastructure.messaging.kafka.handlers.geo import on_geo_resolve_event
-from infrastructure.messaging.kafka.handlers.video import on_video_validation_event
-from infrastructure.cache.redis.recommendation import RecommendationCache
+from event_handlers.geo import on_geo_resolve_event
+from event_handlers.video import on_video_validation_event
+from infrastructure.cache.redis.recommendation_cache import RecommendationCache
 from contracts.kafka.events import LocationResolveResultEvent, VideoValidationResultEvent
 from core.config import Settings
 from core.logger import logger

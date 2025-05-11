@@ -6,10 +6,10 @@ from di.resources import init_infra_clients, init_repositories, init_caches, ini
 class Container(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
         modules=[
-            "api.v1.routers.profile",
-            "api.v1.routers.media",
-            "api.v1.routers.recommendation",
-            "api.v1.routers.swipe"
+            "api.v1.routes.profile",
+            "api.v1.routes.media",
+            "api.v1.routes.recommendation",
+            "api.v1.routes.swipe"
         ]
     )
 

@@ -2,17 +2,17 @@ from fastapi import APIRouter, Request, Depends
 from dependency_injector.wiring import inject, Provide
 from slowapi import Limiter
 
-from api.v1.dependecies.headers import get_username_from_headers
+from api.v1.deps.headers import get_username_from_headers
 from api.v1.schemas.swipe import AddSwipeRequest
 from domain.swipe.services.swipe_service import SwipeService
 from di.container import Container
-from core.limiter import user_id_rate_key
+from core.limiter import get_user_id_rate_key
 from core.logger import logger
 
 router = APIRouter()
 
 limiter = Limiter(
-    key_func=user_id_rate_key,
+    key_func=get_user_id_rate_key,
     storage_uri=Container.config().redis_url_limiter
 )
 
