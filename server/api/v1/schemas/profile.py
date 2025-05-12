@@ -2,110 +2,116 @@ from pydantic import BaseModel, Field, model_validator
 from typing import Optional, Union, Literal
 
 class SaveProfileRequest(BaseModel):
-    name: str = Field(..., description="Имя пользователя")
-    gender: str = Field(..., description="Пол пользователя")
-    city: Optional[str] = Field(None, description="Город пользователя")
-    latitude: Optional[float] = Field(None, description="Широта (если город не указан)")
-    longitude: Optional[float] = Field(None, description="Долгота (если город не указан)")
-    age: int = Field(..., description="Возраст пользователя")
-    interesting_gender: str = Field(..., description="Интересующий пол")
-    about: str = Field(..., description="Описание пользователя")
+    name: str = Field(..., description="User's name")
+    gender: str = Field(..., description="User's gender")
+    city: Optional[str] = Field(None, description="User's city")
+    latitude: Optional[float] = Field(None, description="Latitude (required if city is not provided)")
+    longitude: Optional[float] = Field(None, description="Longitude (required if city is not provided)")
+    age: int = Field(..., description="User's age")
+    interesting_gender: str = Field(..., description="Gender(s) the user is interested in")
+    about: str = Field(..., description="User's bio or description")
 
     @model_validator(mode="after")
     def check_location(self) -> 'SaveProfileRequest':
         if not self.city and (self.latitude is None or self.longitude is None):
-            raise ValueError("Укажите либо город, либо координаты (широту и долготу).")
+            raise ValueError("Either city or both latitude and longitude must be provided.")
         return self
 
-    class Config:
-        schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
-                "name": "Ирина",
+                "name": "Alice",
                 "gender": "female",
-                "city": "Москва",
+                "city": "Prague",
                 "latitude": None,
                 "longitude": None,
                 "age": 28,
                 "interesting_gender": "male",
-                "about": "Люблю путешествовать и читать."
+                "about": "I love traveling and reading books."
             }
         }
+    }
 
 class ToggleActiveRequest(BaseModel):
-    is_active: bool = Field(..., description="Флаг активности профиля (вкл/выкл)")
+    is_active: bool = Field(..., description="Indicates whether the profile is active")
 
-    class Config:
-        schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "is_active": True
             }
         }
+    }
 
 class Coordinates(BaseModel):
-    latitude: float = Field(..., description="Широта")
-    longitude: float = Field(..., description="Долгота")
+    latitude: float = Field(..., description="Latitude")
+    longitude: float = Field(..., description="Longitude")
 
-    class Config:
-        schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "latitude": 55.7558,
                 "longitude": 37.6173
             }
         }
+    }
 
 class UpdateFieldRequest(BaseModel):
     field_name: Literal[
         "name", "age", "city", "gender", "is_active", "about",
         "latitude", "longitude", "interesting_gender", "coordinates"
-    ] = Field(..., description="Название изменяемого поля")
-    value: Union[str, int, Coordinates] = Field(..., description="Новое значение поля")
+    ] = Field(..., description="The name of the field to be updated")
+    value: Union[str, int, Coordinates] = Field(..., description="New value for the field")
 
     @model_validator(mode='after')
     def validate_field_name_matches_value_type(self) -> 'UpdateFieldRequest':
         if self.field_name == 'city' and not isinstance(self.value, str):
-            raise ValueError('Поле "city" должно быть строкой')
+            raise ValueError('The "city" field must be a string')
         if self.field_name == 'coordinates' and not isinstance(self.value, Coordinates):
-            raise ValueError('Поле "coordinates" должно быть объектом Coordinates')
+            raise ValueError('The "coordinates" field must be a Coordinates object')
         return self
-
-    class Config:
-        schema_extra = {
+    
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "field_name": "city",
-                "value": "Санкт-Петербург"
+                "value": "Saint Petersburg"
             }
         }
+    }
 
 class SaveProfileResponse(BaseModel):
-    profile_id: int = Field(..., description="Идентификатор созданного или обновлённого профиля")
+    profile_id: int = Field(..., description="Unique identifier of the created or updated profile")
 
-    class Config:
-        schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
-                "profile_id": 123
+                "profile_id": 1
             }
         }
+    }
 
 class GetProfileResponse(BaseModel):
-    user_id: int = Field(..., description="ID пользователя")
-    name: str = Field(..., description="Имя пользователя")
-    gender: str = Field(..., description="Пол пользователя")
-    city: Optional[str] = Field(None, description="Город пользователя")
-    age: int = Field(..., description="Возраст")
-    interesting_gender: str = Field(..., description="Интересующий пол")
-    about: Optional[str] = Field(None, description="Описание профиля")
-    is_active: bool = Field(..., description="Активен ли профиль")
+    user_id: int = Field(..., description="User ID")
+    name: str = Field(..., description="User's name")
+    gender: str = Field(..., description="User's gender")
+    city: Optional[str] = Field(None, description="User's city")
+    age: int = Field(..., description="User's age")
+    interesting_gender: str = Field(..., description="Gender(s) the user is interested in")
+    about: Optional[str] = Field(None, description="User's bio or description")
+    is_active: bool = Field(..., description="Indicates if the profile is active")
 
-    class Config:
-        schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
-                "user_id": 101,
-                "name": "Дмитрий",
-                "gender": "male",
-                "city": "Казань",
-                "age": 30,
-                "interesting_gender": "female",
-                "about": "Инженер, люблю горные походы.",
+                "user_id": 1,
+                "name": "Alice",
+                "gender": "female",
+                "city": "Prague",
+                "age": 20,
+                "interesting_gender": "male",
+                "about": "I love traveling and reading books.",
                 "is_active": True
             }
         }
+    }

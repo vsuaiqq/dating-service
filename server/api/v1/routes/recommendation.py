@@ -16,34 +16,30 @@ limiter = Limiter(
     storage_uri=Container.config().redis_url_limiter
 )
 
+
 @router.get(
     "/users/recommendations",
-    summary="Получить рекомендации",
-    description="Возвращает список рекомендованных пользователей, основываясь на профиле пользователя.",
-    tags=["Рекомендации"],
-    response_model=GetRecommendationsResponse
+    response_model=GetRecommendationsResponse,
+    tags=["Recommendations"],
+    summary="Get user recommendations",
+    description="Return a list of recommended users based on the requesting user's profile.",
+    responses={
+        200: {"description": "Recommendations retrieved"},
+        429: {"description": "Rate limit exceeded"},
+    },
 )
 @inject
 @limiter.limit("10/minute")
 async def get_recommendations(
     request: Request,
-    count: int = Query(..., description="Количество запрашиваемых рекомендаций"),
+    count: int = Query(..., description="Number of recommendations to retrieve."),
     user_id: int = Depends(get_user_id_from_headers),
     recommendation_service: RecommendationService = Depends(Provide[Container.services.provided.recommendation])
 ):
-    logger.info(
-        f"Запрос рекомендаций для пользователя {user_id}, количество: {count}",
-        extra={"user_id": user_id, "count": count}
-    )
+    logger.info(f"Fetching {count} recommendations for user {user_id}")
 
     result = await recommendation_service.get_recommendations(user_id, count)
 
-    logger.info(
-        f"Успешно получено {len(result.recommendations)} рекомендаций для пользователя {user_id}",
-        extra={
-            "user_id": user_id,
-            "recommendations_count": len(result.recommendations)
-        }
-    )
+    logger.info(f"Fetched {len(result.recommendations)} recommendations for user {user_id}")
 
     return result

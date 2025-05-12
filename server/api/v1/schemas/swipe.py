@@ -8,17 +8,18 @@ class SwipeAction(str, Enum):
     QUESTION = "question"
 
 class AddSwipeRequest(BaseModel):
-    from_user_id: int = Field(..., description="ID пользователя, совершающего свайп")
-    to_user_id: int = Field(..., description="ID пользователя, к которому направлен свайп")
-    action: SwipeAction = Field(..., description="Тип действия: like, dislike или question")
-    message: Optional[str] = Field(None, description="Необязательное сообщение для пользователя")
+    from_user_id: int = Field(..., description="ID of the user performing the swipe")
+    to_user_id: int = Field(..., description="ID of the user being swiped on")
+    action: SwipeAction = Field(..., description="Action type: like, dislike, or question")
+    message: Optional[str] = Field(None, description="Optional message for the user")
 
-    class Config:
-        schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "from_user_id": 123,
                 "to_user_id": 456,
                 "action": "like",
-                "message": "Привет! Хочешь познакомиться?"
+                "message": "Hi! Would you like to connect?"
             }
         }
+    }

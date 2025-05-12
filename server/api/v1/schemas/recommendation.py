@@ -2,16 +2,16 @@ from pydantic import BaseModel, Field
 from typing import List
 
 class RecommendationItem(BaseModel):
-    user_id: int = Field(..., description="ID рекомендованного пользователя")
-    distance: float = Field(..., description="Расстояние до пользователя в километрах")
+    user_id: int = Field(..., description="ID of the recommended user")
+    distance: float = Field(..., description="Distance to the user in kilometers")
 
 class GetRecommendationsResponse(BaseModel):
     recommendations: List[RecommendationItem] = Field(
-        ..., description="Список рекомендованных пользователей"
+        ..., description="List of recommended users"
     )
 
-    class Config:
-        schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "recommendations": [
                     {"user_id": 101, "distance": 2.5},
@@ -20,3 +20,4 @@ class GetRecommendationsResponse(BaseModel):
                 ]
             }
         }
+    }

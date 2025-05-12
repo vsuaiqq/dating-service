@@ -9,7 +9,7 @@ settings = get_settings()
 
 class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        if request.url.path == "/metrics":
+        if request.url.path in {"/metrics", "/docs", "/redoc", "/openapi.json"}:
             return await call_next(request)
         
         token = await get_token_from_headers(request.headers.get('Authorization'))

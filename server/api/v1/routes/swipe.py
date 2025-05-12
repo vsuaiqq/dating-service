@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, Depends
+from fastapi import APIRouter, Request, Depends, status
 from dependency_injector.wiring import inject, Provide
 from slowapi import Limiter
 
@@ -16,40 +16,47 @@ limiter = Limiter(
     storage_uri=Container.config().redis_url_limiter
 )
 
+
 @router.post(
     "",
-    summary="Добавить свайп",
-    description="Обрабатывает действие свайпа (лайк или дизлайк) пользователя по отношению к другому пользователю. Также может содержать сообщение.",
-    tags=["Свайпы"]
+    tags=["Swipe"],
+    summary="Add swipe action",
+    description="Add a like, dislike, or question swipe toward another user.",
+    responses={
+        200: {"description": "Swipe processed"},
+        429: {"description": "Rate limit exceeded"},
+    },
 )
 @inject
-@limiter.limit("25/minute")
+@limiter.limit("30/minute")
 async def add_swipe(
     request: Request,
     swipe: AddSwipeRequest,
     username: str = Depends(get_username_from_headers),
-    swipe_service: SwipeService = Depends(Provide[Container.services.provided.swipe])
+    swipe_service: SwipeService = Depends(Provide[Container.services.provided.swipe]),
 ):
     logger.info(
-        "Начало обработки свайпа",
+        "Swipe processing started",
         extra={
             "event": "swipe_initiated",
             "from_user": username,
             "to_user_id": swipe.to_user_id,
             "action_type": swipe.action.value,
-            "has_message": swipe.message is not None
-        }
+            "has_message": swipe.message is not None,
+        },
     )
 
     result = await swipe_service.add_swipe(username, swipe)
 
     logger.info(
-        "Свайп успешно обработан",
+        "Swipe processed successfully",
         extra={
             "event": "swipe_processed",
             "from_user": username,
             "to_user_id": swipe.to_user_id,
             "action_type": swipe.action.value,
-            "processing_result": result
-        }
+            "processing_result": result,
+        },
     )
+
+    return result

@@ -1,18 +1,18 @@
 tags_metadata = [
     {
         "name": "Profiles",
-        "description": "Создание, изменение и получение профиля пользователя."
+        "description": "Creating, updating, and retrieving user profiles."
     },
     {
         "name": "Recommendations",
-        "description": "Получение рекомендаций по пользователям."
+        "description": "Retrieving user recommendations."
     },
     {
         "name": "Media",
-        "description": "Загрузка, удаление и получение URL-ов для медиафайлов."
+        "description": "Uploading, deleting, and retrieving URLs for media files."
     },
     {
         "name": "Swipes",
-        "description": "Свайпы и взаимодействие между пользователями."
+        "description": "Swipes and interactions between users."
     }
 ]

@@ -7,14 +7,14 @@ class MediaType(str, Enum):
     video = "video"
 
 class PresignedMedia(BaseModel):
-    url: str = Field(..., description="Предподписанный URL для загрузки файла")
-    type: MediaType = Field(..., description="Тип медиафайла: фото или видео")
+    url: str = Field(..., description="Presigned URL for uploading the file")
+    type: MediaType = Field(..., description="Type of media file: photo or video")
 
 class GetPresignedUrlsResponse(BaseModel):
-    presigned_media: List[PresignedMedia] = Field(..., description="Список URL-ов для загрузки медиафайлов")
+    presigned_media: List[PresignedMedia] = Field(..., description="List of presigned URLs for uploading media files")
 
-    class Config:
-        schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "presigned_media": [
                     {
@@ -28,3 +28,4 @@ class GetPresignedUrlsResponse(BaseModel):
                 ]
             }
         }
+    }
