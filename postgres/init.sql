@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS swipes (
 
 CREATE INDEX idx_user_id ON profiles(user_id);
 CREATE INDEX idx_profiles_location ON profiles USING GIST(location);
-CREATE INDEX idx_profile_media ON media(profile_id);
+CREATE INDEX idx_profile_media ON media(user_id);
 CREATE INDEX idx_swipes_from_user ON swipes(from_user_id);
 CREATE INDEX idx_swipes_to_user ON swipes(to_user_id);
 CREATE INDEX idx_swipes_action ON swipes(action);

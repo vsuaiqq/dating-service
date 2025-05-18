@@ -61,7 +61,7 @@ async def save_profile(
     },
 )
 @inject
-@limiter.limit("5/minute")
+@limiter.limit("25/minute")
 async def get_profile_by_user_id(
     request: Request,
     user_id: int = Depends(get_user_id_from_headers),
@@ -138,5 +138,5 @@ async def verify_video(
     profile_service: ProfileService = Depends(Provide[Container.services.provided.profile]),
 ):
     logger.info(f"Starting video verification for user {user_id}")
-    await profile_service.verify_video(user_id, await file.read())
+    profile_service.verify_video(user_id, await file.read())
     logger.info(f"Video verification completed for user {user_id}")

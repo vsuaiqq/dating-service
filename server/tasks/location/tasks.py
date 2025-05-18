@@ -1,36 +1,28 @@
-from core.config import get_settings
-from services.location.location_resolver import LocationResolver
-from services.location.cached_location_resolver import CachedLocationResolver
 from infrastructure.messaging.celery.celery_app import celery_app
-from infrastructure.messaging.kafka.producer_sync import KafkaEventProducerSync
-from infrastructure.cache.redis.city_coordinates_cache import CityCoordinatesCache
+from infrastructure.messaging.celery.base_task import BaseTask
 from contracts.kafka.events import LocationResolveResultEvent
+from core.config import get_settings
 
 settings = get_settings()
 
-@celery_app.task(name="location.update_user_location", bind=True)
+@celery_app.task(
+    name="location.update_user_location",
+    bind=True,
+    base=BaseTask,
+    queue='location',
+    routing_key='location.update'
+)
 def update_user_location(self, user_id: int, city: str):
     try:
-        producer = KafkaEventProducerSync(settings.kafka_bootstrap_servers)
-        producer.start()
+        coords = self.location_resolver.resolve(city)
 
-        resolver = CachedLocationResolver(
-            resolver=LocationResolver(),
-            cache=CityCoordinatesCache(redis_url=settings.redis_url_cache)
+        event = LocationResolveResultEvent(
+            user_id=user_id,
+            status="success" if coords else "failed",
+            latitude=coords[0] if coords else None,
+            longitude=coords[1] if coords else None
         )
 
-        coords = resolver.resolve(city)
-
-        if coords:
-            latitude, longitude = coords
-            event = LocationResolveResultEvent(
-                user_id=user_id, status="success",
-                latitude=latitude, longitude=longitude
-            )
-        else:
-            event = LocationResolveResultEvent(user_id=user_id, status="failed")
-
-        producer.send_event(settings.KAFKA_GEO_TOPIC, event.model_dump())
-        producer.stop()
+        self.producer.send_event(settings.KAFKA_GEO_TOPIC, event.model_dump())
     except Exception as exc:
         raise self.retry(exc=exc)

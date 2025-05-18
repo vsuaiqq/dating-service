@@ -18,6 +18,7 @@ from utils.profile import is_profile_active, is_profile_exists
 from states.edit_profile import EditProfileStates
 from aiogram.types import ContentType
 from models.api.profile.requests import ToggleActiveRequest, UpdateFieldRequest, Coordinates
+from exceptions.rate_limit_error import RateLimitError
 
 router = CustomRouter()
     
@@ -51,6 +52,9 @@ async def show_my_profile(message: types.Message, _: Callable):
         return True
     except Exception as e:
         await message.answer(_("preview_error") + f": {str(e)}", reply_markup=get_main_keyboard(profile.is_active, _))
+        return False
+    except RateLimitError:
+        await message.answer(_("rate_limit_error_try_later"), reply_markup=get_back_keyboard(_))
         return False
 
 @router.message(I18nTextFilter("disable_profile_button"))

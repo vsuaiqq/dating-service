@@ -34,8 +34,8 @@ class SwipeService:
             swipe.to_user_id
         )
 
-        from_profile = await self.repo.get_profile_by_user_id(swipe.from_user_id)
-        to_profile = await self.repo.get_profile_by_user_id(swipe.to_user_id)
+        from_profile = await self.swipe_repo.get_profile_by_user_id(swipe.from_user_id)
+        to_profile = await self.swipe_repo.get_profile_by_user_id(swipe.to_user_id)
 
         self.logger.insert_swipe(
             from_user_id=swipe.from_user_id,
