@@ -11,7 +11,6 @@ class ProfileClient(BaseApiClient):
         super().__init__(base_url)
 
     async def _handle_response(self, resp, parse_model=None):
-        """Общая обработка ответов, включая 404 и 429."""
         if resp.status_code == 404:
             return None
         elif resp.status_code == 429:
