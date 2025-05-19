@@ -1,38 +1,37 @@
 from celery import Task
+import threading
+import atexit
+
 from core.config import get_settings
-from services.location.location_resolver import LocationResolver
-from services.location.cached_location_resolver import CachedLocationResolver
 from infrastructure.messaging.kafka.producer_sync import KafkaEventProducerSync
-from infrastructure.cache.redis.city_coordinates_cache import CityCoordinatesCache
 
 settings = get_settings()
 
 class BaseTask(Task):
     abstract = True
-    _producer = None
-    _location_resolver = None
+
+class KafkaTask(BaseTask):
+    abstract = True
+
+    _producer: KafkaEventProducerSync = None
+    _lock = threading.Lock()
+
+    @classmethod
+    def _init_producer(cls):
+        with cls._lock:
+            if cls._producer is None:
+                cls._producer = KafkaEventProducerSync(settings.kafka_bootstrap_servers)
+                cls._producer.start()
+                atexit.register(cls._shutdown_producer)
+
+    @classmethod
+    def _shutdown_producer(cls):
+        if cls._producer:
+            cls._producer.stop()
+            cls._producer = None
 
     @property
-    def producer(self):
+    def producer(self) -> KafkaEventProducerSync:
         if self._producer is None:
-            self._producer = KafkaEventProducerSync(settings.kafka_bootstrap_servers)
-            self._producer.start()
+            self._init_producer()
         return self._producer
-
-    @property
-    def location_resolver(self):
-        if self._location_resolver is None:
-            self._location_resolver = CachedLocationResolver(
-                resolver=LocationResolver(),
-                cache=CityCoordinatesCache(redis_url=settings.redis_url_cache)
-            )
-        return self._location_resolver
-
-    def on_failure(self, exc, task_id, args, kwargs, einfo):
-        if self._producer:
-            self._producer.stop()
-        super().on_failure(exc, task_id, args, kwargs, einfo)
-
-    def __del__(self):
-        if self._producer:
-            self._producer.stop()

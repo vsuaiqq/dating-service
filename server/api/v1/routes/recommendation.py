@@ -7,7 +7,6 @@ from api.v1.schemas.recommendation import GetRecommendationsResponse
 from domain.recommendation.services.recommendation_service import RecommendationService
 from di.container import Container
 from core.limiter import get_user_id_rate_key
-from core.logger import logger
 
 router = APIRouter()
 
@@ -15,7 +14,6 @@ limiter = Limiter(
     key_func=get_user_id_rate_key,
     storage_uri=Container.config().redis_url_limiter
 )
-
 
 @router.get(
     "/users/recommendations",
@@ -36,10 +34,4 @@ async def get_recommendations(
     user_id: int = Depends(get_user_id_from_headers),
     recommendation_service: RecommendationService = Depends(Provide[Container.services.provided.recommendation])
 ):
-    logger.info(f"Fetching {count} recommendations for user {user_id}")
-
-    result = await recommendation_service.get_recommendations(user_id, count)
-
-    logger.info(f"Fetched {len(result.recommendations)} recommendations for user {user_id}")
-
-    return result
+    return await recommendation_service.get_recommendations(user_id, count)

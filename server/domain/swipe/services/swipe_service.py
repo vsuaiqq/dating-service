@@ -1,5 +1,6 @@
 from core.config import Settings
 from domain.swipe.repositories.swipe_repository import SwipeRepository
+from domain.profile.services.profile_service import ProfileService
 from infrastructure.messaging.kafka.producer import KafkaEventProducer
 from infrastructure.db.clickhouse.clickhouse_logger import ClickHouseLogger
 from infrastructure.cache.redis.swipe_cache import SwipeCache
@@ -10,12 +11,14 @@ class SwipeService:
     def __init__(
         self,
         swipe_repo: SwipeRepository,
+        profile_service: ProfileService,
         producer: KafkaEventProducer,
         logger: ClickHouseLogger,
         swipe_cache: SwipeCache,
         settings: Settings
     ):
         self.swipe_repo = swipe_repo
+        self.profile_service = profile_service
         self.producer = producer
         self.logger = logger
         self.cache = swipe_cache
@@ -34,8 +37,8 @@ class SwipeService:
             swipe.to_user_id
         )
 
-        from_profile = await self.swipe_repo.get_profile_by_user_id(swipe.from_user_id)
-        to_profile = await self.swipe_repo.get_profile_by_user_id(swipe.to_user_id)
+        from_profile = await self.profile_service.get_profile_by_user_id(swipe.from_user_id)
+        to_profile = await self.profile_service.get_profile_by_user_id(swipe.to_user_id)
 
         self.logger.insert_swipe(
             from_user_id=swipe.from_user_id,

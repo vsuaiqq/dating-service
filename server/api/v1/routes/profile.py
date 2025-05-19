@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, Depends, UploadFile, File, status
+from fastapi import APIRouter, Request, Depends, UploadFile, File
 from dependency_injector.wiring import inject, Provide
 from slowapi import Limiter
 
@@ -14,7 +14,6 @@ from domain.profile.services.profile_service import ProfileService
 from di.container import Container
 from shared.exceptions.exceptions import NotFoundException
 from core.limiter import get_user_id_rate_key
-from core.logger import logger
 
 router = APIRouter()
 
@@ -43,10 +42,7 @@ async def save_profile(
     user_id: int = Depends(get_user_id_from_headers),
     profile_service: ProfileService = Depends(Provide[Container.services.provided.profile]),
 ):
-    logger.info(f"Saving profile for user {user_id}")
-    result = await profile_service.save_profile(user_id, data)
-    logger.info(f"Profile successfully saved for user {user_id}")
-    return result
+    return await profile_service.save_profile(user_id, data)
 
 @router.get(
     "",
@@ -67,12 +63,9 @@ async def get_profile_by_user_id(
     user_id: int = Depends(get_user_id_from_headers),
     profile_service: ProfileService = Depends(Provide[Container.services.provided.profile]),
 ):
-    logger.info(f"Fetching profile for user {user_id}")
     result = await profile_service.get_profile_by_user_id(user_id)
     if result is None:
-        logger.warning(f"Profile not found for user {user_id}")
         raise NotFoundException()
-    logger.info(f"Profile successfully retrieved for user {user_id}")
     return result
 
 @router.patch(
@@ -93,9 +86,7 @@ async def update_field(
     user_id: int = Depends(get_user_id_from_headers),
     profile_service: ProfileService = Depends(Provide[Container.services.provided.profile]),
 ):
-    logger.info(f"Updating field {data.field_name} for user {user_id}")
     await profile_service.update_field(user_id, data)
-    logger.info(f"Field {data.field_name} successfully updated for user {user_id}")
 
 @router.patch(
     "/active",
@@ -115,9 +106,7 @@ async def toggle_active(
     user_id: int = Depends(get_user_id_from_headers),
     profile_service: ProfileService = Depends(Provide[Container.services.provided.profile]),
 ):
-    logger.info(f"Toggling active status to {data.is_active} for user {user_id}")
     await profile_service.toggle_active(user_id, data)
-    logger.info(f"Active status changed to {data.is_active} for user {user_id}")
 
 @router.post(
     "/verify-video",
@@ -137,6 +126,4 @@ async def verify_video(
     file: UploadFile = File(..., description="Video file for verification"),
     profile_service: ProfileService = Depends(Provide[Container.services.provided.profile]),
 ):
-    logger.info(f"Starting video verification for user {user_id}")
     profile_service.verify_video(user_id, await file.read())
-    logger.info(f"Video verification completed for user {user_id}")

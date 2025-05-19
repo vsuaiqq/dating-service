@@ -149,6 +149,7 @@ def init_services(
 
     swipe_service = SwipeService(
         swipe_repo=swipe_repo,
+        profile_service=profile_service,
         producer=producer,
         logger=logger,
         swipe_cache=swipe_cache,

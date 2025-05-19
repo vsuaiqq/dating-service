@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, Depends, UploadFile, File, Form, status
+from fastapi import APIRouter, Request, Depends, UploadFile, File, Form
 from dependency_injector.wiring import inject, Provide
 from slowapi import Limiter
 from slowapi.util import get_remote_address
@@ -7,11 +7,9 @@ from api.v1.deps.headers import get_user_id_from_headers
 from api.v1.schemas.media import MediaType, GetPresignedUrlsResponse
 from domain.media.services.media_service import MediaService
 from di.container import Container
-from core.logger import logger
 
 router = APIRouter()
 limiter = Limiter(key_func=get_remote_address, storage_uri=Container.config().redis_url_limiter)
-
 
 @router.post(
     "/upload",
@@ -32,9 +30,7 @@ async def upload_file(
     type: MediaType = Form(..., description="Media file type (photo or video)."),
     media_service: MediaService = Depends(Provide[Container.services.provided.media]),
 ):
-    logger.info(f"Uploading file: {file.filename} for user {user_id}")
     await media_service.upload_file(user_id, await file.read(), file.filename, type)
-    logger.info(f"File uploaded: {file.filename} for user {user_id}")
 
 @router.get(
     "/presigned-urls",
@@ -54,10 +50,7 @@ async def get_presigned_urls(
     user_id: int = Depends(get_user_id_from_headers),
     media_service: MediaService = Depends(Provide[Container.services.provided.media]),
 ):
-    logger.info(f"Generating presigned URLs for user {user_id}")
-    result = await media_service.generate_presigned_urls(user_id)
-    logger.info(f"Presigned URLs generated for user {user_id}")
-    return result
+    return await media_service.generate_presigned_urls(user_id)
 
 @router.delete(
     "/files",
@@ -76,6 +69,4 @@ async def delete_files(
     user_id: int = Depends(get_user_id_from_headers),
     media_service: MediaService = Depends(Provide[Container.services.provided.media]),
 ):
-    logger.info(f"Deleting files for user {user_id}")
     await media_service.delete_files(user_id)
-    logger.info(f"Files deleted for user {user_id}")

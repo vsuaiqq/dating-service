@@ -39,6 +39,9 @@ class Settings(BaseSettings):
 
     API_SECRET_KEY: str
 
+    LOG_LEVEL: str = "INFO"
+    LOG_FORMAT: str = "json"
+
     ORIGINS: List[str] = Field(default_factory=lambda: [
         "http://localhost:3000",
         "http://127.0.0.1:3000",

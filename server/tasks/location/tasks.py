@@ -1,5 +1,5 @@
 from infrastructure.messaging.celery.celery_app import celery_app
-from infrastructure.messaging.celery.base_task import BaseTask
+from infrastructure.messaging.celery.location_task import LocationTask
 from contracts.kafka.events import LocationResolveResultEvent
 from core.config import get_settings
 
@@ -8,11 +8,11 @@ settings = get_settings()
 @celery_app.task(
     name="location.update_user_location",
     bind=True,
-    base=BaseTask,
+    base=LocationTask,
     queue='location',
     routing_key='location.update'
 )
-def update_user_location(self, user_id: int, city: str):
+def update_user_location(self: LocationTask, user_id: int, city: str):
     try:
         coords = self.location_resolver.resolve(city)
 

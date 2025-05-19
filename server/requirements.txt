@@ -23,3 +23,5 @@ face-recognition
 prometheus-fastapi-instrumentator
 dependency_injector
 slowapi
+python-json-logger
+rich-logging

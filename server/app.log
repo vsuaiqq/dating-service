@@ -1,0 +1,396 @@
+2025-05-05 15:27:10,994 - app - INFO - POSTGRES connection success.
+2025-05-05 15:28:41,023 - app - INFO - POSTGRES connection success.
+2025-05-05 15:29:31,029 - app - INFO - POSTGRES connection success.
+2025-05-05 15:35:01,488 - app - INFO - Fetching profile for user 1651668580
+2025-05-05 15:35:01,634 - app - WARNING - Profile not found for user 1651668580
+2025-05-05 15:35:02,671 - app - INFO - Fetching profile for user 1651668580
+2025-05-05 15:35:02,672 - app - WARNING - Profile not found for user 1651668580
+2025-05-05 15:35:07,514 - app - INFO - Starting video verification for user 1651668580
+2025-05-05 15:35:07,599 - app - INFO - Video verification completed for user 1651668580
+2025-05-05 15:35:48,216 - app - INFO - Starting profile save for user 1651668580
+2025-05-05 15:35:48,985 - app - INFO - Profile saved successfully for user 1651668580
+2025-05-05 15:35:49,203 - app - INFO - Starting file upload: 1651668580_AgACAgIAAxkBAAIdzGgY2tEwaf3XBVQbre6RyeD9JymjAALs9DEbe9TISDPZKAtNqMyhAQADAgADeQADNgQ.jpg
+2025-05-05 15:35:50,308 - app - INFO - File uploaded successfully: 1651668580_AgACAgIAAxkBAAIdzGgY2tEwaf3XBVQbre6RyeD9JymjAALs9DEbe9TISDPZKAtNqMyhAQADAgADeQADNgQ.jpg
+2025-05-05 15:36:14,128 - app - INFO - Fetching profile for user 1651668580
+2025-05-05 15:36:14,142 - app - INFO - Profile retrieved successfully for user 1651668580
+2025-05-05 15:36:14,148 - app - INFO - Fetching profile for user 1651668580
+2025-05-05 15:36:14,150 - app - INFO - Profile retrieved successfully for user 1651668580
+2025-05-05 15:36:14,199 - app - INFO - Generating presigned URLs for user: 1651668580
+2025-05-05 15:36:14,200 - app - ERROR - Failed to generate presigned URL for user: 1651668580. Error: 'MediaService' object has no attribute 'repo'
+Traceback (most recent call last):
+  File "/app/api/media.py", line 37, in get_presigned_urls
+    result = await media_service.generate_presigned_urls(user_id)
+  File "/app/services/media/MediaService.py", line 19, in generate_presigned_urls
+    media_records = await self.repo.get_media_by_profile_id(user_id)
+AttributeError: 'MediaService' object has no attribute 'repo'
+2025-05-05 15:36:42,142 - app - INFO - POSTGRES connection success.
+2025-05-05 15:36:44,815 - app - INFO - Fetching profile for user 1651668580
+2025-05-05 15:36:44,932 - app - INFO - Profile retrieved successfully for user 1651668580
+2025-05-05 15:36:49,368 - app - INFO - Fetching profile for user 1651668580
+2025-05-05 15:36:49,372 - app - INFO - Profile retrieved successfully for user 1651668580
+2025-05-05 15:36:49,376 - app - INFO - Fetching profile for user 1651668580
+2025-05-05 15:36:49,377 - app - INFO - Profile retrieved successfully for user 1651668580
+2025-05-05 15:36:49,423 - app - INFO - Generating presigned URLs for user: 1651668580
+2025-05-05 15:36:49,843 - app - INFO - Presigned URLs generated for user: 1651668580
+2025-05-05 15:36:51,824 - app - INFO - Fetching profile for user 1651668580
+2025-05-05 15:36:51,835 - app - INFO - Profile retrieved successfully for user 1651668580
+2025-05-05 15:36:51,843 - app - INFO - Fetching profile for user 1651668580
+2025-05-05 15:36:51,845 - app - INFO - Profile retrieved successfully for user 1651668580
+2025-05-05 15:36:51,898 - app - INFO - Generating presigned URLs for user: 1651668580
+2025-05-05 15:36:52,017 - app - INFO - Presigned URLs generated for user: 1651668580
+2025-05-05 15:37:12,930 - app - INFO - Fetching profile for user 1651668580
+2025-05-05 15:37:12,947 - app - INFO - Profile retrieved successfully for user 1651668580
+2025-05-05 15:37:12,953 - app - INFO - Fetching profile for user 1651668580
+2025-05-05 15:37:12,954 - app - INFO - Profile retrieved successfully for user 1651668580
+2025-05-05 15:37:13,001 - app - INFO - Generating presigned URLs for user: 1651668580
+2025-05-05 15:37:13,140 - app - INFO - Presigned URLs generated for user: 1651668580
+2025-05-05 15:40:23,911 - app - INFO - POSTGRES connection success.
+2025-05-05 15:40:44,694 - app - INFO - Fetching profile for user 1651668580
+2025-05-05 15:40:44,832 - app - WARNING - Profile not found for user 1651668580
+2025-05-05 15:40:46,624 - app - INFO - Fetching profile for user 1651668580
+2025-05-05 15:40:46,629 - app - WARNING - Profile not found for user 1651668580
+2025-05-05 15:40:54,379 - app - INFO - Starting video verification for user 1651668580
+2025-05-05 15:40:54,487 - app - INFO - Video verification completed for user 1651668580
+2025-05-05 15:41:37,011 - app - INFO - Starting profile save for user 1651668580
+2025-05-05 15:41:37,674 - app - INFO - Profile saved successfully for user 1651668580
+2025-05-05 15:41:38,021 - app - INFO - Starting file upload: 1651668580_AgACAgIAAxkBAAId9GgY3Cu4EpSOqNwm67268vumR8K3AAIC9TEbe9TISFEcY0oXsjlVAQADAgADeQADNgQ.jpg
+2025-05-05 15:41:38,640 - app - INFO - File uploaded successfully: 1651668580_AgACAgIAAxkBAAId9GgY3Cu4EpSOqNwm67268vumR8K3AAIC9TEbe9TISFEcY0oXsjlVAQADAgADeQADNgQ.jpg
+2025-05-05 15:41:38,823 - app - INFO - Starting file upload: 1651668580_AgACAgIAAxkBAAId9WgY3CueR92SiVw8zWGOFdwekqhiAAID9TEbe9TISN1XlthN3JwaAQADAgADeQADNgQ.jpg
+2025-05-05 15:41:39,125 - app - INFO - File uploaded successfully: 1651668580_AgACAgIAAxkBAAId9WgY3CueR92SiVw8zWGOFdwekqhiAAID9TEbe9TISN1XlthN3JwaAQADAgADeQADNgQ.jpg
+2025-05-05 15:41:40,971 - app - INFO - Fetching profile for user 1651668580
+2025-05-05 15:41:40,977 - app - INFO - Profile retrieved successfully for user 1651668580
+2025-05-05 15:41:40,982 - app - INFO - Fetching profile for user 1651668580
+2025-05-05 15:41:40,983 - app - INFO - Profile retrieved successfully for user 1651668580
+2025-05-05 15:41:41,028 - app - INFO - Generating presigned URLs for user: 1651668580
+2025-05-05 15:41:41,165 - app - INFO - Presigned URLs generated for user: 1651668580
+2025-05-05 15:42:35,924 - app - INFO - Fetching profile for user 1651668580
+2025-05-05 15:42:35,934 - app - INFO - Profile retrieved successfully for user 1651668580
+2025-05-05 15:42:44,225 - app - INFO - Fetching profile for user 1651668580
+2025-05-05 15:42:44,232 - app - INFO - Profile retrieved successfully for user 1651668580
+2025-05-05 15:42:44,237 - app - INFO - Fetching profile for user 1651668580
+2025-05-05 15:42:44,238 - app - INFO - Profile retrieved successfully for user 1651668580
+2025-05-05 15:42:44,284 - app - INFO - Deleting files for user: 1651668580
+2025-05-05 15:42:44,810 - app - INFO - Files deleted successfully for user: 1651668580
+2025-05-05 15:42:45,205 - app - INFO - Starting file upload: 1651668580_AgACAgIAAxkBAAIeCWgY3HOB8ihZf1L_I4xJFAEOhVCxAAIF9TEbe9TISHoUEkP9hv3lAQADAgADeQADNgQ.jpg
+2025-05-05 15:42:46,396 - app - INFO - File uploaded successfully: 1651668580_AgACAgIAAxkBAAIeCWgY3HOB8ihZf1L_I4xJFAEOhVCxAAIF9TEbe9TISHoUEkP9hv3lAQADAgADeQADNgQ.jpg
+2025-05-05 15:42:47,685 - app - INFO - Fetching profile for user 1651668580
+2025-05-05 15:42:47,697 - app - INFO - Profile retrieved successfully for user 1651668580
+2025-05-05 15:42:47,703 - app - INFO - Fetching profile for user 1651668580
+2025-05-05 15:42:47,705 - app - INFO - Profile retrieved successfully for user 1651668580
+2025-05-05 15:42:47,749 - app - INFO - Generating presigned URLs for user: 1651668580
+2025-05-05 15:42:47,971 - app - INFO - Presigned URLs generated for user: 1651668580
+2025-05-05 15:44:04,138 - app - INFO - Fetching profile for user 6377453286
+2025-05-05 15:44:04,147 - app - WARNING - Profile not found for user 6377453286
+2025-05-05 15:44:04,154 - app - INFO - Fetching profile for user 6377453286
+2025-05-05 15:44:04,155 - app - WARNING - Profile not found for user 6377453286
+2025-05-05 15:44:05,416 - app - INFO - Fetching profile for user 6377453286
+2025-05-05 15:44:05,422 - app - WARNING - Profile not found for user 6377453286
+2025-05-05 15:44:16,298 - app - INFO - Starting video verification for user 6377453286
+2025-05-05 15:44:16,306 - app - INFO - Video verification completed for user 6377453286
+2025-05-05 15:44:40,185 - app - INFO - Starting profile save for user 6377453286
+2025-05-05 15:44:40,213 - app - INFO - Profile saved successfully for user 6377453286
+2025-05-05 15:44:40,813 - app - INFO - Starting file upload: 6377453286_AgACAgEAAxkBAAIeI2gY3OTF2HWWlt1k3xRpCAf_YQomAAKRrTEb7zjBRODW1wP-NlHBAQADAgADeAADNgQ.jpg
+2025-05-05 15:44:41,450 - app - INFO - File uploaded successfully: 6377453286_AgACAgEAAxkBAAIeI2gY3OTF2HWWlt1k3xRpCAf_YQomAAKRrTEb7zjBRODW1wP-NlHBAQADAgADeAADNgQ.jpg
+2025-05-05 15:44:43,782 - app - INFO - Fetching profile for user 6377453286
+2025-05-05 15:44:43,784 - app - INFO - Profile retrieved successfully for user 6377453286
+2025-05-05 15:44:43,791 - app - INFO - Starting to get recommendations for user 6377453286, count: 30
+2025-05-05 15:44:43,817 - app - INFO - Successfully got 0 recommendations for user 6377453286
+2025-05-05 15:44:45,163 - app - INFO - Fetching profile for user 6377453286
+2025-05-05 15:44:45,164 - app - INFO - Profile retrieved successfully for user 6377453286
+2025-05-05 15:44:45,168 - app - INFO - Starting to get recommendations for user 6377453286, count: 30
+2025-05-05 15:44:45,174 - app - INFO - Successfully got 0 recommendations for user 6377453286
+2025-05-05 15:44:46,912 - app - INFO - Fetching profile for user 6377453286
+2025-05-05 15:44:46,917 - app - INFO - Profile retrieved successfully for user 6377453286
+2025-05-05 15:44:46,925 - app - INFO - Fetching profile for user 6377453286
+2025-05-05 15:44:46,927 - app - INFO - Profile retrieved successfully for user 6377453286
+2025-05-05 15:44:46,972 - app - INFO - Generating presigned URLs for user: 6377453286
+2025-05-05 15:44:47,091 - app - INFO - Presigned URLs generated for user: 6377453286
+2025-05-05 15:44:50,247 - app - INFO - Fetching profile for user 6377453286
+2025-05-05 15:44:50,253 - app - INFO - Profile retrieved successfully for user 6377453286
+2025-05-05 15:44:50,265 - app - INFO - Starting to get recommendations for user 6377453286, count: 30
+2025-05-05 15:44:50,269 - app - INFO - Successfully got 0 recommendations for user 6377453286
+2025-05-05 15:45:04,117 - app - INFO - Fetching profile for user 6377453286
+2025-05-05 15:45:04,130 - app - INFO - Profile retrieved successfully for user 6377453286
+2025-05-05 15:45:04,137 - app - INFO - Starting to get recommendations for user 6377453286, count: 30
+2025-05-05 15:45:04,142 - app - INFO - Successfully got 0 recommendations for user 6377453286
+2025-05-05 15:45:22,739 - app - INFO - Fetching profile for user 1651668580
+2025-05-05 15:45:22,748 - app - INFO - Profile retrieved successfully for user 1651668580
+2025-05-05 15:45:22,754 - app - INFO - Fetching profile for user 1651668580
+2025-05-05 15:45:22,757 - app - INFO - Profile retrieved successfully for user 1651668580
+2025-05-05 15:45:22,804 - app - INFO - Generating presigned URLs for user: 1651668580
+2025-05-05 15:45:22,936 - app - INFO - Presigned URLs generated for user: 1651668580
+2025-05-05 15:46:04,694 - app - INFO - Fetching profile for user 6377453286
+2025-05-05 15:46:04,705 - app - INFO - Profile retrieved successfully for user 6377453286
+2025-05-05 15:46:04,710 - app - INFO - Starting to get recommendations for user 6377453286, count: 30
+2025-05-05 15:46:04,718 - app - INFO - Successfully got 0 recommendations for user 6377453286
+2025-05-05 15:46:21,333 - app - INFO - Fetching profile for user 6377453286
+2025-05-05 15:46:21,352 - app - INFO - Profile retrieved successfully for user 6377453286
+2025-05-05 15:47:10,299 - app - INFO - POSTGRES connection success.
+2025-05-05 15:47:38,962 - app - INFO - POSTGRES connection success.
+2025-05-05 15:47:41,718 - app - INFO - Updating field city for user 6377453286
+2025-05-05 15:47:58,706 - app - INFO - POSTGRES connection success.
+2025-05-05 15:48:00,897 - app - INFO - Fetching profile for user 6377453286
+2025-05-05 15:48:00,897 - app - INFO - Fetching profile for user 6377453286
+2025-05-05 15:48:01,006 - app - INFO - Profile retrieved successfully for user 6377453286
+2025-05-05 15:48:01,015 - app - INFO - Profile retrieved successfully for user 6377453286
+2025-05-05 15:48:02,641 - app - INFO - Fetching profile for user 6377453286
+2025-05-05 15:48:02,643 - app - INFO - Profile retrieved successfully for user 6377453286
+2025-05-05 15:48:02,647 - app - INFO - Fetching profile for user 6377453286
+2025-05-05 15:48:02,649 - app - INFO - Profile retrieved successfully for user 6377453286
+2025-05-05 15:48:02,698 - app - INFO - Generating presigned URLs for user: 6377453286
+2025-05-05 15:48:03,058 - app - INFO - Presigned URLs generated for user: 6377453286
+2025-05-05 15:48:05,424 - app - INFO - Fetching profile for user 6377453286
+2025-05-05 15:48:05,429 - app - INFO - Profile retrieved successfully for user 6377453286
+2025-05-05 15:48:05,438 - app - INFO - Starting to get recommendations for user 6377453286, count: 30
+2025-05-05 15:48:05,549 - app - INFO - Successfully got 1 recommendations for user 6377453286
+2025-05-05 15:48:05,554 - app - INFO - Fetching profile for user 1651668580
+2025-05-05 15:48:05,554 - app - INFO - Profile retrieved successfully for user 1651668580
+2025-05-05 15:48:12,564 - app - INFO - Starting swipe processing
+2025-05-05 15:48:12,727 - app - INFO - Swipe processed successfully
+2025-05-05 15:48:12,839 - app - INFO - Fetching profile for user 6377453286
+2025-05-05 15:48:12,841 - app - INFO - Profile retrieved successfully for user 6377453286
+2025-05-05 15:48:12,846 - app - INFO - Starting to get recommendations for user 6377453286, count: 30
+2025-05-05 15:48:12,848 - app - INFO - Successfully got 0 recommendations for user 6377453286
+2025-05-05 15:48:12,883 - app - INFO - Fetching profile for user 6377453286
+2025-05-05 15:48:12,884 - app - INFO - Profile retrieved successfully for user 6377453286
+2025-05-05 15:48:13,009 - app - INFO - Generating presigned URLs for user: 6377453286
+2025-05-05 15:48:13,153 - app - INFO - Presigned URLs generated for user: 6377453286
+2025-05-05 15:52:59,535 - app - INFO - POSTGRES connection success.
+2025-05-09 00:22:37,660 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 00:22:43,719 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 00:22:49,358 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 00:22:49,424 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 00:22:49,482 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 00:22:49,488 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 00:23:05,112 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 00:23:05,117 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 00:23:12,822 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 00:23:12,830 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 00:26:09,162 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 00:26:09,248 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 00:26:31,218 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 00:26:31,226 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 00:27:56,043 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 00:27:56,104 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 00:30:02,814 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 00:30:02,884 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 00:32:22,947 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 00:32:23,054 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 00:33:33,713 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 00:33:39,492 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 00:33:39,553 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 00:33:39,607 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 00:35:14,607 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 00:35:14,836 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 00:35:37,894 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 00:35:43,086 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 00:35:43,137 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 00:35:43,184 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 00:36:05,616 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 00:36:05,626 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 00:38:04,389 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 00:38:04,476 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 00:38:56,691 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 00:38:56,761 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 00:41:07,059 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 00:41:07,142 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 00:43:14,656 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 00:43:14,739 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 00:44:45,013 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 00:44:45,103 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 00:46:30,252 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 00:46:30,325 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 00:47:25,310 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 00:47:25,391 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 00:49:10,549 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 00:49:10,640 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 01:00:33,439 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:00:33,508 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 01:03:08,888 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:03:08,975 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 01:03:34,873 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:03:34,875 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 01:03:38,998 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:03:38,999 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 01:03:40,266 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:03:40,267 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 01:03:41,189 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:03:41,189 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 01:03:42,107 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:03:42,109 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 01:05:21,321 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:05:26,579 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:05:26,648 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 01:05:26,699 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 01:05:36,675 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:05:36,682 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 01:06:47,207 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:06:47,314 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 01:07:06,474 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:07:06,480 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 01:07:56,781 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:07:56,852 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 01:09:10,691 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:09:10,785 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 01:15:21,219 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:15:21,300 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 01:15:24,655 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:15:24,664 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 01:18:14,121 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:18:14,201 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 01:18:28,482 - app - INFO - Starting video verification for user 1651668580
+2025-05-09 01:18:28,560 - app - INFO - Video verification completed for user 1651668580
+2025-05-09 01:18:50,552 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:18:50,560 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 01:18:51,400 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:18:51,403 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 01:18:56,660 - app - INFO - Starting video verification for user 1651668580
+2025-05-09 01:18:56,686 - app - INFO - Video verification completed for user 1651668580
+2025-05-09 01:20:34,150 - app - INFO - Starting video verification for user 1651668580
+2025-05-09 01:20:34,185 - app - INFO - Video verification completed for user 1651668580
+2025-05-09 01:21:13,297 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:21:13,437 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 01:21:14,696 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:21:14,700 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 01:21:17,053 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:21:17,072 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 01:21:20,890 - app - INFO - Starting video verification for user 1651668580
+2025-05-09 01:21:20,969 - app - INFO - Video verification completed for user 1651668580
+2025-05-09 01:23:52,088 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:23:52,173 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 01:23:55,854 - app - INFO - Starting video verification for user 1651668580
+2025-05-09 01:23:55,917 - app - INFO - Video verification completed for user 1651668580
+2025-05-09 01:23:56,382 - app - ERROR - Unexpected error while handling event: on_video_validation_event() missing 1 required positional argument: 'settings'
+2025-05-09 01:25:58,403 - app - INFO - Starting video verification for user 1651668580
+2025-05-09 01:25:58,452 - app - INFO - Video verification completed for user 1651668580
+2025-05-09 01:26:21,807 - app - INFO - Starting profile save for user 1651668580
+2025-05-09 01:26:22,057 - app - INFO - Profile saved successfully for user 1651668580
+2025-05-09 01:26:22,725 - app - INFO - Starting file upload: 1651668580_BAACAgIAAxkBAAIer2gdWbljZQ76n9dK7PwCZCcEOMGYAAIPewACcAToSBZVVgl8H0rWNgQ.mp4
+2025-05-09 01:26:23,708 - app - INFO - File uploaded successfully: 1651668580_BAACAgIAAxkBAAIer2gdWbljZQ76n9dK7PwCZCcEOMGYAAIPewACcAToSBZVVgl8H0rWNgQ.mp4
+2025-05-09 01:26:25,496 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:26:25,499 - app - INFO - Profile retrieved successfully for user 1651668580
+2025-05-09 01:26:25,508 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:26:25,510 - app - INFO - Profile retrieved successfully for user 1651668580
+2025-05-09 01:26:25,555 - app - INFO - Generating presigned URLs for user: 1651668580
+2025-05-09 01:26:25,669 - app - INFO - Presigned URLs generated for user: 1651668580
+2025-05-09 01:26:28,127 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:26:28,131 - app - INFO - Profile retrieved successfully for user 1651668580
+2025-05-09 01:26:29,407 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 01:26:29,410 - app - INFO - Profile retrieved successfully for user 1651668580
+2025-05-09 01:26:29,420 - app - INFO - Toggling active status to False for user 1651668580
+2025-05-09 03:35:56,713 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:35:56,717 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:35:56,836 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:35:56,840 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:36:05,365 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:36:05,382 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:36:07,031 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:36:07,034 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:37:05,767 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:37:05,872 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:37:08,386 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:37:08,396 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:37:09,906 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:37:09,909 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:37:10,859 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:37:10,861 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:37:11,784 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:37:11,786 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:37:15,602 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:37:15,607 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:37:18,906 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:37:18,912 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:37:19,958 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:37:19,959 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:37:20,668 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:37:20,672 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:37:21,614 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:37:21,616 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:38:04,429 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:38:04,436 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:38:06,871 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:38:06,874 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:38:07,778 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:38:07,781 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:38:08,801 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:38:08,803 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:38:09,835 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:38:09,839 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:38:11,061 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:38:11,063 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:38:24,045 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:38:24,053 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:38:26,195 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:38:26,198 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:38:31,236 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:38:31,247 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:38:35,445 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:38:35,449 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:39:05,572 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:39:05,582 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:39:51,630 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:39:51,704 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:39:53,311 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:39:53,313 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:39:54,777 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:39:54,780 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:39:58,034 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:39:58,036 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:39:59,109 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:39:59,113 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:40:03,087 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:40:03,091 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:40:04,432 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:40:04,438 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:40:05,732 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:40:05,734 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:40:06,939 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:40:06,943 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:40:08,141 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:40:08,143 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:40:57,172 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:40:57,241 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 03:41:00,763 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 03:41:00,768 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 04:30:44,111 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 04:30:44,204 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 04:36:24,970 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 04:36:25,035 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 04:36:48,814 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 04:36:48,890 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 04:36:51,561 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 04:36:51,567 - app - WARNING - Profile not found for user 1651668580
+2025-05-09 04:36:52,702 - app - INFO - Fetching profile for user 1651668580
+2025-05-09 04:36:52,705 - app - WARNING - Profile not found for user 1651668580
+2025-05-11 18:06:55,301 - app - INFO - Получение профиля пользователя 1651668580
+2025-05-11 18:06:55,306 - app - INFO - Получение профиля пользователя 1651668580
+2025-05-11 18:06:55,424 - app - WARNING - Профиль не найден для пользователя 1651668580
+2025-05-11 18:06:55,455 - app - WARNING - Профиль не найден для пользователя 1651668580
+2025-05-11 18:06:59,293 - app - INFO - Получение профиля пользователя 1651668580
+2025-05-11 18:06:59,308 - app - WARNING - Профиль не найден для пользователя 1651668580
+2025-05-11 18:07:33,603 - app - INFO - Получение профиля пользователя 1651668580
+2025-05-11 18:07:33,618 - app - WARNING - Профиль не найден для пользователя 1651668580
+2025-05-11 18:07:44,223 - app - INFO - Начало видео-верификации для пользователя 1651668580
+2025-05-11 18:07:44,318 - app - INFO - Видео-верификация завершена для пользователя 1651668580
+2025-05-11 18:08:04,424 - app - INFO - Начало видео-верификации для пользователя 1651668580
+2025-05-11 18:08:04,440 - app - INFO - Видео-верификация завершена для пользователя 1651668580
+2025-05-11 18:08:21,727 - app - INFO - Сохранение профиля для пользователя 1651668580
+2025-05-11 18:08:21,906 - app - INFO - Профиль успешно сохранён для пользователя 1651668580
+2025-05-11 18:08:22,485 - app - INFO - Начало загрузки файла: 1651668580_AgACAgIAAxkBAAIfNGgg55M68iYDGSQWafxZOmQyk6D6AAJM-zEbeZIJSQtThLX_XAqUAQADAgADeAADNgQ.jpg
+2025-05-11 18:08:23,470 - app - INFO - Файл успешно загружен: 1651668580_AgACAgIAAxkBAAIfNGgg55M68iYDGSQWafxZOmQyk6D6AAJM-zEbeZIJSQtThLX_XAqUAQADAgADeAADNgQ.jpg
+2025-05-11 18:08:25,849 - app - INFO - Получение профиля пользователя 1651668580
+2025-05-11 18:08:25,854 - app - INFO - Профиль успешно получен для пользователя 1651668580
+2025-05-11 18:08:25,860 - app - INFO - Получение профиля пользователя 1651668580
+2025-05-11 18:08:25,862 - app - INFO - Профиль успешно получен для пользователя 1651668580
+2025-05-11 18:08:25,911 - app - INFO - Генерация подписанных URL для пользователя: 1651668580
+2025-05-11 18:12:21,865 - app - INFO - Получение профиля пользователя 1651668580
+2025-05-11 18:12:21,973 - app - INFO - Профиль успешно получен для пользователя 1651668580
+2025-05-11 18:12:22,010 - app - INFO - Получение профиля пользователя 1651668580
+2025-05-11 18:12:22,012 - app - INFO - Профиль успешно получен для пользователя 1651668580
+2025-05-11 18:12:22,063 - app - INFO - Генерация подписанных URL для пользователя: 1651668580
+2025-05-11 18:13:02,992 - app - INFO - Получение профиля пользователя 1651668580
+2025-05-11 18:13:03,041 - app - INFO - Профиль успешно получен для пользователя 1651668580
+2025-05-11 18:13:03,055 - app - INFO - Получение профиля пользователя 1651668580
+2025-05-11 18:13:03,057 - app - INFO - Профиль успешно получен для пользователя 1651668580
+2025-05-11 18:13:03,122 - app - INFO - Генерация подписанных URL для пользователя: 1651668580
+2025-05-11 18:13:03,288 - app - INFO - Подписанные URL сгенерированы для пользователя: 1651668580
