@@ -44,12 +44,12 @@ class SwipeService:
             from_user_id=swipe.from_user_id,
             to_user_id=swipe.to_user_id,
             action=swipe.action.lower(),
-            from_city=from_profile["city"],
-            to_city=to_profile["city"],
-            from_gender=from_profile["gender"],
-            to_gender=to_profile["gender"],
-            from_age=from_profile["age"],
-            to_age=to_profile["age"],
+            from_city=from_profile.city,
+            to_city=to_profile.city,
+            from_gender=from_profile.gender,
+            to_gender=to_profile.gender,
+            from_age=from_profile.age,
+            to_age=to_profile.age,
             message=swipe.message
         )
 
