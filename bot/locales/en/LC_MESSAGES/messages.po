@@ -86,6 +86,9 @@ msgstr "Name must be no longer than {max} characters"
 msgid "city_min_error"
 msgstr "City name must be at least {min} characters long"
 
+msgid "please_send_video_note_verification"
+msgstr "Now send video circle to verify that you are human"
+
 msgid "city_max_error"
 msgstr "City name must be no longer than {max} characters"
 
@@ -166,6 +169,21 @@ msgstr "Enter your new age"
 
 msgid "choose_new_gender"
 msgstr "Choose your gender"
+
+msgid "verification_success"
+msgstr "Success!"
+
+msgid "swipe_prompt"
+msgstr "Choose action"
+
+msgid "kilometers_away"
+msgstr "km"
+
+msgid "meters_away"
+msgstr "m"
+
+msgid "video_verification_error"
+msgstr "Can`t recognize your face"
 
 msgid "choose_new_interesting_gender"
 msgstr "Choose the gender you are interested in"

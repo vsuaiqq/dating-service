@@ -125,21 +125,23 @@ async def handle_swipe_text(message: types.Message, state: FSMContext, _: Callab
             await message.answer(_("enter_your_question"), reply_markup=get_back_keyboard(_))
             return
 
-        action = "like" if action_emoji == "👍" else "dislike"
+        swipe_request = AddSwipeRequest(
+            from_user_id=from_user_id,
+            to_user_id=to_user_id,
+            action="like" if action_emoji == "👍" else "dislike"
+        )
+
         try:
             await router.swipe_client.add_swipe(
-                message.from_user.id,
-                message.from_user.username,
-                AddSwipeRequest(
-                    from_user_id=from_user_id,
-                    to_user_id=to_user_id,
-                    action=action
-                )
+                user_id=message.from_user.id,
+                username=message.from_user.username,
+                swipe_data=swipe_request  # Правильная передача объекта
             )
         except RateLimitError:
             await message.answer(_("rate_limit_error_try_later"))
             return
         except Exception as e:
+            logger.error(f"Swipe error: {str(e)}", exc_info=True)
             await message.answer(_("swipe_send_error"))
             return
 
@@ -147,6 +149,7 @@ async def handle_swipe_text(message: types.Message, state: FSMContext, _: Callab
         await send_next_recommendation(from_user_id, message, state, _)
 
     except Exception as e:
+        logger.error(f"Unexpected error: {str(e)}", exc_info=True)
         await message.answer(_("unexpected_error"))
     except RateLimitError:
         await message.answer(_("rate_limit_error_try_later"), reply_markup=get_back_keyboard(_))
@@ -158,12 +161,18 @@ async def handle_question_input(message: types.Message, state: FSMContext, _: Ca
     to_user_id = data.get("current_profile_id")
     question_text = message.text
 
-    await router.swipe_client.add_swipe(message.from_user.id, message.from_user.username, AddSwipeRequest(
+    swipe_request = AddSwipeRequest(
         from_user_id=from_user_id,
         to_user_id=to_user_id,
         action="question",
         message=question_text
-    ))
+    )
+
+    await router.swipe_client.add_swipe(
+        user_id=message.from_user.id,
+        username=message.from_user.username,
+        swipe_data=swipe_request
+    )
 
     await state.clear()
     await message.answer(_("question_sent"))

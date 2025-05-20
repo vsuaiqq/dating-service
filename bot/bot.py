@@ -126,13 +126,13 @@ class TelegramBot:
             print(f"Unexpected error while handling event: {e}")
 
     async def _handle_swipe_event(self, event: SwipeEvent):
+        _ = get_translator(await self.bot.get_chat(event.to_user_id))
+
         text = ""
         if event.action == "like":
-            text = "💖 Вам поставили лайк!"
+            text = _("like_notification")
         elif event.action == "question":
-            text = f"💖 Вам поставили лайк!: {event.message}"
-
-        from_username = event.from_username
+            text = _("question_notification", message=event.message)
 
         await self.bot.send_message(
             event.to_user_id,
@@ -141,32 +141,32 @@ class TelegramBot:
         )
         await self._show_profile(event.from_user_id, event.to_user_id)
         await self.bot.send_message(
-            event.to_user_id, 
-            f'<a href="t.me/{from_username}">Открыть профиль</a>',
+            event.to_user_id,
+            _("open_profile_link", username=event.from_username),
             parse_mode="HTML"
         )
 
     async def _handle_geo_notification(self, event: LocationResolveResultEvent):
-        user_id = event.user_id
-        _ = get_translator(await self.bot.get_chat(user_id))
+        _ = get_translator(await self.bot.get_chat(event.user_id))
         await self.bot.send_message(
-            user_id,
+            event.user_id,
             _(f"geo_notification_{event.status}"),
             parse_mode=ParseMode.HTML
         )
-    
-    async def _handle_video_notification(self, event: VideoValidationResultEvent):
-        user_id = event.user_id
-        is_human = event.is_human
 
-        state = self.dp.fsm.get_context(user_id=user_id, chat_id=user_id, bot=self.bot)
-        
-        if is_human:
-            await self.bot.send_message(user_id, "verification_success")
-            await self.bot.send_message(user_id, "ask age")
-            await state.set_state(ProfileStates.age)
+    async def _handle_video_notification(self, event: VideoValidationResultEvent):
+        _ = get_translator(await self.bot.get_chat(event.user_id))
+
+        if event.is_human:
+            await self.bot.send_message(event.user_id, _("verification_success"))
+            await self.bot.send_message(event.user_id, _("ask_age"))
+            await self.dp.fsm.get_context(
+                user_id=event.user_id,
+                chat_id=event.user_id,
+                bot=self.bot
+            ).set_state(ProfileStates.age)
         else:
-            await self.bot.send_message(user_id, "verification_failed")
+            await self.bot.send_message(event.user_id, _("verification_failed"))
 
     async def run(self):
         await self.kafka_consumer.start()

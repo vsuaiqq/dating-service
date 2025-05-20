@@ -10,6 +10,15 @@ msgstr "Теперь определимся с полом"
 msgid "ask_interesting_gender"
 msgstr "Кто тебе интересен?"
 
+msgid "swipe_prompt"
+msgstr "Выберите действие"
+
+msgid "kilometers_away"
+msgstr "км"
+
+msgid "meters_away"
+msgstr "м"
+
 msgid "ask_city"
 msgstr "Из какого ты города?"
 
@@ -25,6 +34,15 @@ msgid "ask_media"
 msgstr ""
 "Теперь пришли фото или запиши видео 👍 (до 15 сек), "
 "его будут видеть другие пользователи."
+
+msgid "please_send_video_note_verification"
+msgstr "Теперь пришли кружок с лицом для верификации"
+
+msgid "verification_success"
+msgstr "Успешно!"
+
+msgid "video_verification_error"
+msgstr "Не удалось распознать лицо"
 
 msgid "start_button"
 msgstr "🚀 Начать"
