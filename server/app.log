@@ -1,0 +1,727 @@
+2025-05-05 20:27:03,477 - app - INFO - POSTGRES connection success.
+2025-05-05 20:27:31,180 - app - INFO - POSTGRES connection success.
+2025-05-05 20:28:34,095 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 20:28:34,102 - app - WARNING - Profile not found for user 1058681922
+2025-05-05 20:28:35,712 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 20:28:35,713 - app - WARNING - Profile not found for user 1058681922
+2025-05-05 20:28:57,228 - app - INFO - Starting video verification for user 1058681922
+2025-05-05 20:28:57,248 - app - INFO - Video verification completed for user 1058681922
+2025-05-05 20:29:51,245 - app - INFO - Fetching profile for user 7717579491
+2025-05-05 20:29:51,248 - app - WARNING - Profile not found for user 7717579491
+2025-05-05 20:29:53,710 - app - INFO - Fetching profile for user 7717579491
+2025-05-05 20:29:53,712 - app - WARNING - Profile not found for user 7717579491
+2025-05-05 20:30:07,080 - app - INFO - Starting video verification for user 7717579491
+2025-05-05 20:30:07,085 - app - INFO - Video verification completed for user 7717579491
+2025-05-05 20:31:06,877 - app - INFO - Starting profile save for user 7717579491
+2025-05-05 20:31:07,185 - app - INFO - Profile saved successfully for user 7717579491
+2025-05-05 20:31:07,520 - app - INFO - Starting file upload: 7717579491_AgACAgIAAxkBAAIECWgZIG6hV9ul8m1w7rayM5wSFN77AAK-8TEb7NHISAxiXu9_3s20AQADAgADeAADNgQ.jpg
+2025-05-05 20:31:07,655 - app - INFO - File uploaded successfully: 7717579491_AgACAgIAAxkBAAIECWgZIG6hV9ul8m1w7rayM5wSFN77AAK-8TEb7NHISAxiXu9_3s20AQADAgADeAADNgQ.jpg
+2025-05-05 20:31:11,103 - app - INFO - Fetching profile for user 7717579491
+2025-05-05 20:31:11,106 - app - INFO - Profile retrieved successfully for user 7717579491
+2025-05-05 20:31:11,109 - app - INFO - Starting to get recommendations for user 7717579491, count: 30
+2025-05-05 20:31:11,115 - app - INFO - Successfully got 0 recommendations for user 7717579491
+2025-05-05 20:31:12,708 - app - INFO - Fetching profile for user 7717579491
+2025-05-05 20:31:12,710 - app - INFO - Profile retrieved successfully for user 7717579491
+2025-05-05 20:31:12,716 - app - INFO - Starting to get recommendations for user 7717579491, count: 30
+2025-05-05 20:31:12,724 - app - INFO - Successfully got 0 recommendations for user 7717579491
+2025-05-05 20:31:21,594 - app - INFO - Starting profile save for user 1058681922
+2025-05-05 20:31:21,622 - app - INFO - Profile saved successfully for user 1058681922
+2025-05-05 20:31:21,933 - app - INFO - Starting file upload: 1058681922_AgACAgIAAxkBAAID8GgZIBcUIB3wJi6EYT-GL-iHYpU_AAKH8DEbFRPJSKT0YS6jKSrTAQADAgADeQADNgQ.jpg
+2025-05-05 20:31:22,018 - app - INFO - File uploaded successfully: 1058681922_AgACAgIAAxkBAAID8GgZIBcUIB3wJi6EYT-GL-iHYpU_AAKH8DEbFRPJSKT0YS6jKSrTAQADAgADeQADNgQ.jpg
+2025-05-05 20:31:23,712 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 20:31:23,713 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 20:31:23,717 - app - INFO - Starting to get recommendations for user 1058681922, count: 30
+2025-05-05 20:31:23,760 - app - INFO - Successfully got 1 recommendations for user 1058681922
+2025-05-05 20:31:23,763 - app - INFO - Fetching profile for user 7717579491
+2025-05-05 20:31:23,764 - app - INFO - Profile retrieved successfully for user 7717579491
+2025-05-05 20:35:39,184 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 20:35:39,186 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 20:35:40,689 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 20:35:40,690 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 20:35:40,694 - app - INFO - Starting to get recommendations for user 1058681922, count: 30
+2025-05-05 20:35:40,695 - app - INFO - Successfully got 1 recommendations for user 1058681922
+2025-05-05 20:35:40,697 - app - INFO - Fetching profile for user 7717579491
+2025-05-05 20:35:40,699 - app - INFO - Profile retrieved successfully for user 7717579491
+2025-05-05 20:35:42,009 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 20:35:42,010 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 20:35:43,338 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 20:35:43,339 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 20:35:43,342 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 20:35:43,343 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 20:35:43,390 - app - INFO - Generating presigned URLs for user: 1058681922
+2025-05-05 20:35:43,472 - app - INFO - Presigned URLs generated for user: 1058681922
+2025-05-05 20:48:57,787 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 20:48:57,817 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 20:48:57,821 - app - INFO - Starting to get recommendations for user 1058681922, count: 30
+2025-05-05 20:48:57,822 - app - INFO - Successfully got 1 recommendations for user 1058681922
+2025-05-05 20:48:57,824 - app - INFO - Fetching profile for user 7717579491
+2025-05-05 20:48:57,825 - app - INFO - Profile retrieved successfully for user 7717579491
+2025-05-05 20:48:57,874 - app - INFO - Generating presigned URLs for user: 7717579491
+2025-05-05 20:48:57,946 - app - INFO - Presigned URLs generated for user: 7717579491
+2025-05-05 20:50:20,051 - app - INFO - Fetching profile for user 7541602968
+2025-05-05 20:50:20,053 - app - WARNING - Profile not found for user 7541602968
+2025-05-05 20:50:21,212 - app - INFO - Fetching profile for user 7541602968
+2025-05-05 20:50:21,213 - app - WARNING - Profile not found for user 7541602968
+2025-05-05 20:50:37,016 - app - INFO - Starting video verification for user 7541602968
+2025-05-05 20:50:37,026 - app - INFO - Video verification completed for user 7541602968
+2025-05-05 20:51:54,351 - app - INFO - Fetching profile for user 7541602968
+2025-05-05 20:51:54,352 - app - WARNING - Profile not found for user 7541602968
+2025-05-05 20:52:31,741 - app - INFO - Starting profile save for user 7541602968
+2025-05-05 20:52:31,780 - app - INFO - Profile saved successfully for user 7541602968
+2025-05-05 20:52:32,170 - app - INFO - Starting file upload: 7541602968_AgACAgEAAxkBAAIEOGgZJTti-9b7HpXNc6ju_CRbKdrgAAKQrjEboirJRAXgVZ3eX4nAAQADAgADeAADNgQ.jpg
+2025-05-05 20:52:32,284 - app - INFO - File uploaded successfully: 7541602968_AgACAgEAAxkBAAIEOGgZJTti-9b7HpXNc6ju_CRbKdrgAAKQrjEboirJRAXgVZ3eX4nAAQADAgADeAADNgQ.jpg
+2025-05-05 20:52:32,657 - app - INFO - Starting file upload: 7541602968_AgACAgEAAxkBAAIEPWgZJVmUR7NkZSq8JkfThGaIcveQAAKRrjEboirJRB_GgAh7Otk5AQADAgADeAADNgQ.jpg
+2025-05-05 20:52:32,722 - app - INFO - File uploaded successfully: 7541602968_AgACAgEAAxkBAAIEPWgZJVmUR7NkZSq8JkfThGaIcveQAAKRrjEboirJRB_GgAh7Otk5AQADAgADeAADNgQ.jpg
+2025-05-05 20:52:42,512 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 20:52:42,514 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 20:52:43,740 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 20:52:43,741 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 20:52:43,744 - app - INFO - Starting to get recommendations for user 1058681922, count: 30
+2025-05-05 20:52:43,746 - app - INFO - Successfully got 1 recommendations for user 1058681922
+2025-05-05 20:52:43,748 - app - INFO - Fetching profile for user 7717579491
+2025-05-05 20:52:43,749 - app - INFO - Profile retrieved successfully for user 7717579491
+2025-05-05 20:52:43,794 - app - INFO - Generating presigned URLs for user: 7717579491
+2025-05-05 20:52:43,815 - app - INFO - Presigned URLs generated for user: 7717579491
+2025-05-05 20:53:03,449 - app - INFO - Starting swipe processing
+2025-05-05 20:53:03,463 - app - ERROR - Swipe processing failed
+Traceback (most recent call last):
+  File "/app/api/swipe.py", line 28, in add_swipe
+    result = await swipe_service.add_swipe(username, swipe)
+  File "/app/services/swipe/SwipeService.py", line 40, in add_swipe
+    self.logger.insert_swipe(
+  File "/app/analytics/ClickHouseLogger.py", line 39, in insert_swipe
+    self.client.execute(
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/client.py", line 376, in execute
+    rv = self.process_insert_query(
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/client.py", line 607, in process_insert_query
+    rv = self.send_data(sample_block, data,
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/client.py", line 660, in send_data
+    self.connection.send_data(block)
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/connection.py", line 688, in send_data
+    self.block_out.write(block)
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/streams/native.py", line 48, in write
+    write_column(self.context, col_name, col_type, items,
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/columns/service.py", line 167, in write_column
+    column.write_data(items, buf)
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/columns/base.py", line 145, in write_data
+    self._write_data(items, buf)
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/columns/lowcardinalitycolumn.py", line 116, in _write_data
+    self.nested_column.write_data(index, buf)
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/columns/base.py", line 145, in write_data
+    self._write_data(items, buf)
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/columns/base.py", line 149, in _write_data
+    self.write_items(prepared, buf)
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/columns/stringcolumn.py", line 18, in write_items
+    buf.write_strings(items, encoding=self.encoding)
+  File "clickhouse_driver/bufferedwriter.pyx", line 54, in clickhouse_driver.bufferedwriter.BufferedWriter.write_strings
+AttributeError: 'NoneType' object has no attribute 'encode'
+2025-05-05 20:53:32,777 - app - INFO - Starting swipe processing
+2025-05-05 20:53:32,785 - app - ERROR - Swipe processing failed
+Traceback (most recent call last):
+  File "/app/api/swipe.py", line 28, in add_swipe
+    result = await swipe_service.add_swipe(username, swipe)
+  File "/app/services/swipe/SwipeService.py", line 40, in add_swipe
+    self.logger.insert_swipe(
+  File "/app/analytics/ClickHouseLogger.py", line 39, in insert_swipe
+    self.client.execute(
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/client.py", line 376, in execute
+    rv = self.process_insert_query(
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/client.py", line 607, in process_insert_query
+    rv = self.send_data(sample_block, data,
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/client.py", line 660, in send_data
+    self.connection.send_data(block)
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/connection.py", line 688, in send_data
+    self.block_out.write(block)
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/streams/native.py", line 48, in write
+    write_column(self.context, col_name, col_type, items,
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/columns/service.py", line 167, in write_column
+    column.write_data(items, buf)
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/columns/base.py", line 145, in write_data
+    self._write_data(items, buf)
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/columns/lowcardinalitycolumn.py", line 116, in _write_data
+    self.nested_column.write_data(index, buf)
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/columns/base.py", line 145, in write_data
+    self._write_data(items, buf)
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/columns/base.py", line 149, in _write_data
+    self.write_items(prepared, buf)
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/columns/stringcolumn.py", line 18, in write_items
+    buf.write_strings(items, encoding=self.encoding)
+  File "clickhouse_driver/bufferedwriter.pyx", line 54, in clickhouse_driver.bufferedwriter.BufferedWriter.write_strings
+AttributeError: 'NoneType' object has no attribute 'encode'
+2025-05-05 20:53:37,353 - app - INFO - Starting swipe processing
+2025-05-05 20:53:37,360 - app - ERROR - Swipe processing failed
+Traceback (most recent call last):
+  File "/app/api/swipe.py", line 28, in add_swipe
+    result = await swipe_service.add_swipe(username, swipe)
+  File "/app/services/swipe/SwipeService.py", line 40, in add_swipe
+    self.logger.insert_swipe(
+  File "/app/analytics/ClickHouseLogger.py", line 39, in insert_swipe
+    self.client.execute(
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/client.py", line 376, in execute
+    rv = self.process_insert_query(
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/client.py", line 607, in process_insert_query
+    rv = self.send_data(sample_block, data,
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/client.py", line 660, in send_data
+    self.connection.send_data(block)
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/connection.py", line 688, in send_data
+    self.block_out.write(block)
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/streams/native.py", line 48, in write
+    write_column(self.context, col_name, col_type, items,
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/columns/service.py", line 167, in write_column
+    column.write_data(items, buf)
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/columns/base.py", line 145, in write_data
+    self._write_data(items, buf)
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/columns/lowcardinalitycolumn.py", line 116, in _write_data
+    self.nested_column.write_data(index, buf)
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/columns/base.py", line 145, in write_data
+    self._write_data(items, buf)
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/columns/base.py", line 149, in _write_data
+    self.write_items(prepared, buf)
+  File "/usr/local/lib/python3.10/site-packages/clickhouse_driver/columns/stringcolumn.py", line 18, in write_items
+    buf.write_strings(items, encoding=self.encoding)
+  File "clickhouse_driver/bufferedwriter.pyx", line 54, in clickhouse_driver.bufferedwriter.BufferedWriter.write_strings
+AttributeError: 'NoneType' object has no attribute 'encode'
+2025-05-05 21:03:54,730 - app - INFO - POSTGRES connection success.
+2025-05-05 21:04:05,701 - app - INFO - POSTGRES connection success.
+2025-05-05 21:04:16,137 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 21:04:16,148 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 21:04:17,595 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 21:04:17,597 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 21:04:17,600 - app - INFO - Starting to get recommendations for user 1058681922, count: 30
+2025-05-05 21:04:17,602 - app - INFO - Successfully got 0 recommendations for user 1058681922
+2025-05-05 21:04:18,693 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 21:04:18,694 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 21:04:18,697 - app - INFO - Starting to get recommendations for user 1058681922, count: 30
+2025-05-05 21:04:18,698 - app - INFO - Successfully got 0 recommendations for user 1058681922
+2025-05-05 21:04:20,411 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 21:04:20,413 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 21:04:20,416 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 21:04:20,417 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 21:04:20,476 - app - INFO - Generating presigned URLs for user: 1058681922
+2025-05-05 21:04:20,661 - app - INFO - Presigned URLs generated for user: 1058681922
+2025-05-05 21:04:23,525 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 21:04:23,526 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 21:04:23,529 - app - INFO - Starting to get recommendations for user 1058681922, count: 30
+2025-05-05 21:04:23,530 - app - INFO - Successfully got 0 recommendations for user 1058681922
+2025-05-05 21:04:29,450 - app - INFO - Fetching profile for user 7541602968
+2025-05-05 21:04:29,451 - app - INFO - Profile retrieved successfully for user 7541602968
+2025-05-05 21:04:29,456 - app - INFO - Starting to get recommendations for user 7541602968, count: 30
+2025-05-05 21:04:29,467 - app - INFO - Successfully got 1 recommendations for user 7541602968
+2025-05-05 21:04:29,470 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 21:04:29,471 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 21:04:29,516 - app - INFO - Generating presigned URLs for user: 1058681922
+2025-05-05 21:04:29,545 - app - INFO - Presigned URLs generated for user: 1058681922
+2025-05-05 21:04:33,369 - app - INFO - Starting swipe processing
+2025-05-05 21:04:33,385 - app - INFO - Swipe processed successfully
+2025-05-05 21:04:33,466 - app - INFO - Fetching profile for user 7541602968
+2025-05-05 21:04:33,467 - app - INFO - Profile retrieved successfully for user 7541602968
+2025-05-05 21:04:33,550 - app - INFO - Generating presigned URLs for user: 7541602968
+2025-05-05 21:04:33,583 - app - INFO - Presigned URLs generated for user: 7541602968
+2025-05-05 21:04:33,584 - app - INFO - Fetching profile for user 7541602968
+2025-05-05 21:04:33,586 - app - INFO - Profile retrieved successfully for user 7541602968
+2025-05-05 21:04:33,589 - app - INFO - Starting to get recommendations for user 7541602968, count: 30
+2025-05-05 21:04:33,590 - app - INFO - Successfully got 0 recommendations for user 7541602968
+2025-05-05 21:27:45,552 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 21:27:45,585 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 21:27:45,590 - app - INFO - Starting to get recommendations for user 1058681922, count: 30
+2025-05-05 21:27:45,591 - app - INFO - Successfully got 0 recommendations for user 1058681922
+2025-05-05 21:27:51,365 - app - INFO - Fetching profile for user 7717579491
+2025-05-05 21:27:51,366 - app - INFO - Profile retrieved successfully for user 7717579491
+2025-05-05 21:27:51,370 - app - INFO - Starting to get recommendations for user 7717579491, count: 30
+2025-05-05 21:27:51,381 - app - INFO - Successfully got 1 recommendations for user 7717579491
+2025-05-05 21:27:51,384 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 21:27:51,385 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 21:27:51,439 - app - INFO - Generating presigned URLs for user: 1058681922
+2025-05-05 21:27:51,518 - app - INFO - Presigned URLs generated for user: 1058681922
+2025-05-05 21:28:02,181 - app - INFO - Starting swipe processing
+2025-05-05 21:28:02,193 - app - INFO - Swipe processed successfully
+2025-05-05 21:28:02,319 - app - INFO - Fetching profile for user 7717579491
+2025-05-05 21:28:02,321 - app - INFO - Profile retrieved successfully for user 7717579491
+2025-05-05 21:28:02,373 - app - INFO - Fetching profile for user 7717579491
+2025-05-05 21:28:02,374 - app - INFO - Profile retrieved successfully for user 7717579491
+2025-05-05 21:28:02,378 - app - INFO - Starting to get recommendations for user 7717579491, count: 30
+2025-05-05 21:28:02,379 - app - INFO - Successfully got 0 recommendations for user 7717579491
+2025-05-05 21:28:02,402 - app - INFO - Generating presigned URLs for user: 7717579491
+2025-05-05 21:28:02,430 - app - INFO - Presigned URLs generated for user: 7717579491
+2025-05-05 21:59:35,186 - app - INFO - POSTGRES connection success.
+2025-05-05 21:59:41,798 - app - INFO - POSTGRES connection success.
+2025-05-05 21:59:48,040 - app - INFO - POSTGRES connection success.
+2025-05-05 21:59:54,304 - app - INFO - POSTGRES connection success.
+2025-05-05 22:00:09,479 - app - INFO - POSTGRES connection success.
+2025-05-05 22:00:23,044 - app - INFO - POSTGRES connection success.
+2025-05-05 22:00:31,487 - app - INFO - POSTGRES connection success.
+2025-05-05 22:03:11,630 - app - INFO - POSTGRES connection success.
+2025-05-05 22:03:18,021 - app - INFO - POSTGRES connection success.
+2025-05-05 22:03:24,592 - app - INFO - POSTGRES connection success.
+2025-05-05 22:03:32,500 - app - INFO - POSTGRES connection success.
+2025-05-05 22:03:56,300 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:03:56,317 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 22:03:58,423 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:03:58,425 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 22:04:31,022 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:04:31,024 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 22:04:43,768 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:04:43,769 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 22:05:20,000 - app - INFO - POSTGRES connection success.
+2025-05-05 22:05:29,349 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:05:29,357 - app - WARNING - Profile not found for user 1058681922
+2025-05-05 22:05:35,678 - app - INFO - Starting video verification for user 1058681922
+2025-05-05 22:05:35,697 - app - INFO - Video verification completed for user 1058681922
+2025-05-05 22:05:53,264 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:05:53,266 - app - WARNING - Profile not found for user 1058681922
+2025-05-05 22:05:58,051 - app - INFO - Starting video verification for user 1058681922
+2025-05-05 22:05:58,054 - app - INFO - Video verification completed for user 1058681922
+2025-05-05 22:07:20,855 - app - INFO - POSTGRES connection success.
+2025-05-05 22:08:27,917 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:08:27,924 - app - WARNING - Profile not found for user 1058681922
+2025-05-05 22:08:33,531 - app - INFO - Starting video verification for user 1058681922
+2025-05-05 22:08:33,549 - app - INFO - Video verification completed for user 1058681922
+2025-05-05 22:09:16,432 - app - INFO - Starting profile save for user 1058681922
+2025-05-05 22:09:16,737 - app - INFO - Profile saved successfully for user 1058681922
+2025-05-05 22:09:17,034 - app - INFO - Starting file upload: 1058681922_AgACAgIAAxkBAAIEkWgZN2_QDtbDD9qtdXOkZ2r0j_dPAALP8DEbFRPJSI6_KxKvv6teAQADAgADeQADNgQ.jpg
+2025-05-05 22:09:17,192 - app - INFO - File uploaded successfully: 1058681922_AgACAgIAAxkBAAIEkWgZN2_QDtbDD9qtdXOkZ2r0j_dPAALP8DEbFRPJSI6_KxKvv6teAQADAgADeQADNgQ.jpg
+2025-05-05 22:09:17,365 - app - INFO - Starting file upload: 1058681922_AgACAgIAAxkBAAIEkmgZN2-PfeI2r1FV06qL2H-XdXkXAALQ8DEbFRPJSNtb-6ecIShsAQADAgADeQADNgQ.jpg
+2025-05-05 22:09:17,438 - app - INFO - File uploaded successfully: 1058681922_AgACAgIAAxkBAAIEkmgZN2-PfeI2r1FV06qL2H-XdXkXAALQ8DEbFRPJSNtb-6ecIShsAQADAgADeQADNgQ.jpg
+2025-05-05 22:09:28,469 - app - INFO - Fetching profile for user 7717579491
+2025-05-05 22:09:28,470 - app - WARNING - Profile not found for user 7717579491
+2025-05-05 22:09:36,330 - app - INFO - Fetching profile for user 7717579491
+2025-05-05 22:09:36,331 - app - WARNING - Profile not found for user 7717579491
+2025-05-05 22:09:37,749 - app - INFO - Fetching profile for user 7717579491
+2025-05-05 22:09:37,750 - app - WARNING - Profile not found for user 7717579491
+2025-05-05 22:09:43,477 - app - INFO - Starting video verification for user 7717579491
+2025-05-05 22:09:43,481 - app - INFO - Video verification completed for user 7717579491
+2025-05-05 22:10:19,236 - app - INFO - Starting profile save for user 7717579491
+2025-05-05 22:10:19,263 - app - INFO - Profile saved successfully for user 7717579491
+2025-05-05 22:10:19,535 - app - INFO - Starting file upload: 7717579491_AgACAgIAAxkBAAIEsGgZN69SToOXJgesMJm69Qvw6o2yAAL78TEb7NHISA0j3hy_bBTTAQADAgADeQADNgQ.jpg
+2025-05-05 22:10:19,677 - app - INFO - File uploaded successfully: 7717579491_AgACAgIAAxkBAAIEsGgZN69SToOXJgesMJm69Qvw6o2yAAL78TEb7NHISA0j3hy_bBTTAQADAgADeQADNgQ.jpg
+2025-05-05 22:10:26,385 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:10:26,386 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 22:10:26,389 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:10:26,390 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 22:10:26,454 - app - INFO - Generating presigned URLs for user: 1058681922
+2025-05-05 22:10:26,486 - app - ERROR - Failed to generate presigned URL for user: 1058681922. Error: None is not a valid MediaType
+Traceback (most recent call last):
+  File "/app/api/media.py", line 37, in get_presigned_urls
+    result = await media_service.generate_presigned_urls(user_id)
+  File "/app/services/media/MediaService.py", line 26, in generate_presigned_urls
+    presigned_media.append(PresignedMedia(url=url, type=MediaType(media_type)))
+  File "/usr/local/lib/python3.10/enum.py", line 385, in __call__
+    return cls.__new__(cls, value)
+  File "/usr/local/lib/python3.10/enum.py", line 710, in __new__
+    raise ve_exc
+ValueError: None is not a valid MediaType
+2025-05-05 22:10:30,726 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:10:30,727 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 22:10:30,729 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:10:30,730 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 22:10:30,783 - app - INFO - Generating presigned URLs for user: 1058681922
+2025-05-05 22:10:30,813 - app - ERROR - Failed to generate presigned URL for user: 1058681922. Error: None is not a valid MediaType
+Traceback (most recent call last):
+  File "/app/api/media.py", line 37, in get_presigned_urls
+    result = await media_service.generate_presigned_urls(user_id)
+  File "/app/services/media/MediaService.py", line 26, in generate_presigned_urls
+    presigned_media.append(PresignedMedia(url=url, type=MediaType(media_type)))
+  File "/usr/local/lib/python3.10/enum.py", line 385, in __call__
+    return cls.__new__(cls, value)
+  File "/usr/local/lib/python3.10/enum.py", line 710, in __new__
+    raise ve_exc
+ValueError: None is not a valid MediaType
+2025-05-05 22:11:01,049 - app - INFO - Fetching profile for user 7541602968
+2025-05-05 22:11:01,050 - app - WARNING - Profile not found for user 7541602968
+2025-05-05 22:11:03,046 - app - INFO - Fetching profile for user 7541602968
+2025-05-05 22:11:03,048 - app - WARNING - Profile not found for user 7541602968
+2025-05-05 22:11:09,904 - app - INFO - Starting video verification for user 7541602968
+2025-05-05 22:11:09,907 - app - INFO - Video verification completed for user 7541602968
+2025-05-05 22:11:51,028 - app - INFO - Starting profile save for user 7541602968
+2025-05-05 22:11:51,060 - app - INFO - Profile saved successfully for user 7541602968
+2025-05-05 22:11:51,579 - app - INFO - Starting file upload: 7541602968_AgACAgEAAxkBAAIEzWgZOArGyKEtojC7HDAZXqHGzQkuAAKbrjEboirJRBEy9Ud0It_YAQADAgADeQADNgQ.jpg
+2025-05-05 22:11:51,744 - app - INFO - File uploaded successfully: 7541602968_AgACAgEAAxkBAAIEzWgZOArGyKEtojC7HDAZXqHGzQkuAAKbrjEboirJRBEy9Ud0It_YAQADAgADeQADNgQ.jpg
+2025-05-05 22:11:54,455 - app - INFO - Fetching profile for user 7541602968
+2025-05-05 22:11:54,457 - app - INFO - Profile retrieved successfully for user 7541602968
+2025-05-05 22:11:54,460 - app - INFO - Fetching profile for user 7541602968
+2025-05-05 22:11:54,461 - app - INFO - Profile retrieved successfully for user 7541602968
+2025-05-05 22:11:54,510 - app - INFO - Generating presigned URLs for user: 7541602968
+2025-05-05 22:11:54,576 - app - ERROR - Failed to generate presigned URL for user: 7541602968. Error: None is not a valid MediaType
+Traceback (most recent call last):
+  File "/app/api/media.py", line 37, in get_presigned_urls
+    result = await media_service.generate_presigned_urls(user_id)
+  File "/app/services/media/MediaService.py", line 26, in generate_presigned_urls
+    presigned_media.append(PresignedMedia(url=url, type=MediaType(media_type)))
+  File "/usr/local/lib/python3.10/enum.py", line 385, in __call__
+    return cls.__new__(cls, value)
+  File "/usr/local/lib/python3.10/enum.py", line 710, in __new__
+    raise ve_exc
+ValueError: None is not a valid MediaType
+2025-05-05 22:12:02,098 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:12:02,100 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 22:12:02,104 - app - INFO - Starting to get recommendations for user 1058681922, count: 30
+2025-05-05 22:12:02,119 - app - INFO - Successfully got 2 recommendations for user 1058681922
+2025-05-05 22:12:02,122 - app - INFO - Fetching profile for user 7541602968
+2025-05-05 22:12:02,123 - app - INFO - Profile retrieved successfully for user 7541602968
+2025-05-05 22:12:02,180 - app - INFO - Generating presigned URLs for user: 7541602968
+2025-05-05 22:12:02,213 - app - ERROR - Failed to generate presigned URL for user: 7541602968. Error: None is not a valid MediaType
+Traceback (most recent call last):
+  File "/app/api/media.py", line 37, in get_presigned_urls
+    result = await media_service.generate_presigned_urls(user_id)
+  File "/app/services/media/MediaService.py", line 26, in generate_presigned_urls
+    presigned_media.append(PresignedMedia(url=url, type=MediaType(media_type)))
+  File "/usr/local/lib/python3.10/enum.py", line 385, in __call__
+    return cls.__new__(cls, value)
+  File "/usr/local/lib/python3.10/enum.py", line 710, in __new__
+    raise ve_exc
+ValueError: None is not a valid MediaType
+2025-05-05 22:12:16,643 - app - INFO - Starting swipe processing
+2025-05-05 22:12:16,661 - app - INFO - Swipe processed successfully
+2025-05-05 22:12:16,728 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:12:16,729 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 22:12:16,801 - app - INFO - Generating presigned URLs for user: 1058681922
+2025-05-05 22:12:16,833 - app - ERROR - Failed to generate presigned URL for user: 1058681922. Error: None is not a valid MediaType
+Traceback (most recent call last):
+  File "/app/api/media.py", line 37, in get_presigned_urls
+    result = await media_service.generate_presigned_urls(user_id)
+  File "/app/services/media/MediaService.py", line 26, in generate_presigned_urls
+    presigned_media.append(PresignedMedia(url=url, type=MediaType(media_type)))
+  File "/usr/local/lib/python3.10/enum.py", line 385, in __call__
+    return cls.__new__(cls, value)
+  File "/usr/local/lib/python3.10/enum.py", line 710, in __new__
+    raise ve_exc
+ValueError: None is not a valid MediaType
+2025-05-05 22:12:16,836 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:12:16,837 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 22:12:16,843 - app - INFO - Starting to get recommendations for user 1058681922, count: 30
+2025-05-05 22:12:16,844 - app - INFO - Successfully got 1 recommendations for user 1058681922
+2025-05-05 22:12:16,852 - app - INFO - Fetching profile for user 7717579491
+2025-05-05 22:12:16,853 - app - INFO - Profile retrieved successfully for user 7717579491
+2025-05-05 22:12:16,909 - app - INFO - Generating presigned URLs for user: 7717579491
+2025-05-05 22:12:16,939 - app - ERROR - Failed to generate presigned URL for user: 7717579491. Error: None is not a valid MediaType
+Traceback (most recent call last):
+  File "/app/api/media.py", line 37, in get_presigned_urls
+    result = await media_service.generate_presigned_urls(user_id)
+  File "/app/services/media/MediaService.py", line 26, in generate_presigned_urls
+    presigned_media.append(PresignedMedia(url=url, type=MediaType(media_type)))
+  File "/usr/local/lib/python3.10/enum.py", line 385, in __call__
+    return cls.__new__(cls, value)
+  File "/usr/local/lib/python3.10/enum.py", line 710, in __new__
+    raise ve_exc
+ValueError: None is not a valid MediaType
+2025-05-05 22:12:28,126 - app - INFO - Starting swipe processing
+2025-05-05 22:12:28,135 - app - INFO - Swipe processed successfully
+2025-05-05 22:12:28,225 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:12:28,228 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 22:12:28,230 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:12:28,232 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 22:12:28,234 - app - INFO - Starting to get recommendations for user 1058681922, count: 30
+2025-05-05 22:12:28,236 - app - INFO - Successfully got 0 recommendations for user 1058681922
+2025-05-05 22:12:28,307 - app - INFO - Generating presigned URLs for user: 1058681922
+2025-05-05 22:12:28,343 - app - ERROR - Failed to generate presigned URL for user: 1058681922. Error: None is not a valid MediaType
+Traceback (most recent call last):
+  File "/app/api/media.py", line 37, in get_presigned_urls
+    result = await media_service.generate_presigned_urls(user_id)
+  File "/app/services/media/MediaService.py", line 26, in generate_presigned_urls
+    presigned_media.append(PresignedMedia(url=url, type=MediaType(media_type)))
+  File "/usr/local/lib/python3.10/enum.py", line 385, in __call__
+    return cls.__new__(cls, value)
+  File "/usr/local/lib/python3.10/enum.py", line 710, in __new__
+    raise ve_exc
+ValueError: None is not a valid MediaType
+2025-05-05 22:12:57,629 - app - INFO - Fetching profile for user 7541602968
+2025-05-05 22:12:57,632 - app - INFO - Profile retrieved successfully for user 7541602968
+2025-05-05 22:12:57,637 - app - INFO - Fetching profile for user 7541602968
+2025-05-05 22:12:57,639 - app - INFO - Profile retrieved successfully for user 7541602968
+2025-05-05 22:12:57,688 - app - INFO - Generating presigned URLs for user: 7541602968
+2025-05-05 22:12:57,720 - app - ERROR - Failed to generate presigned URL for user: 7541602968. Error: None is not a valid MediaType
+Traceback (most recent call last):
+  File "/app/api/media.py", line 37, in get_presigned_urls
+    result = await media_service.generate_presigned_urls(user_id)
+  File "/app/services/media/MediaService.py", line 26, in generate_presigned_urls
+    presigned_media.append(PresignedMedia(url=url, type=MediaType(media_type)))
+  File "/usr/local/lib/python3.10/enum.py", line 385, in __call__
+    return cls.__new__(cls, value)
+  File "/usr/local/lib/python3.10/enum.py", line 710, in __new__
+    raise ve_exc
+ValueError: None is not a valid MediaType
+2025-05-05 22:14:37,496 - app - INFO - Fetching profile for user 7541602968
+2025-05-05 22:14:37,498 - app - INFO - Profile retrieved successfully for user 7541602968
+2025-05-05 22:14:37,502 - app - INFO - Starting to get recommendations for user 7541602968, count: 30
+2025-05-05 22:14:37,506 - app - INFO - Successfully got 1 recommendations for user 7541602968
+2025-05-05 22:14:37,508 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:14:37,509 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 22:14:37,554 - app - INFO - Generating presigned URLs for user: 1058681922
+2025-05-05 22:14:37,630 - app - ERROR - Failed to generate presigned URL for user: 1058681922. Error: None is not a valid MediaType
+Traceback (most recent call last):
+  File "/app/api/media.py", line 37, in get_presigned_urls
+    result = await media_service.generate_presigned_urls(user_id)
+  File "/app/services/media/MediaService.py", line 26, in generate_presigned_urls
+    presigned_media.append(PresignedMedia(url=url, type=MediaType(media_type)))
+  File "/usr/local/lib/python3.10/enum.py", line 385, in __call__
+    return cls.__new__(cls, value)
+  File "/usr/local/lib/python3.10/enum.py", line 710, in __new__
+    raise ve_exc
+ValueError: None is not a valid MediaType
+2025-05-05 22:15:18,847 - app - INFO - Starting swipe processing
+2025-05-05 22:15:18,855 - app - INFO - Swipe processed successfully
+2025-05-05 22:15:18,982 - app - INFO - Fetching profile for user 7541602968
+2025-05-05 22:15:18,988 - app - INFO - Profile retrieved successfully for user 7541602968
+2025-05-05 22:15:19,023 - app - INFO - Fetching profile for user 7541602968
+2025-05-05 22:15:19,024 - app - INFO - Profile retrieved successfully for user 7541602968
+2025-05-05 22:15:19,029 - app - INFO - Starting to get recommendations for user 7541602968, count: 30
+2025-05-05 22:15:19,030 - app - INFO - Successfully got 0 recommendations for user 7541602968
+2025-05-05 22:15:19,063 - app - INFO - Generating presigned URLs for user: 7541602968
+2025-05-05 22:15:19,090 - app - ERROR - Failed to generate presigned URL for user: 7541602968. Error: None is not a valid MediaType
+Traceback (most recent call last):
+  File "/app/api/media.py", line 37, in get_presigned_urls
+    result = await media_service.generate_presigned_urls(user_id)
+  File "/app/services/media/MediaService.py", line 26, in generate_presigned_urls
+    presigned_media.append(PresignedMedia(url=url, type=MediaType(media_type)))
+  File "/usr/local/lib/python3.10/enum.py", line 385, in __call__
+    return cls.__new__(cls, value)
+  File "/usr/local/lib/python3.10/enum.py", line 710, in __new__
+    raise ve_exc
+ValueError: None is not a valid MediaType
+2025-05-05 22:18:46,900 - app - INFO - POSTGRES connection success.
+2025-05-05 22:19:19,148 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:19:19,151 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:19:19,171 - app - WARNING - Profile not found for user 1058681922
+2025-05-05 22:19:19,175 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:19:19,177 - app - WARNING - Profile not found for user 1058681922
+2025-05-05 22:19:19,178 - app - WARNING - Profile not found for user 1058681922
+2025-05-05 22:19:22,317 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:19:22,318 - app - WARNING - Profile not found for user 1058681922
+2025-05-05 22:19:32,965 - app - INFO - Starting video verification for user 1058681922
+2025-05-05 22:19:32,985 - app - INFO - Video verification completed for user 1058681922
+2025-05-05 22:20:02,471 - app - INFO - Starting profile save for user 1058681922
+2025-05-05 22:20:02,796 - app - INFO - Profile saved successfully for user 1058681922
+2025-05-05 22:20:03,085 - app - INFO - Starting file upload: 1058681922_AgACAgIAAxkBAAIEkWgZN2_QDtbDD9qtdXOkZ2r0j_dPAALP8DEbFRPJSI6_KxKvv6teAQADAgADeQADNgQ.jpg
+2025-05-05 22:20:03,220 - app - INFO - File uploaded successfully: 1058681922_AgACAgIAAxkBAAIEkWgZN2_QDtbDD9qtdXOkZ2r0j_dPAALP8DEbFRPJSI6_KxKvv6teAQADAgADeQADNgQ.jpg
+2025-05-05 22:20:04,783 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:20:04,785 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 22:20:04,788 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:20:04,789 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 22:20:04,832 - app - INFO - Generating presigned URLs for user: 1058681922
+2025-05-05 22:20:04,857 - app - ERROR - Failed to generate presigned URL for user: 1058681922. Error: None is not a valid MediaType
+Traceback (most recent call last):
+  File "/app/api/media.py", line 37, in get_presigned_urls
+    result = await media_service.generate_presigned_urls(user_id)
+  File "/app/services/media/MediaService.py", line 26, in generate_presigned_urls
+    presigned_media.append(PresignedMedia(url=url, type=MediaType(media_type)))
+  File "/usr/local/lib/python3.10/enum.py", line 385, in __call__
+    return cls.__new__(cls, value)
+  File "/usr/local/lib/python3.10/enum.py", line 710, in __new__
+    raise ve_exc
+ValueError: None is not a valid MediaType
+2025-05-05 22:23:48,162 - app - INFO - POSTGRES connection success.
+2025-05-05 22:24:13,383 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:24:13,390 - app - WARNING - Profile not found for user 1058681922
+2025-05-05 22:24:14,864 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:24:14,865 - app - WARNING - Profile not found for user 1058681922
+2025-05-05 22:24:21,030 - app - INFO - Starting video verification for user 1058681922
+2025-05-05 22:24:21,048 - app - INFO - Video verification completed for user 1058681922
+2025-05-05 22:24:46,553 - app - INFO - Starting profile save for user 1058681922
+2025-05-05 22:24:46,842 - app - INFO - Profile saved successfully for user 1058681922
+2025-05-05 22:24:47,127 - app - INFO - Starting file upload: 1058681922_AgACAgIAAxkBAAIEkmgZN2-PfeI2r1FV06qL2H-XdXkXAALQ8DEbFRPJSNtb-6ecIShsAQADAgADeQADNgQ.jpg
+2025-05-05 22:24:47,267 - app - INFO - File uploaded successfully: 1058681922_AgACAgIAAxkBAAIEkmgZN2-PfeI2r1FV06qL2H-XdXkXAALQ8DEbFRPJSNtb-6ecIShsAQADAgADeQADNgQ.jpg
+2025-05-05 22:24:49,093 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:24:49,095 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 22:24:49,103 - app - INFO - Fetching profile for user 1058681922
+2025-05-05 22:24:49,104 - app - INFO - Profile retrieved successfully for user 1058681922
+2025-05-05 22:24:49,153 - app - INFO - Generating presigned URLs for user: 1058681922
+2025-05-05 22:24:49,181 - app - ERROR - Failed to generate presigned URL for user: 1058681922. Error: None is not a valid MediaType
+Traceback (most recent call last):
+  File "/app/api/media.py", line 37, in get_presigned_urls
+    result = await media_service.generate_presigned_urls(user_id)
+  File "/app/services/media/MediaService.py", line 26, in generate_presigned_urls
+    presigned_media.append(PresignedMedia(url=url, type=MediaType(media_type)))
+  File "/usr/local/lib/python3.10/enum.py", line 385, in __call__
+    return cls.__new__(cls, value)
+  File "/usr/local/lib/python3.10/enum.py", line 710, in __new__
+    raise ve_exc
+ValueError: None is not a valid MediaType
+2025-05-05 22:28:30,662 - app - INFO - Fetching profile for user 7717579491
+2025-05-05 22:28:30,664 - app - WARNING - Profile not found for user 7717579491
+2025-05-05 22:28:32,003 - app - INFO - Fetching profile for user 7717579491
+2025-05-05 22:28:32,004 - app - WARNING - Profile not found for user 7717579491
+2025-05-05 22:28:45,165 - app - INFO - Starting video verification for user 7717579491
+2025-05-05 22:28:45,168 - app - INFO - Video verification completed for user 7717579491
+2025-05-05 22:29:15,798 - app - INFO - Starting profile save for user 7717579491
+2025-05-05 22:29:15,831 - app - INFO - Profile saved successfully for user 7717579491
+2025-05-05 22:29:16,051 - app - INFO - Starting file upload: 7717579491_AgACAgIAAxkBAAIFNWgZPB_YwcT5Ux55gbjBSKUVgSisAAL_8TEb7NHISNJovpcodLo7AQADAgADeAADNgQ.jpg
+2025-05-05 22:29:16,205 - app - INFO - File uploaded successfully: 7717579491_AgACAgIAAxkBAAIFNWgZPB_YwcT5Ux55gbjBSKUVgSisAAL_8TEb7NHISNJovpcodLo7AQADAgADeAADNgQ.jpg
+2025-05-05 22:29:17,696 - app - INFO - Fetching profile for user 7717579491
+2025-05-05 22:29:17,697 - app - INFO - Profile retrieved successfully for user 7717579491
+2025-05-05 22:29:17,700 - app - INFO - Fetching profile for user 7717579491
+2025-05-05 22:29:17,701 - app - INFO - Profile retrieved successfully for user 7717579491
+2025-05-05 22:29:17,744 - app - INFO - Generating presigned URLs for user: 7717579491
+2025-05-05 22:29:17,772 - app - INFO - Presigned URLs generated for user: 7717579491
+2025-05-18 18:45:58,887 - app - INFO - Fetching profile for user 1058681922
+2025-05-18 18:45:58,926 - app - WARNING - Profile not found for user 1058681922
+2025-05-18 18:46:06,541 - app - INFO - Fetching profile for user 1058681922
+2025-05-18 18:46:06,543 - app - WARNING - Profile not found for user 1058681922
+2025-05-18 18:46:08,150 - app - INFO - Fetching profile for user 1058681922
+2025-05-18 18:46:08,151 - app - WARNING - Profile not found for user 1058681922
+2025-05-18 18:46:25,687 - app - INFO - Starting video verification for user 1058681922
+2025-05-18 18:47:16,339 - app - INFO - Saving profile for user 1058681922
+2025-05-18 18:47:16,609 - app - INFO - Profile successfully saved for user 1058681922
+2025-05-18 18:47:16,923 - app - INFO - Uploading file: 1058681922_AgACAgIAAxkBAAIfWWgqK5wEQR4YEJtAPBoBufRSi2PDAAL8-zEb8K9RSQjGj9VkBSZNAQADAgADeAADNgQ.jpg for user 1058681922
+2025-05-18 18:47:31,716 - app - INFO - Fetching profile for user 1058681922
+2025-05-18 18:47:31,717 - app - INFO - Profile successfully retrieved for user 1058681922
+2025-05-18 18:47:33,950 - app - INFO - Fetching profile for user 1058681922
+2025-05-18 18:47:33,951 - app - INFO - Profile successfully retrieved for user 1058681922
+2025-05-18 18:47:33,955 - app - INFO - Fetching profile for user 1058681922
+2025-05-18 18:47:33,956 - app - INFO - Profile successfully retrieved for user 1058681922
+2025-05-18 18:47:34,007 - app - INFO - Generating presigned URLs for user 1058681922
+2025-05-18 19:04:04,315 - app - INFO - Fetching profile for user 7717579491
+2025-05-18 19:04:04,342 - app - WARNING - Profile not found for user 7717579491
+2025-05-18 19:04:18,498 - app - INFO - Fetching profile for user 7717579491
+2025-05-18 19:04:18,499 - app - WARNING - Profile not found for user 7717579491
+2025-05-18 19:04:34,806 - app - INFO - Starting video verification for user 7717579491
+2025-05-18 19:05:16,660 - app - INFO - Saving profile for user 7717579491
+2025-05-18 19:05:16,734 - app - INFO - Profile successfully saved for user 7717579491
+2025-05-18 19:05:16,894 - app - INFO - Uploading file: 7717579491_AgACAgIAAxkBAAIfeWgqL9GBE3Lrkg9XZYR23v7D6ZUOAAKy8zEbucZQSVsraMwDckklAQADAgADeQADNgQ.jpg for user 7717579491
+2025-05-18 19:10:26,926 - app - INFO - Fetching profile for user 7717579491
+2025-05-18 19:10:26,927 - app - INFO - Fetching profile for user 7717579491
+2025-05-18 19:10:26,950 - app - WARNING - Profile not found for user 7717579491
+2025-05-18 19:10:26,952 - app - WARNING - Profile not found for user 7717579491
+2025-05-18 19:10:31,541 - app - INFO - Fetching profile for user 7717579491
+2025-05-18 19:10:31,542 - app - WARNING - Profile not found for user 7717579491
+2025-05-18 19:10:38,275 - app - INFO - Starting video verification for user 7717579491
+2025-05-18 19:11:09,030 - app - INFO - Saving profile for user 7717579491
+2025-05-18 19:11:09,252 - app - INFO - Profile successfully saved for user 7717579491
+2025-05-18 19:11:09,398 - app - INFO - Uploading file: 7717579491_AgACAgIAAxkBAAIfeWgqL9GBE3Lrkg9XZYR23v7D6ZUOAAKy8zEbucZQSVsraMwDckklAQADAgADeQADNgQ.jpg for user 7717579491
+2025-05-18 19:11:09,483 - app - INFO - File uploaded: 7717579491_AgACAgIAAxkBAAIfeWgqL9GBE3Lrkg9XZYR23v7D6ZUOAAKy8zEbucZQSVsraMwDckklAQADAgADeQADNgQ.jpg for user 7717579491
+2025-05-18 19:11:16,246 - app - INFO - Fetching profile for user 7717579491
+2025-05-18 19:11:16,247 - app - INFO - Profile successfully retrieved for user 7717579491
+2025-05-18 21:23:29,128 - app - INFO - Fetching profile for user 7717579491
+2025-05-18 21:23:29,135 - app - WARNING - Profile not found for user 7717579491
+2025-05-18 21:23:32,042 - app - INFO - Fetching profile for user 7717579491
+2025-05-18 21:23:32,043 - app - WARNING - Profile not found for user 7717579491
+2025-05-18 21:23:54,582 - app - INFO - Fetching profile for user 7717579491
+2025-05-18 21:23:54,584 - app - WARNING - Profile not found for user 7717579491
+2025-05-18 21:38:09,760 - app - INFO - Fetching profile for user 7717579491
+2025-05-18 21:38:09,786 - app - WARNING - Profile not found for user 7717579491
+2025-05-18 21:39:28,639 - app - INFO - Fetching profile for user 7717579491
+2025-05-18 21:39:28,640 - app - WARNING - Profile not found for user 7717579491
+2025-05-18 21:39:33,498 - app - INFO - Starting video verification for user 7717579491
+2025-05-18 21:48:15,819 - app - INFO - Fetching profile for user 7717579491
+2025-05-18 21:48:15,821 - app - INFO - Fetching profile for user 7717579491
+2025-05-18 21:48:15,846 - app - WARNING - Profile not found for user 7717579491
+2025-05-18 21:48:15,850 - app - WARNING - Profile not found for user 7717579491
+2025-05-18 21:48:22,310 - app - INFO - Starting video verification for user 7717579491
+2025-05-18 21:48:22,451 - app - INFO - Video verification completed for user 7717579491
+2025-05-18 21:49:47,546 - app - INFO - Fetching profile for user 1058681922
+2025-05-18 21:49:47,547 - app - WARNING - Profile not found for user 1058681922
+2025-05-18 21:49:51,693 - app - INFO - Fetching profile for user 1058681922
+2025-05-18 21:49:51,694 - app - WARNING - Profile not found for user 1058681922
+2025-05-18 21:49:59,117 - app - INFO - Starting video verification for user 1058681922
+2025-05-18 21:49:59,122 - app - INFO - Video verification completed for user 1058681922
+2025-05-18 22:11:13,763 - app - INFO - Fetching profile for user 1058681922
+2025-05-18 22:11:13,772 - app - WARNING - Profile not found for user 1058681922
+2025-05-18 22:11:18,264 - app - INFO - Fetching profile for user 1058681922
+2025-05-18 22:11:18,267 - app - WARNING - Profile not found for user 1058681922
+2025-05-18 22:11:24,469 - app - INFO - Starting video verification for user 1058681922
+2025-05-18 22:11:24,602 - app - INFO - Video verification completed for user 1058681922
+2025-05-18 22:12:08,647 - app - INFO - Saving profile for user 1058681922
+2025-05-18 22:12:08,930 - app - INFO - Profile successfully saved for user 1058681922
+2025-05-18 22:12:09,249 - app - INFO - Uploading file: 1058681922_AgACAgIAAxkBAAIf12gqW5njfXDRNktbI1Jc-n1eEKNBAAKn8jEb8K9ZSbBu8qXaBJF-AQADAgADeQADNgQ.jpg for user 1058681922
+2025-05-18 22:12:09,368 - app - INFO - File uploaded: 1058681922_AgACAgIAAxkBAAIf12gqW5njfXDRNktbI1Jc-n1eEKNBAAKn8jEb8K9ZSbBu8qXaBJF-AQADAgADeQADNgQ.jpg for user 1058681922
+2025-05-18 22:12:09,475 - app - INFO - Uploading file: 1058681922_AgACAgIAAxkBAAIf2WgqW6BIpITzwQjLGbTBH8JAK5xDAAKo8jEb8K9ZSSAWMNkF3EVhAQADAgADeQADNgQ.jpg for user 1058681922
+2025-05-18 22:12:17,896 - app - INFO - Fetching profile for user 1058681922
+2025-05-18 22:12:17,897 - app - INFO - Profile successfully retrieved for user 1058681922
+2025-05-18 22:12:17,900 - app - INFO - Fetching profile for user 1058681922
+2025-05-18 22:12:17,901 - app - INFO - Profile successfully retrieved for user 1058681922
+2025-05-18 22:12:17,957 - app - INFO - Generating presigned URLs for user 1058681922
+2025-05-18 22:12:53,674 - app - INFO - Fetching profile for user 7717579491
+2025-05-18 22:12:53,677 - app - WARNING - Profile not found for user 7717579491
+2025-05-18 22:12:59,249 - app - INFO - Starting video verification for user 7717579491
+2025-05-18 22:12:59,253 - app - INFO - Video verification completed for user 7717579491
+2025-05-18 22:13:05,074 - app - INFO - Starting video verification for user 7717579491
+2025-05-18 22:13:05,077 - app - INFO - Video verification completed for user 7717579491
+2025-05-18 22:13:35,956 - app - INFO - Saving profile for user 7717579491
+2025-05-18 22:13:36,037 - app - INFO - Profile successfully saved for user 7717579491
+2025-05-18 22:13:36,294 - app - INFO - Uploading file: 7717579491_AgACAgIAAxkBAAIf9mgqW_c4EUO4lkyYoxS-jL9yKkJdAAKi9DEbucZQSXOuqwTzxUGFAQADAgADeQADNgQ.jpg for user 7717579491
+2025-05-18 22:13:36,393 - app - INFO - File uploaded: 7717579491_AgACAgIAAxkBAAIf9mgqW_c4EUO4lkyYoxS-jL9yKkJdAAKi9DEbucZQSXOuqwTzxUGFAQADAgADeQADNgQ.jpg for user 7717579491
+2025-05-18 22:13:41,089 - app - INFO - Fetching profile for user 7717579491
+2025-05-18 22:13:41,090 - app - INFO - Profile successfully retrieved for user 7717579491
+2025-05-18 22:13:41,093 - app - INFO - Fetching profile for user 7717579491
+2025-05-18 22:13:41,095 - app - INFO - Profile successfully retrieved for user 7717579491
+2025-05-18 22:13:41,154 - app - INFO - Generating presigned URLs for user 7717579491
+2025-05-18 22:13:56,011 - app - INFO - Fetching profile for user 7717579491
+2025-05-18 22:13:56,014 - app - INFO - Profile successfully retrieved for user 7717579491
+2025-05-18 22:13:56,019 - app - INFO - Fetching profile for user 7717579491
+2025-05-18 22:13:56,021 - app - INFO - Profile successfully retrieved for user 7717579491
+2025-05-18 22:13:56,074 - app - INFO - Generating presigned URLs for user 7717579491
+2025-05-18 22:14:09,672 - app - INFO - Fetching profile for user 7717579491
+2025-05-18 22:14:09,676 - app - INFO - Profile successfully retrieved for user 7717579491
+2025-05-18 22:14:09,683 - app - INFO - Fetching 30 recommendations for user 7717579491
+2025-05-18 22:14:09,732 - app - INFO - Fetched 1 recommendations for user 7717579491
+2025-05-18 22:14:09,737 - app - INFO - Fetching profile for user 1058681922
+2025-05-18 22:14:09,738 - app - INFO - Profile successfully retrieved for user 1058681922
+2025-05-18 22:14:09,742 - app - INFO - Generating presigned URLs for user 1058681922
+2025-05-18 22:14:20,347 - app - INFO - Swipe processing started
+2025-05-18 22:21:19,773 - app - INFO - Fetching profile for user 1318685329
+2025-05-18 22:21:19,801 - app - WARNING - Profile not found for user 1318685329
+2025-05-18 22:21:42,562 - app - INFO - Fetching profile for user 1318685329
+2025-05-18 22:21:42,566 - app - WARNING - Profile not found for user 1318685329
+2025-05-18 22:21:48,615 - app - INFO - Starting video verification for user 1318685329
+2025-05-18 22:21:48,645 - app - INFO - Video verification completed for user 1318685329
+2025-05-18 22:22:39,671 - app - INFO - Saving profile for user 1318685329
+2025-05-18 22:22:40,020 - app - INFO - Profile successfully saved for user 1318685329
+2025-05-18 22:22:40,267 - app - INFO - Uploading file: 1318685329_AgACAgIAAxkBAAIgGGgqXhRe_pN-O0_4nQs0J3fwyXfLAALp8zEbgnpYSVMoDo9o8cvoAQADAgADeQADNgQ.jpg for user 1318685329
+2025-05-18 22:22:40,446 - app - INFO - File uploaded: 1318685329_AgACAgIAAxkBAAIgGGgqXhRe_pN-O0_4nQs0J3fwyXfLAALp8zEbgnpYSVMoDo9o8cvoAQADAgADeQADNgQ.jpg for user 1318685329
+2025-05-18 22:22:40,598 - app - INFO - Uploading file: 1318685329_AgACAgIAAxkBAAIgGWgqXhQneIwJcQndyN85YqOmgHGQAAJ27DEboSRYSZK2SakMaoGcAQADAgADeQADNgQ.jpg for user 1318685329
+2025-05-18 22:22:47,754 - app - INFO - Fetching profile for user 1318685329
+2025-05-18 22:22:47,758 - app - INFO - Profile successfully retrieved for user 1318685329
+2025-05-18 22:22:47,766 - app - INFO - Fetching profile for user 1318685329
+2025-05-18 22:22:47,768 - app - INFO - Profile successfully retrieved for user 1318685329
+2025-05-18 22:22:47,814 - app - INFO - Generating presigned URLs for user 1318685329
+2025-05-18 22:22:50,955 - app - INFO - Fetching profile for user 1318685329
+2025-05-18 22:22:50,959 - app - INFO - Profile successfully retrieved for user 1318685329
+2025-05-18 22:22:50,964 - app - INFO - Fetching profile for user 1318685329
+2025-05-18 22:22:50,966 - app - INFO - Profile successfully retrieved for user 1318685329
+2025-05-18 22:22:51,015 - app - INFO - Generating presigned URLs for user 1318685329
+2025-05-18 22:22:51,907 - app - INFO - Fetching profile for user 1318685329
+2025-05-18 22:22:51,909 - app - INFO - Profile successfully retrieved for user 1318685329
+2025-05-18 22:22:51,917 - app - INFO - Fetching 30 recommendations for user 1318685329
+2025-05-18 22:22:51,929 - app - INFO - Fetched 1 recommendations for user 1318685329
+2025-05-18 22:22:51,935 - app - INFO - Fetching profile for user 1058681922
+2025-05-18 22:22:51,936 - app - INFO - Profile successfully retrieved for user 1058681922
+2025-05-18 22:22:51,985 - app - INFO - Generating presigned URLs for user 1058681922
+2025-05-18 22:22:59,310 - app - INFO - Swipe processing started
+2025-05-18 23:03:23,212 - app - INFO - Fetching profile for user 1318685329
+2025-05-18 23:03:23,214 - app - INFO - Fetching profile for user 1318685329
+2025-05-18 23:03:23,216 - app - INFO - Fetching profile for user 1318685329
+2025-05-18 23:03:23,256 - app - WARNING - Profile not found for user 1318685329
+2025-05-18 23:03:23,259 - app - WARNING - Profile not found for user 1318685329
+2025-05-18 23:03:23,260 - app - WARNING - Profile not found for user 1318685329
+2025-05-18 23:03:26,510 - app - INFO - Fetching profile for user 1318685329
+2025-05-18 23:03:26,511 - app - WARNING - Profile not found for user 1318685329
+2025-05-18 23:03:32,314 - app - INFO - Starting video verification for user 1318685329
+2025-05-18 23:03:32,333 - app - INFO - Video verification completed for user 1318685329
+2025-05-18 23:03:44,423 - app - INFO - Fetching profile for user 1318685329
+2025-05-18 23:03:44,424 - app - WARNING - Profile not found for user 1318685329
+2025-05-18 23:03:52,690 - app - INFO - Starting video verification for user 1318685329
+2025-05-18 23:03:52,694 - app - INFO - Video verification completed for user 1318685329
+2025-05-18 23:04:21,846 - app - INFO - Fetching profile for user 1318685329
+2025-05-18 23:04:21,847 - app - WARNING - Profile not found for user 1318685329
+2025-05-18 23:04:27,506 - app - INFO - Starting video verification for user 1318685329
+2025-05-18 23:04:27,511 - app - INFO - Video verification completed for user 1318685329
+2025-05-18 23:05:37,621 - app - INFO - Fetching profile for user 1318685329
+2025-05-18 23:05:37,629 - app - WARNING - Profile not found for user 1318685329
+2025-05-18 23:05:42,595 - app - INFO - Starting video verification for user 1318685329
+2025-05-18 23:05:42,619 - app - INFO - Video verification completed for user 1318685329
+2025-05-18 23:09:06,395 - app - INFO - Fetching profile for user 1318685329
+2025-05-18 23:09:06,396 - app - INFO - Fetching profile for user 1318685329
+2025-05-18 23:09:06,398 - app - INFO - Fetching profile for user 1318685329
+2025-05-18 23:09:06,436 - app - WARNING - Profile not found for user 1318685329
+2025-05-18 23:09:06,439 - app - WARNING - Profile not found for user 1318685329
+2025-05-18 23:09:06,441 - app - WARNING - Profile not found for user 1318685329
+2025-05-18 23:09:14,006 - app - INFO - Starting video verification for user 1318685329
+2025-05-18 23:09:14,024 - app - INFO - Video verification completed for user 1318685329
+2025-05-18 23:10:14,126 - app - INFO - Saving profile for user 1318685329
+2025-05-18 23:10:14,440 - app - INFO - Profile successfully saved for user 1318685329
+2025-05-18 23:10:14,670 - app - INFO - Uploading file: 1318685329_AgACAgIAAxkBAAIgTGgqaTL98SLIZr65vX433ptMzf6dAAIC9DEbgnpYSUkZ5Y0f9kJMAQADAgADeQADNgQ.jpg for user 1318685329
+2025-05-18 23:10:14,781 - app - INFO - File uploaded: 1318685329_AgACAgIAAxkBAAIgTGgqaTL98SLIZr65vX433ptMzf6dAAIC9DEbgnpYSUkZ5Y0f9kJMAQADAgADeQADNgQ.jpg for user 1318685329
+2025-05-18 23:10:26,748 - app - INFO - Fetching profile for user 1318685329
+2025-05-18 23:10:26,749 - app - INFO - Profile successfully retrieved for user 1318685329
+2025-05-18 23:10:26,752 - app - INFO - Fetching profile for user 1318685329
+2025-05-18 23:10:26,753 - app - INFO - Profile successfully retrieved for user 1318685329
+2025-05-18 23:10:26,812 - app - INFO - Generating presigned URLs for user 1318685329

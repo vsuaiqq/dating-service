@@ -25,8 +25,7 @@ class MediaClient(BaseApiClient):
             user_id: int,
             file_type: str,
             file: bytes,
-            filename: str,
-            timeout: float = 30.0
+            filename: str
     ):
         files = {'file': (filename, file)}
         data = {'type': file_type}
@@ -35,31 +34,26 @@ class MediaClient(BaseApiClient):
             "/media/upload",
             files=files,
             data=data,
-            headers=self._headers(user_id),
-            timeout=timeout
+            headers=self._headers(user_id)
         )
         return await self._handle_response(resp)
 
     async def get_presigned_urls(
             self,
-            user_id: int,
-            timeout: float = 10.0
+            user_id: int
     ) -> GetPresignedUrlsResponse:
         resp = await self.client.get(
             "/media/presigned-urls",
-            headers=self._headers(user_id),
-            timeout=timeout
+            headers=self._headers(user_id)
         )
         return await self._handle_response(resp, GetPresignedUrlsResponse)
 
     async def delete_files(
             self,
-            user_id: int,
-            timeout: float = 10.0
+            user_id: int
     ):
         resp = await self.client.delete(
             "/media/files",
-            headers=self._headers(user_id),
-            timeout=timeout
+            headers=self._headers(user_id)
         )
         await self._handle_response(resp)

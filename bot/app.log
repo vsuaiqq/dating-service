@@ -1,0 +1,6 @@
+2025-05-18 22:05:16,987 - bot - ERROR - Failed to upload media: Server error '500 Internal Server Error' for url 'http://127.0.0.1:8000/media/upload'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500
+2025-05-19 01:12:09,527 - bot - ERROR - Failed to upload media: Server error '500 Internal Server Error' for url 'http://127.0.0.1:8000/media/upload'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500
+2025-05-19 01:22:40,659 - bot - ERROR - Failed to upload media: Server error '500 Internal Server Error' for url 'http://127.0.0.1:8000/media/upload'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500
