@@ -179,6 +179,18 @@ msgstr "Choose action"
 msgid "kilometers_away"
 msgstr "km"
 
+msgid "like_notification"
+msgstr "Here`s like for u❤️"
+
+msgid "no_more_recommendations"
+msgstr "There is no more rec`s left"
+
+msgid "no_profile_error"
+msgstr "Didn`t find ur profile"
+
+msgid "like_notification"
+msgstr "You`ve got a letter with like💌"
+
 msgid "meters_away"
 msgstr "m"
 
@@ -187,6 +199,27 @@ msgstr "Can`t recognize your face"
 
 msgid "choose_new_interesting_gender"
 msgstr "Choose the gender you are interested in"
+
+msgid "open_profile_link"
+msgstr "User`s profile: @{username}"
+
+msgid "back_to_main_menu"
+msgstr "U r back to main menu"
+
+msgid "unexpected_error"
+msgstr "Error, try again /start"
+
+msgid "swipe_send_error"
+msgstr "Can`t send ❤️"
+
+msgid "swipe_sent"
+msgstr "U sent a like❤️"
+
+msgid "enter_your_question"
+msgstr "Enter the message with like💌"
+
+msgid "question_notification"
+msgstr "Message from user 💌: {message}"
 
 msgid "enter_new_city"
 msgstr "Which city are you from?"
@@ -214,6 +247,9 @@ msgstr "City has been updated"
 
 msgid "about_updated"
 msgstr "Profile text has been updated"
+
+msgid "coordinates_updated"
+msgstr "Ur coords has been updated"
 
 msgid "media_updated"
 msgstr "Media has been updated"

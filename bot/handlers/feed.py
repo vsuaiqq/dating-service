@@ -62,10 +62,10 @@ async def send_next_recommendation(user_id: int, message: types.Message, state: 
             await message.answer(_("no_more_recommendations"), reply_markup=get_main_keyboard(is_active, _))
             return
 
-        if distance < 1:
-            distance_str = f"{int(distance * 1000)} {_('kilometers_away')}"
+        if distance >= 1000:
+            distance_str = f"{round(distance / 1000, 1)} {_('kilometers_away')}"
         else:
-            distance_str = f"{round(distance, 1)} {_('meters_away')}"
+            distance_str = f"{int(distance)} {_('meters_away')}"
 
         text = (
             f"{profile.name}, {profile.age}\n"
@@ -135,7 +135,7 @@ async def handle_swipe_text(message: types.Message, state: FSMContext, _: Callab
             await router.swipe_client.add_swipe(
                 user_id=message.from_user.id,
                 username=message.from_user.username,
-                swipe_data=swipe_request  # Правильная передача объекта
+                swipe_data=swipe_request
             )
         except RateLimitError:
             await message.answer(_("rate_limit_error_try_later"))

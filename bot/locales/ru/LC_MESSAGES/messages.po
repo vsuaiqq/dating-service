@@ -10,11 +10,44 @@ msgstr "Теперь определимся с полом"
 msgid "ask_interesting_gender"
 msgstr "Кто тебе интересен?"
 
+msgid "swipe_send_error"
+msgstr "Не удалось отправить ❤️"
+
+msgid "back_to_main_menu"
+msgstr "Вы вернулись в главное меню"
+
+msgid "unexpected_error"
+msgstr "Ошибка, попробуйте снова /start"
+
+msgid "swipe_sent"
+msgstr "Вы отправили ❤️"
+
+msgid "enter_your_question"
+msgstr "Напишите сообщение с лайком💌"
+
 msgid "swipe_prompt"
 msgstr "Выберите действие"
 
 msgid "kilometers_away"
 msgstr "км"
+
+msgid "like_notification"
+msgstr "Вам пришел лайк❤️"
+
+msgid "no_more_recommendations"
+msgstr "Больше рекомендаций нет"
+
+msgid "open_profile_link"
+msgstr "Профиль пользователя: @{username}"
+
+msgid "no_profile_error"
+msgstr "Ваш профиль не найден"
+
+msgid "like_notification"
+msgstr "Вам пришел конверт💌"
+
+msgid "question_notification"
+msgstr "Message from user 💌: @{message}"
 
 msgid "meters_away"
 msgstr "м"
@@ -214,6 +247,9 @@ msgstr "Город обновлен"
 
 msgid "about_updated"
 msgstr "Текст анкеты обновлен"
+
+msgid "coordinates_updated"
+msgstr "Ваши координаты обновлены"
 
 msgid "media_updated"
 msgstr "Медиа обновлены"

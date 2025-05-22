@@ -102,7 +102,6 @@ class TelegramBot:
             return False
 
     async def _handle_kafka_event(self, event: dict):
-        print('\n\n', event, '\n\n')
         try:
             if 'action' in event:
                 swipe_event = SwipeEvent(**event)
@@ -132,7 +131,7 @@ class TelegramBot:
         if event.action == "like":
             text = _("like_notification")
         elif event.action == "question":
-            text = _("question_notification", message=event.message)
+            text = _("question_notification").format(message=event.message)
 
         await self.bot.send_message(
             event.to_user_id,
@@ -142,7 +141,7 @@ class TelegramBot:
         await self._show_profile(event.from_user_id, event.to_user_id)
         await self.bot.send_message(
             event.to_user_id,
-            _("open_profile_link", username=event.from_username),
+            _("open_profile_link").format(username=event.from_username),
             parse_mode="HTML"
         )
 
